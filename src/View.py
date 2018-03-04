@@ -27,30 +27,29 @@ class View():
         nb.add(self.cryptocurrPage, text="Cryptocurrencies")
         # Notebook layout definition
         nb.pack(expand=1, fill="both")
-
         # Create a table for the trading log
-        tv = ttk.Treeview(self.stocksLogPage)
-        tv.pack(fill='x')
-        tv["columns"] = ('action','symbol','amount','price','fee')
-        tv.heading("#0", text='Date', anchor='w')
-        tv.heading("action", text='Action', anchor='w')
-        tv.heading("symbol", text='Symbol', anchor='w')
-        tv.heading("amount", text='Amount', anchor='w')
-        tv.heading("price", text='Price', anchor='w')
-        tv.heading("fee", text='Fee', anchor='w')
-        tv.column("#0", width=100)
-        tv.column("action", width=100)
-        tv.column("symbol", width=100)
-        tv.column("amount", width=100)
-        tv.column("price", width=100)
-        tv.column("fee", width=100)
-        self.treeView = tv
-
+        self.logTreeView = ttk.Treeview(self.stocksLogPage)
+        self.logTreeView.pack(fill='x')
+        self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
+        self.logTreeView.heading("#0", text='Date', anchor='w')
+        self.logTreeView.heading("action", text='Action', anchor='w')
+        self.logTreeView.heading("symbol", text='Symbol', anchor='w')
+        self.logTreeView.heading("amount", text='Amount', anchor='w')
+        self.logTreeView.heading("price", text='Price', anchor='w')
+        self.logTreeView.heading("fee", text='Fee', anchor='w')
+        self.logTreeView.column("#0", width=100)
+        self.logTreeView.column("action", width=100)
+        self.logTreeView.column("symbol", width=100)
+        self.logTreeView.column("amount", width=100)
+        self.logTreeView.column("price", width=100)
+        self.logTreeView.column("fee", width=100)
+        # Create a table for the current data
+        self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
+        self.currentDataTreeView.pack(fill='x')
+        #TODO finish the table 
         # Create graphical elements
         self.label = tk.Label(self.stocksLogPage, text="")
         self.label.pack()
-        self.logLabel = tk.Label(self.stocksLogPage, text="")
-        self.logLabel.pack()
 
     def set_close_event_callback(self, callback):
         self.closeEventCallback = callback
@@ -62,12 +61,12 @@ class View():
 
     def set_log_list(self, aList):
         for logEntry in aList:
-            self.treeView.insert('', 'end', text=logEntry.get_date(), 
-                                values=(logEntry.get_action(), 
-                                        logEntry.get_symbol(),
-                                        logEntry.get_amount(),
-                                        logEntry.get_price(),
-                                        logEntry.get_fee()))
+            self.logTreeView.insert('', 'end', text=logEntry.get_date(), 
+                                    values=(logEntry.get_action(), 
+                                            logEntry.get_symbol(),
+                                            logEntry.get_amount(),
+                                            logEntry.get_price(),
+                                            logEntry.get_fee()))
 
     def set_stock_prices(self, aDict):
         self.label.config(text=aDict)
