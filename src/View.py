@@ -61,7 +61,13 @@ class View():
         self.mainWindow.destroy()
 
     def set_log_list(self, aList):
-        self.logLabel.config(text=aList[0])
+        for logEntry in aList:
+            self.treeView.insert('', 'end', text=logEntry.get_date(), 
+                                values=(logEntry.get_action(), 
+                                        logEntry.get_symbol(),
+                                        logEntry.get_amount(),
+                                        logEntry.get_price(),
+                                        logEntry.get_fee()))
 
     def set_stock_prices(self, aDict):
         self.label.config(text=aDict)

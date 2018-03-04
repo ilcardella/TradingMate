@@ -23,6 +23,19 @@ class StockLogEntry():
         self.price = price
         self.fee = fee
 
+    def get_date(self):
+        return self.date
+    def get_action(self):
+        return self.action
+    def get_symbol(self):
+        return self.symbol
+    def get_amount(self):
+        return self.amount
+    def get_price(self):
+        return self.price
+    def get_fee(self):
+        return self.fee
+
     def __str__(self):
         return str(self.date)+","+str(self.action)+","+str(self.symbol)+","+str(self.amount)+","+str(self.price)+","+str(self.fee)
 
@@ -53,4 +66,9 @@ class Model():
         self.xmlTree.write(self.dbFilename)
 
     def get_log_as_list(self):
-        return [StockLogEntry(row[0].text,row[1].text,row[2].text,row[3].text,row[4].text,row[5].text) for row in self.log]
+        return [StockLogEntry(row.find('date').text,
+                                row.find('action').text,
+                                row.find('symbol').text,
+                                row.find('amount').text,
+                                row.find('fee').text,
+                                row.find('price').text) for row in self.log]
