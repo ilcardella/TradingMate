@@ -22,7 +22,6 @@ class StockLogEntry():
         self.amount = amount
         self.price = price
         self.fee = fee
-        self.id = self
 
     def __str__(self):
         return str(self.date)+","+str(self.action)+","+str(self.symbol)+","+str(self.amount)+","+str(self.price)+","+str(self.fee)
