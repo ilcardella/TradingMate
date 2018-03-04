@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<CONFIGURATION>
+	<ALPHAVANTAGE_API_KEY>QKDPX3FRCO7CCM81</ALPHAVANTAGE_API_KEY>
+	<ALPHAVANTAGE_BASE_URL>https://www.alphavantage.co/query?</ALPHAVANTAGE_BASE_URL>
+	<COINCOMPARE_BASE_URL>https://min-api.cryptocompare.com/data/</COINCOMPARE_BASE_URL>
+	<!-- Add parameters here -->
+</CONFIGURATION>
+
