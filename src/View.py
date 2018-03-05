@@ -17,7 +17,7 @@ class View():
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
         self.mainWindow.geometry("1000x500")
 
-        # Create the notebook (tab format)
+        # Create the notebook (tab format window)
         nb = ttk.Notebook(self.mainWindow)
         # Create Share trading Tab
         self.stocksLogPage = ttk.Frame(nb)
@@ -46,10 +46,21 @@ class View():
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
         self.currentDataTreeView.pack(fill='x')
-        #TODO finish the table 
-        # Create graphical elements
-        self.label = tk.Label(self.stocksLogPage, text="")
-        self.label.pack()
+        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl')
+        self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
+        self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
+        self.currentDataTreeView.heading("open", text='Open', anchor='w')
+        self.currentDataTreeView.heading("last", text='Last', anchor='w')
+        self.currentDataTreeView.heading("cost", text='Cost', anchor='w')
+        self.currentDataTreeView.heading("value", text='Value', anchor='w')
+        self.currentDataTreeView.heading("pl", text='% P/L', anchor='w')
+        self.currentDataTreeView.column("#0", width=100)
+        self.currentDataTreeView.column("amount", width=100)
+        self.currentDataTreeView.column("open", width=100)
+        self.currentDataTreeView.column("last", width=100)
+        self.currentDataTreeView.column("cost", width=100)
+        self.currentDataTreeView.column("value", width=100)
+        self.currentDataTreeView.column("pl", width=100)
 
     def set_close_event_callback(self, callback):
         self.closeEventCallback = callback
@@ -59,17 +70,28 @@ class View():
         self.closeEventCallback()
         self.mainWindow.destroy()
 
-    def set_log_list(self, aList):
-        for logEntry in aList:
-            self.logTreeView.insert('', 'end', text=logEntry.get_date(), 
-                                    values=(logEntry.get_action(), 
-                                            logEntry.get_symbol(),
-                                            logEntry.get_amount(),
-                                            logEntry.get_price(),
-                                            logEntry.get_fee()))
+    def add_entry_to_log(self, date, action, symbol, amount, price, fee):
+        self.logTreeView.insert('', 'end', text=date, values=(action,symbol,amount,price,fee))
 
-    def set_stock_prices(self, aDict):
-        self.label.config(text=aDict)
+    def update_stock_price(self, dict):
+        found = False
+        for child in self.currentDataTreeView.get_children():
+            item = self.currentDataTreeView.item(child)
+            if item['text'] == dict['symbol']:
+                found = True
+                self.currentDataTreeView.item(child, values=(dict['amount'],
+                                                            dict['open'],
+                                                            dict['last'],
+                                                            dict['cost'],
+                                                            dict['value'],
+                                                            dict['pl']))
+        if not found:
+            self.currentDataTreeView.insert('','end',text=dict['symbol'], values=(dict['amount'],
+                                                                                    dict['open'],
+                                                                                    dict['last'],
+                                                                                    dict['cost'],
+                                                                                    dict['value'],
+                                                                                    dict['pl']))
 
     def start(self):
         # Start the view thread

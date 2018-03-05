@@ -27,7 +27,13 @@ class WebThread(threading.Thread):
             if(now - lastRequest > self.period):
                 try:
                     #TODO pull data from HTTP API
-                    pricesDict = {'now':now, 'lastRequest':lastRequest} # Testing code
+                    pricesDict = {'symbol':'GOOG', 
+                                    'amount':lastRequest,
+                                    'open':1,
+                                    'last':1,
+                                    'cost':1,
+                                    'value':1,
+                                    'pl':1} # Testing code
                 except Exception as e:
                     print("Controller.py: {0}".format(e))
 
@@ -46,10 +52,16 @@ class Controller():
         # Init the view
         self.view = View()
         self.view.set_close_event_callback(self.on_close_view)
-        self.view.set_log_list(self.model.get_log_as_list())
+        for logEntry in self.model.get_log_as_list():
+            self.view.add_entry_to_log(logEntry.get_date(),
+                                        logEntry.get_action(), 
+                                        logEntry.get_symbol(),
+                                        logEntry.get_amount(),
+                                        logEntry.get_price(),
+                                        logEntry.get_fee())
 
         self.webThread = WebThread("WebThread1", 5)
-        self.webThread.set_update_callback(self.view.set_stock_prices)
+        self.webThread.set_update_callback(self.view.update_stock_price)
 
     def start(self):
         self.webThread.start()
