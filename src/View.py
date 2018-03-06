@@ -27,6 +27,9 @@ class View():
         nb.add(self.cryptocurrPage, text="Cryptocurrencies")
         # Notebook layout definition
         nb.pack(expand=1, fill="both")
+        # Title label
+        logLabel = ttk.Label(self.stocksLogPage, text="Trades log")
+        logLabel.pack()
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(self.stocksLogPage)
         self.logTreeView.pack(fill='x')
@@ -43,6 +46,9 @@ class View():
         self.logTreeView.column("amount", width=100)
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
+        # Title label
+        currLabel = ttk.Label(self.stocksLogPage, text="Current prices")
+        currLabel.pack()
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
         self.currentDataTreeView.pack(fill='x')
@@ -72,6 +78,9 @@ class View():
 
     def add_entry_to_log(self, date, action, symbol, amount, price, fee):
         self.logTreeView.insert('', 'end', text=date, values=(action,symbol,amount,price,fee))
+
+    def remove_entry_from_log(self, position):
+        self.logTreeView.delete(position)
 
     def update_stock_price(self, dict):
         found = False
