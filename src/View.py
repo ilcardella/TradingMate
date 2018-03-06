@@ -17,6 +17,23 @@ class View():
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
         self.mainWindow.geometry("1000x500")
 
+        # Define the app menu
+        self.menubar = tk.Menu(self.mainWindow)
+        # Menu File
+        filemenu = tk.Menu(self.menubar, tearoff=0)
+        filemenu.add_command(label="Open", command=self.open_log)
+        filemenu.add_command(label="Save", command=self.save_log)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=self.on_close_event)
+        self.menubar.add_cascade(label="File", menu=filemenu)
+        # Menu About
+        helpmenu = tk.Menu(self.menubar, tearoff=0)
+        helpmenu.add_command(label="About", command=self.show_about_popup)
+        self.menubar.add_cascade(label="Help", menu=helpmenu)
+
+        # Display the menu
+        self.mainWindow.config(menu=self.menubar)
+
         # Create the notebook (tab format window)
         nb = ttk.Notebook(self.mainWindow)
         # Create Share trading Tab
@@ -48,10 +65,10 @@ class View():
         self.logTreeView.column("fee", width=100)
         # Title label
         currLabel = ttk.Label(self.stocksLogPage, text="Current prices")
-        currLabel.pack()
+        currLabel.pack()        
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
-        self.currentDataTreeView.pack(fill='x')
+        self.currentDataTreeView.pack(fill='x',side='bottom')
         self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
         self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
@@ -75,6 +92,15 @@ class View():
         # Notify the Controller and close the main window
         self.closeEventCallback()
         self.mainWindow.destroy()
+
+    def open_log(self):
+        print("TODO: open_log")
+
+    def save_log(self):
+        print("TODO: save_log")
+
+    def show_about_popup(self):
+        print("TODO: show_about_popup")
 
     def add_entry_to_log(self, date, action, symbol, amount, price, fee):
         self.logTreeView.insert('', 'end', text=date, values=(action,symbol,amount,price,fee))
