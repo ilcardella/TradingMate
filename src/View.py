@@ -5,9 +5,9 @@ APP_NAME = "TradingMate"
 
 class View():
 
-    def __init__(self):
+    def __init__(self, onCloseEventCallback):
         # Local data initialisation
-        self.closeEventCallback = None
+        self.closeEventCallback = onCloseEventCallback
         self.create_UI()
 
     def create_UI(self):
@@ -85,9 +85,6 @@ class View():
         self.currentDataTreeView.column("value", width=100)
         self.currentDataTreeView.column("pl", width=100)
 
-    def set_close_event_callback(self, callback):
-        self.closeEventCallback = callback
-
     def on_close_event(self):
         # Notify the Controller and close the main window
         self.closeEventCallback()
@@ -108,7 +105,7 @@ class View():
     def remove_entry_from_log(self, position):
         self.logTreeView.delete(position)
 
-    def update_stock_price(self, dict):
+    def update_live_prices(self, dict):
         found = False
         for child in self.currentDataTreeView.get_children():
             item = self.currentDataTreeView.item(child)
