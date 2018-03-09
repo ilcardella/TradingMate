@@ -1,7 +1,7 @@
 # TradingMate
-TradingMate is a simple portfolio manager for shares traders. It let you monitor the current prices of your holdings and to review the trading log history.
+TradingMate is a simple portfolio manager for shares traders. It lets you monitor the current prices of your holdings and to review your trading log history.
 
-It also can monitor the current value of cryptocurrencies holdings.
+It can also monitor the current value of your cryptocurrencies holdings.
 
 # Dependencies:
 Python 3.6
