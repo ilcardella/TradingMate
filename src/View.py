@@ -102,24 +102,12 @@ class View():
         print("TODO: show_about_popup")
 
     def add_entry_to_log(self, date, action, symbol, amount, price, fee):
-        v_date = date
-        if date is None:
-            v_date = " "
-        v_act = action
-        if action is None:
-            v_act = " "
-        v_sym = symbol
-        if symbol is None:
-            v_sym = " "
-        v_am = amount
-        if amount is None:
-            v_am = " "
-        v_pri = price
-        if price is None:
-            v_pri = " "
-        v_fee = fee
-        if fee is None:
-            v_fee = " "
+        v_date = self.check_none_value(date)
+        v_act = self.check_none_value(action)
+        v_sym = self.check_none_value(symbol)
+        v_am = self.check_none_value(amount)
+        v_pri = self.check_none_value(price)
+        v_fee = self.check_none_value(fee)
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee))
 
     def remove_entry_from_log(self, position):
@@ -155,3 +143,17 @@ class View():
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
+
+    def check_none_value(self, var):
+        valid_var = var
+        if var is None:
+            valid_var = " "
+        return valid_var
+
+    def limit_number(self, value, min, max):
+        result = value
+        if value > max:
+            result = max
+        elif value < min:
+            result = min
+        return result
