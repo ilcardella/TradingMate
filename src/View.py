@@ -45,7 +45,7 @@ class View():
         # Notebook layout definition
         nb.pack(expand=1, fill="both")
         # Title label
-        logLabel = ttk.Label(self.stocksLogPage, text="Trades log")
+        logLabel = ttk.Label(self.stocksLogPage, text="Trades History")
         logLabel.pack()
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(self.stocksLogPage)
@@ -64,7 +64,7 @@ class View():
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
         # Title label
-        currLabel = ttk.Label(self.stocksLogPage, text="Current prices")
+        currLabel = ttk.Label(self.stocksLogPage, text="Live Price")
         currLabel.pack()        
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)

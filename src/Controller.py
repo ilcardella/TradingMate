@@ -7,7 +7,6 @@ class Controller():
     def __init__(self):
         # Init the model
         self.model = Model(self.update_live_prices)
-
         # Init the view
         self.view = View(self.on_close_view_event)
 
