@@ -97,7 +97,7 @@ class Model():
     def __init__(self):
         self.read_configuration()
         self.callbacks = {}
-        self.livePricesThread = LivePricesWebThread(self, WEB_POLLING_SECONDS)
+        self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
         self.read_database()
 
 # INTERNAL FUNCTIONS
@@ -106,6 +106,7 @@ class Model():
         try:
             self.configValues = ET.parse(CONFIG_FILE_PATH).getroot()
             self.dbFilePath = self.configValues.find("TRADING_LOG_PATH").text
+            self.webPollingPeriod = self.configValues.find("ALPHAVANTAGE_POLLING_PERIOD").text
         except Exception as e:
             print("Model.py:121 {0}".format(e))
             sys.exit(1)
