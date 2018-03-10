@@ -2,6 +2,7 @@ from .Utils import Callbacks
 
 import tkinter as tk
 from tkinter import ttk
+from tkinter import StringVar
 
 APP_NAME = "TradingMate"
 
@@ -46,12 +47,17 @@ class View():
         nb.add(self.cryptocurrPage, text="Cryptocurrencies")
         # Notebook layout definition
         nb.pack(expand=1, fill="both")
+        # Portfolio summary label
+        self.balancesString = StringVar()
+        self.balancesString.set("[BALANCES] ")
+        balancesLabel = ttk.Label(self.stocksLogPage, textvariable=self.balancesString)
+        balancesLabel.pack(fill="x")
         # Title label
         currLabel = ttk.Label(self.stocksLogPage, text="Live Price")
         currLabel.pack()        
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
-        self.currentDataTreeView.pack(fill='x',side='bottom')
+        self.currentDataTreeView.pack(fill='x')
         self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
         self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
@@ -72,7 +78,7 @@ class View():
         logLabel.pack()
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(self.stocksLogPage)
-        self.logTreeView.pack(fill='x')
+        self.logTreeView.pack(fill='x',side='bottom')
         self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
@@ -123,19 +129,19 @@ class View():
                 if holdingSymbol == symbol:
                     found = True
                     self.currentDataTreeView.item(child, values=(holdingData['amount'],
-                                                            holdingData['open'],
-                                                            holdingData['last'],
-                                                            holdingData['cost'],
-                                                            holdingData['value'],
-                                                            holdingData['pl']))
+                                                            round(holdingData['open'], 3),
+                                                            round(holdingData['last'], 3),
+                                                            round(holdingData['cost'], 3),
+                                                            round(holdingData['value'], 3),
+                                                            round(holdingData['pl'], 2)))
                     break
             if not found:
                 self.currentDataTreeView.insert('','end',text=holdingSymbol, values=(holdingData['amount'],
-                                                                                    holdingData['open'],
-                                                                                    holdingData['last'],
-                                                                                    holdingData['cost'],
-                                                                                    holdingData['value'],
-                                                                                    holdingData['pl']))
+                                                                                    round(holdingData['open'], 3),
+                                                                                    round(holdingData['last'], 3),
+                                                                                    round(holdingData['cost'], 3),
+                                                                                    round(holdingData['value'], 3),
+                                                                                    round(holdingData['pl'], 2)))
 
     def start(self):
         # Start the view thread
@@ -150,10 +156,6 @@ class View():
             valid_var = " "
         return valid_var
 
-    def limit_number(self, value, min, max):
-        result = value
-        if value > max:
-            result = max
-        elif value < min:
-            result = min
-        return result
+    def update_balances(self, balances):
+        balString = "[BALANCES] Cash: " + str(balances["cash"]) + " - Portfolio: " + str(balances["portfolio"]) + " - Total: " + str(balances["total"])
+        self.balancesString.set(balString)

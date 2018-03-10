@@ -102,7 +102,7 @@ class Model():
         self.read_configuration() # From config.xml file
         self.callbacks = {} # DataStruct containing the callbacks
         self.holdings = {} # DataStruct containing the current holdings and cash
-        self.cashAv = 0 # Available cash in the portfolio
+        self.cashAv = 0 # Available cash in the portfolio [GBP]
         self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
         self.read_database()
         self.update_portfolio()
@@ -170,7 +170,10 @@ class Model():
                 sum += float(row.find("price").text)
                 count += 1
         avg = sum / count
-        return avg
+        return round(avg, 4)
+
+    def get_cash_available(self):
+        return self.cashAv
 
     
 # INTERFACES

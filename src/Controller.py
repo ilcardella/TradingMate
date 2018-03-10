@@ -40,8 +40,8 @@ class Controller():
             amount = self.model.get_holdings()[symbol]
             openPrice = self.model.get_holding_open_price(symbol)
             lastPrice = priceDict[symbol]
-            cost = amount * openPrice
-            value = amount * lastPrice
+            cost = amount * (openPrice / 100) # in [GBP]
+            value = amount * (lastPrice / 100) # in [GBP]
             pl = ((value - cost) * 100) / cost
             liveData = {}
             liveData["amount"] = amount
@@ -52,6 +52,17 @@ class Controller():
             liveData["pl"] = pl
             holdingsData[symbol] = liveData
         
+        # Calculate current balances (portfolio value)
+        freeCash = self.model.get_cash_available()
+        holdingValue = 0
+        for liveDataDict in holdingsData.values():
+            holdingValue += liveDataDict["value"]
+        balances = {}
+        balances["cash"] = freeCash
+        balances["portfolio"] = holdingValue
+        balances["total"] = freeCash + holdingValue
+
         # Update the view
         self.view.update_live_price(holdingsData)
+        self.view.update_balances(balances)
 
