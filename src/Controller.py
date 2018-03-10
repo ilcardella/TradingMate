@@ -37,7 +37,7 @@ class Controller():
         # Here we calculate the cost, fees and profits before updating the view
         holdingsData = {}
         for symbol in priceDict.keys():
-            amount = 100
+            amount = self.model.get_holdings()[symbol]
             openPrice = 100
             lastPrice = priceDict[symbol]
             cost = amount * openPrice

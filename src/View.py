@@ -102,7 +102,25 @@ class View():
         print("TODO: show_about_popup")
 
     def add_entry_to_log(self, date, action, symbol, amount, price, fee):
-        self.logTreeView.insert('', 'end', text=date, values=(action,symbol,amount,price,fee))
+        v_date = date
+        if date is None:
+            v_date = " "
+        v_act = action
+        if action is None:
+            v_act = " "
+        v_sym = symbol
+        if symbol is None:
+            v_sym = " "
+        v_am = amount
+        if amount is None:
+            v_am = " "
+        v_pri = price
+        if price is None:
+            v_pri = " "
+        v_fee = fee
+        if fee is None:
+            v_fee = " "
+        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee))
 
     def remove_entry_from_log(self, position):
         self.logTreeView.delete(position)

@@ -28,7 +28,7 @@
         <action>FUNDING</action>
         <symbol></symbol>
         <amount>5000</amount>
-        <fee>0</fee>
+        <fee></fee>
         <price></price>
     </row>
     <row>
@@ -36,15 +36,15 @@
         <action>DIVIDEND</action>
         <symbol>FB</symbol>
         <amount>200</amount>
-        <fee>0</fee>
-        <price>0</price>
+        <fee></fee>
+        <price></price>
     </row>
     <row>
         <date>05/01/2018</date>
         <action>WITHDRAW</action>
         <symbol></symbol>
         <amount>1000</amount>
-        <fee>0</fee>
-        <price>0</price>
+        <fee></fee>
+        <price></price>
     </row>
 </log>
