@@ -1,4 +1,5 @@
 from .TaskThread import TaskThread
+from .Utils import Callbacks
 
 import sys
 from enum import Enum
@@ -17,7 +18,7 @@ class Actions(Enum):
     DIVIDEND = 4
 
 # Globals
-CONFIG_FILE_PATH = "data/config_private.xml"
+CONFIG_FILE_PATH = "data/config_private.xml" # Change this to data/config.xml
 WEB_POLLING_SECONDS = 15 #Seconds
 
 #Class definitions
@@ -93,9 +94,9 @@ class LivePricesWebThread(TaskThread):
 
 class Model():
 
-    def __init__(self, updateLivePricesCallback):
+    def __init__(self):
         self.read_configuration()
-        self.update_live_prices = updateLivePricesCallback
+        self.callbacks = {}
         self.livePricesThread = LivePricesWebThread(self, WEB_POLLING_SECONDS)
         self.read_database()
 
@@ -144,4 +145,9 @@ class Model():
         self.log.remove(logEntry)
         self.tradingLogXMLTree.write(self.dbFilePath)
 
+    def set_callback(self, id, callback):
+        self.callbacks[id] = callback
+
+    def update_live_prices(self, pricesDict):
+        self.callbacks[Callbacks.UPDATE_LIVE_PRICES](pricesDict)
     

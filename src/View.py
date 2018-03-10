@@ -1,3 +1,5 @@
+from .Utils import Callbacks
+
 import tkinter as tk
 from tkinter import ttk
 
@@ -5,9 +7,9 @@ APP_NAME = "TradingMate"
 
 class View():
 
-    def __init__(self, onCloseEventCallback):
+    def __init__(self):
         # Local data initialisation
-        self.closeEventCallback = onCloseEventCallback
+        self.callbacks = {}
         self.create_UI()
 
     def create_UI(self):
@@ -87,7 +89,7 @@ class View():
 
     def on_close_event(self):
         # Notify the Controller and close the main window
-        self.closeEventCallback()
+        self.callbacks[Callbacks.ON_CLOSE_VIEW_EVENT]()
         self.mainWindow.destroy()
 
     def open_log(self):
@@ -128,3 +130,6 @@ class View():
     def start(self):
         # Start the view thread
         self.mainWindow.mainloop()
+
+    def set_callback(self, id, callback):
+        self.callbacks[id] = callback

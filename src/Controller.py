@@ -1,4 +1,5 @@
 from .Model import Model
+from .Utils import Callbacks
 from .View import View
 
 
@@ -6,9 +7,11 @@ class Controller():
 
     def __init__(self):
         # Init the model
-        self.model = Model(self.update_live_prices)
+        self.model = Model()
+        self.model.set_callback(Callbacks.UPDATE_LIVE_PRICES, self.update_live_prices)
         # Init the view
-        self.view = View(self.on_close_view_event)
+        self.view = View()
+        self.view.set_callback(Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
 
     def start(self):
         self.model.start()
