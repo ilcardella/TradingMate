@@ -16,6 +16,7 @@ class Actions(Enum):
     SELL = 2
     FUNDING = 3
     DIVIDEND = 4
+    WITHDRAW = 5
 
 # Globals
 CONFIG_FILE_PATH = "data/config_private.xml" # Change this to data/config.xml
@@ -66,58 +67,83 @@ class LivePricesWebThread(TaskThread):
             sys.exit(1)
 
     def task(self):
-        # Get list of symbols
-        # self.model.get_symbols_list()
-        # Build the URL
-        function = "function=TIME_SERIES_INTRADAY"
-        symbol = "symbol=GOOG"
-        interval = "interval=1min"
-        apiKey = "apikey=" + self.alphaVantageAPIKey
+        priceDict = {}
+        for symbol in self.model.get_holdings().keys():
+            priceDict[symbol] = self.fetch_price_data(symbol)
+            
+        self.model.update_live_price(priceDict)
+
+    def build_url(self, aLength, aSymbol, anInterval, anApiKey):
+        function = "function=" + aLength
+        symbol = "symbol=" + aSymbol
+        interval = "interval=" + anInterval
+        apiKey = "apikey=" + anApiKey
         url = self.alphaVantageBaseURL + function + "&" + symbol + "&" + interval + "&" + apiKey
-        # Make HTTP request
-        request = urllib.request.urlopen(url)
-        data = request.read()
-        content = json.loads(data.decode('utf-8'))
-        timeSerie = content["Time Series (1min)"]
-        last = next(iter(timeSerie.values()))
-        value = last["4. close"]
-        # Build dictionary
-        pricesDict = {'symbol':'GOOG', 
-                        'amount':value,
-                        'open':1,
-                        'last':1,
-                        'cost':1,
-                        'value':1,
-                        'pl':1} # Testing code
-        # Save data
-        self.model.update_live_prices(pricesDict)
+        return url
+
+    def fetch_price_data(self, symbol):
+        try:
+            url = self.build_url("TIME_SERIES_INTRADAY", symbol, "1min", self.alphaVantageAPIKey)
+            request = urllib.request.urlopen(url)
+            content = request.read()
+            data = json.loads(content.decode('utf-8'))
+            timeSerie = data["Time Series (1min)"]
+            last = next(iter(timeSerie.values()))
+            value = float(last["4. close"])
+        except Exception as e:
+            print("Model: fetch_price_data(): {0}".format(e))
+            value = 0
+
+        return value
 
 class Model():
 
     def __init__(self):
-        self.read_configuration()
-        self.callbacks = {}
+        self.read_configuration() # From config.xml file
+        self.callbacks = {} # DataStruct containing the callbacks
+        self.holdings = {} # DataStruct containing the current holdings and cash
+        self.cashAv = 0 # Available cash in the portfolio
         self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
         self.read_database()
+        self.update_portfolio()
 
 # INTERNAL FUNCTIONS
 
     def read_configuration(self):
+        self.dbFilePath = "data/config.xml"
+        self.webPollingPeriod = 15
         try:
             self.configValues = ET.parse(CONFIG_FILE_PATH).getroot()
             self.dbFilePath = self.configValues.find("TRADING_LOG_PATH").text
-            self.webPollingPeriod = self.configValues.find("ALPHAVANTAGE_POLLING_PERIOD").text
+            self.webPollingPeriod = int(self.configValues.find("ALPHAVANTAGE_POLLING_PERIOD").text)
         except Exception as e:
-            print("Model.py:121 {0}".format(e))
-            sys.exit(1)
+            print("Model: read_configuration(): {0}".format(e))
 
     def read_database(self):
         try:
             self.tradingLogXMLTree = ET.parse(self.dbFilePath)
             self.log = self.tradingLogXMLTree.getroot()
         except Exception as e:
-            print("Model.py: {0}".format(e))
+            print("Model: read_database(): {0}".format(e))
             sys.exit(1)
+
+    def update_portfolio(self):
+        for row in self.log:
+            action = row.find("action").text
+            amount = int(row.find("amount").text)
+            symbol = row.find("symbol").text
+
+            if action == Actions.FUNDING.name or action == Actions.DIVIDEND.name:
+                self.cashAv += amount
+            elif action == Actions.WITHDRAW.name:
+                self.cashAv -= amount
+            elif action == Actions.BUY.name:
+                if symbol not in self.holdings:
+                    self.holdings[symbol] = amount
+                else:
+                    self.holdings[symbol] += amount
+            elif action == Actions.SELL.name:
+                self.holdings[symbol] -= amount
 
 # GETTERS
 
@@ -129,6 +155,9 @@ class Model():
                                 row.find('amount').text,
                                 row.find('fee').text,
                                 row.find('price').text) for row in self.log]
+    
+    def get_holdings(self):
+        return self.holdings
     
 # INTERFACES
 
@@ -149,6 +178,6 @@ class Model():
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
 
-    def update_live_prices(self, pricesDict):
-        self.callbacks[Callbacks.UPDATE_LIVE_PRICES](pricesDict)
+    def update_live_price(self, priceDict):
+        self.callbacks[Callbacks.UPDATE_LIVE_PRICES](priceDict)
     

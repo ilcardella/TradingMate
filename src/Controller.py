@@ -8,7 +8,7 @@ class Controller():
     def __init__(self):
         # Init the model
         self.model = Model()
-        self.model.set_callback(Callbacks.UPDATE_LIVE_PRICES, self.update_live_prices)
+        self.model.set_callback(Callbacks.UPDATE_LIVE_PRICES, self.update_live_price)
         # Init the view
         self.view = View()
         self.view.set_callback(Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
@@ -32,5 +32,26 @@ class Controller():
     def stop_application(self):
         print("TODO Controller stop_application")
 
-    def update_live_prices(self, pricesDict):
-        self.view.update_live_prices(pricesDict)
+    def update_live_price(self, priceDict):
+        # priceDict is a simple match of symbols and price
+        # Here we calculate the cost, fees and profits before updating the view
+        holdingsData = {}
+        for symbol in priceDict.keys():
+            amount = 100
+            openPrice = 100
+            lastPrice = priceDict[symbol]
+            cost = amount * openPrice
+            value = amount * lastPrice
+            pl = ((value - cost) * 100) / cost
+            liveData = {}
+            liveData["amount"] = amount
+            liveData["open"] = openPrice
+            liveData["last"] = lastPrice
+            liveData["cost"] = cost
+            liveData["value"] = value
+            liveData["pl"] = pl
+            holdingsData[symbol] = liveData
+        
+        # Update the view
+        self.view.update_live_price(holdingsData)
+

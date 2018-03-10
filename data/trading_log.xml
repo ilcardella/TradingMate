@@ -23,4 +23,28 @@
         <fee>5.95</fee>
         <price>18.9325</price>
     </row>
+    <row>
+        <date>03/01/2018</date>
+        <action>FUNDING</action>
+        <symbol></symbol>
+        <amount>5000</amount>
+        <fee>0</fee>
+        <price></price>
+    </row>
+    <row>
+        <date>04/01/2018</date>
+        <action>DIVIDEND</action>
+        <symbol>FB</symbol>
+        <amount>200</amount>
+        <fee>0</fee>
+        <price>0</price>
+    </row>
+    <row>
+        <date>05/01/2018</date>
+        <action>WITHDRAW</action>
+        <symbol></symbol>
+        <amount>1000</amount>
+        <fee>0</fee>
+        <price>0</price>
+    </row>
 </log>

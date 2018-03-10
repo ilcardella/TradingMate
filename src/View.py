@@ -47,25 +47,6 @@ class View():
         # Notebook layout definition
         nb.pack(expand=1, fill="both")
         # Title label
-        logLabel = ttk.Label(self.stocksLogPage, text="Trades History")
-        logLabel.pack()
-        # Create a table for the trading log
-        self.logTreeView = ttk.Treeview(self.stocksLogPage)
-        self.logTreeView.pack(fill='x')
-        self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
-        self.logTreeView.heading("#0", text='Date', anchor='w')
-        self.logTreeView.heading("action", text='Action', anchor='w')
-        self.logTreeView.heading("symbol", text='Symbol', anchor='w')
-        self.logTreeView.heading("amount", text='Amount', anchor='w')
-        self.logTreeView.heading("price", text='Price', anchor='w')
-        self.logTreeView.heading("fee", text='Fee', anchor='w')
-        self.logTreeView.column("#0", width=100)
-        self.logTreeView.column("action", width=100)
-        self.logTreeView.column("symbol", width=100)
-        self.logTreeView.column("amount", width=100)
-        self.logTreeView.column("price", width=100)
-        self.logTreeView.column("fee", width=100)
-        # Title label
         currLabel = ttk.Label(self.stocksLogPage, text="Live Price")
         currLabel.pack()        
         # Create a table for the current data
@@ -86,6 +67,25 @@ class View():
         self.currentDataTreeView.column("cost", width=100)
         self.currentDataTreeView.column("value", width=100)
         self.currentDataTreeView.column("pl", width=100)
+        # Title label
+        logLabel = ttk.Label(self.stocksLogPage, text="Trades History")
+        logLabel.pack()
+        # Create a table for the trading log
+        self.logTreeView = ttk.Treeview(self.stocksLogPage)
+        self.logTreeView.pack(fill='x')
+        self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
+        self.logTreeView.heading("#0", text='Date', anchor='w')
+        self.logTreeView.heading("action", text='Action', anchor='w')
+        self.logTreeView.heading("symbol", text='Symbol', anchor='w')
+        self.logTreeView.heading("amount", text='Amount', anchor='w')
+        self.logTreeView.heading("price", text='Price', anchor='w')
+        self.logTreeView.heading("fee", text='Fee', anchor='w')
+        self.logTreeView.column("#0", width=100)
+        self.logTreeView.column("action", width=100)
+        self.logTreeView.column("symbol", width=100)
+        self.logTreeView.column("amount", width=100)
+        self.logTreeView.column("price", width=100)
+        self.logTreeView.column("fee", width=100)
 
     def on_close_event(self):
         # Notify the Controller and close the main window
@@ -107,25 +107,29 @@ class View():
     def remove_entry_from_log(self, position):
         self.logTreeView.delete(position)
 
-    def update_live_prices(self, dict):
-        found = False
-        for child in self.currentDataTreeView.get_children():
-            item = self.currentDataTreeView.item(child)
-            if item['text'] == dict['symbol']:
-                found = True
-                self.currentDataTreeView.item(child, values=(dict['amount'],
-                                                            dict['open'],
-                                                            dict['last'],
-                                                            dict['cost'],
-                                                            dict['value'],
-                                                            dict['pl']))
-        if not found:
-            self.currentDataTreeView.insert('','end',text=dict['symbol'], values=(dict['amount'],
-                                                                                    dict['open'],
-                                                                                    dict['last'],
-                                                                                    dict['cost'],
-                                                                                    dict['value'],
-                                                                                    dict['pl']))
+    def update_live_price(self, holdingDict):
+        for holdingSymbol in holdingDict.keys():
+            holdingData = holdingDict[holdingSymbol]
+            found = False
+            for child in self.currentDataTreeView.get_children():
+                item = self.currentDataTreeView.item(child)
+                symbol = item['text']
+                if holdingSymbol == symbol:
+                    found = True
+                    self.currentDataTreeView.item(child, values=(holdingData['amount'],
+                                                            holdingData['open'],
+                                                            holdingData['last'],
+                                                            holdingData['cost'],
+                                                            holdingData['value'],
+                                                            holdingData['pl']))
+                    break
+            if not found:
+                self.currentDataTreeView.insert('','end',text=holdingSymbol, values=(holdingData['amount'],
+                                                                                    holdingData['open'],
+                                                                                    holdingData['last'],
+                                                                                    holdingData['cost'],
+                                                                                    holdingData['value'],
+                                                                                    holdingData['pl']))
 
     def start(self):
         # Start the view thread
