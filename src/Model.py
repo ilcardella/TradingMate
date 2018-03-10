@@ -148,16 +148,30 @@ class Model():
 # GETTERS
 
     def get_log_as_list(self):
-        # Alternative is to return a list of Dict instead of using a class
+        # Return a list of StockLogEntry objects
+        # TODO return a list of Dict instead of using a class
         return [StockLogEntry(row.find('date').text,
                                 row.find('action').text,
                                 row.find('symbol').text,
                                 row.find('amount').text,
                                 row.find('fee').text,
                                 row.find('price').text) for row in self.log]
-    
+                             
     def get_holdings(self):
+        # Returns a dict {symbol: amount} for each current holding  
         return self.holdings
+
+    def get_holding_open_price(self, symbol):
+        # Return the average price paid to open the current positon of the requested stock
+        sum = 0
+        count = 0
+        for row in self.log:
+            if row.find("symbol").text == symbol and row.find("action").text == Actions.BUY.name:
+                sum += float(row.find("price").text)
+                count += 1
+        avg = sum / count
+        return avg
+
     
 # INTERFACES
 

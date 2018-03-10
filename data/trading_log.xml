@@ -47,4 +47,12 @@
         <fee></fee>
         <price></price>
     </row>
+    <row>
+        <date>10/01/2018</date>
+        <action>BUY</action>
+        <symbol>FB</symbol>
+        <amount>50</amount>
+        <fee>5.95</fee>
+        <price>20.1000</price>
+    </row>
 </log>

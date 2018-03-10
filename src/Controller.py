@@ -38,7 +38,7 @@ class Controller():
         holdingsData = {}
         for symbol in priceDict.keys():
             amount = self.model.get_holdings()[symbol]
-            openPrice = 100
+            openPrice = self.model.get_holding_open_price(symbol)
             lastPrice = priceDict[symbol]
             cost = amount * openPrice
             value = amount * lastPrice
