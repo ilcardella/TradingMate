@@ -259,7 +259,45 @@ class View():
 
     def display_add_trade_panel(self):
         # Display a new panel to insert a new row in the trade log
-        print("TODO display_add_trade_panel")
+        self.addTradeWindow = tk.Toplevel()
+        self.addTradeWindow.transient(self.mainWindow)
+        self.addTradeWindow.title("Add Trade")
+        self.addTradeWindow.geometry("+%d+%d" % (self.mainWindow.winfo_rootx()+400,
+                                  self.mainWindow.winfo_rooty()+100))
+        self.addTradeWindow.protocol("WM_DELETE_WINDOW", self.addTradeWindow.destroy)
+        self.addTradeWindow.grab_set()
+        self.addTradeWindow.focus_set()
+
+        ttk.Label(self.addTradeWindow, text="Date:").grid(row=0, sticky="w")
+        ttk.Label(self.addTradeWindow, text="Action:").grid(row=1, sticky="w")
+        ttk.Label(self.addTradeWindow, text="Symbol:").grid(row=2, sticky="w")
+        ttk.Label(self.addTradeWindow, text="Amount:").grid(row=3, sticky="w")
+        ttk.Label(self.addTradeWindow, text="Price:").grid(row=4, sticky="w")
+        ttk.Label(self.addTradeWindow, text="Fee:").grid(row=5, sticky="w")
+
+        eDate = ttk.Entry(self.addTradeWindow)
+        eDate.grid(row=0, column=1)
+        eAction = ttk.Entry(self.addTradeWindow)
+        eAction.grid(row=1, column=1)
+        eSymbol = ttk.Entry(self.addTradeWindow)
+        eSymbol.grid(row=2, column=1)
+        eAmount = ttk.Entry(self.addTradeWindow)
+        eAmount.grid(row=3, column=1)
+        ePrice = ttk.Entry(self.addTradeWindow)
+        ePrice.grid(row=4, column=1)
+        eFee = ttk.Entry(self.addTradeWindow)
+        eFee.grid(row=5, column=1)
+
+        cancelButton = ttk.Button(self.addTradeWindow, text="Cancel", command=self.addTradeWindow.destroy)
+        cancelButton.grid(row=6, column=0, sticky="e", padx=5, pady=5)
+        addButton = ttk.Button(self.addTradeWindow, text="Add", command=self.add_new_trade_from_panel)
+        addButton.grid(row=6, column=1, sticky="e", padx=5, pady=5)
+
+        self.mainWindow.wait_window(self.addTradeWindow)
+
+    def add_new_trade_from_panel(self):
+        print("TODO add_new_trade_from_panel")
+        self.addTradeWindow.destroy()
 
     def trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)

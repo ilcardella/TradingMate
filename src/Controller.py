@@ -70,7 +70,6 @@ class Controller():
         balances["total"] = freeCash + holdingValue
         balances["pl"] = profitLoss
         balances["pl_pc"] = (profitLoss * 100) / wholeCost
-        
 
         # Update the view
         self.view.update_live_price(holdingsData)
