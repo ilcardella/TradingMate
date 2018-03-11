@@ -18,7 +18,7 @@ class View():
         self.mainWindow = tk.Tk()
         self.mainWindow.title(APP_NAME)
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
-        self.mainWindow.geometry("1024x512")
+        self.mainWindow.geometry("1024x600")
         # Define the app menu
         self.create_menu()
         # Create the tab format window
@@ -56,7 +56,7 @@ class View():
         self.noteBook.add(self.shareTradingPage, text="Shares Trading")
 
         # Create frame containing buttons on the top row of the frame
-        buttonsFrame = ttk.Frame(self.shareTradingPage, relief="raised", borderwidth=1)
+        buttonsFrame = ttk.Frame(self.shareTradingPage, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
         self.openButton = ttk.Button(buttonsFrame, text="Open...", command=self.open_log)
@@ -73,7 +73,7 @@ class View():
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
 
         # Create frame containing portfolio balances below the buttons
-        balancesFrame = ttk.Frame(self.shareTradingPage, relief="raised", borderwidth=1)
+        balancesFrame = ttk.Frame(self.shareTradingPage, relief="groove", borderwidth=1)
         balancesFrame.pack(fill="none", expand=True, anchor="n", pady=5)
         # Create four different frames for cash, portfolio, total and profit/loss
         cashFrame = ttk.Frame(balancesFrame)
@@ -99,7 +99,7 @@ class View():
         self.totalStringVar = tk.StringVar()
         totalValueLabel = ttk.Label(totalFrame, textvariable=self.totalStringVar)
         totalValueLabel.pack(side="bottom")
-        # profits balance frame
+        # profits balance frames
         plFrame = ttk.Frame(balancesFrame)
         plFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
         plLabel = ttk.Label(plFrame, text="P/L:")
@@ -115,11 +115,14 @@ class View():
         plpcValueLabel = ttk.Label(plpcFrame, textvariable=self.plpcStringVar)
         plpcValueLabel.pack(side="bottom")
 
+        # Frame containing the holdings table
+        holdingsFrame = ttk.Frame(self.shareTradingPage, relief="groove", borderwidth=1)
+        holdingsFrame.pack(fill="x", expand=True, anchor="n")
         # Title label
-        currLabel = ttk.Label(self.shareTradingPage, text="Portfolio")
+        currLabel = ttk.Label(holdingsFrame, text="Portfolio")
         currLabel.pack()
         # Create a table for the current data
-        self.currentDataTreeView = ttk.Treeview(self.shareTradingPage)
+        self.currentDataTreeView = ttk.Treeview(holdingsFrame)
         self.currentDataTreeView.pack(fill='x')
         self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl_pc','pl')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
@@ -138,12 +141,19 @@ class View():
         self.currentDataTreeView.column("value", width=100)
         self.currentDataTreeView.column("pl_pc", width=100)
         self.currentDataTreeView.column("pl", width=100)
+
+        # Frame containing the trading history
+        logFrame = ttk.Frame(self.shareTradingPage, relief="groove", borderwidth=1)
+        logFrame.pack(fill="x", expand=True, anchor="n")
         # Title label
-        logLabel = ttk.Label(self.shareTradingPage, text="Trades History")
+        logLabel = ttk.Label(logFrame, text="Trades History")
         logLabel.pack()
+        # Use a Frame as container for the treeview and the scrollbar
+        tableFrame = ttk.Frame(logFrame)
+        tableFrame.pack(fill="x")
         # Create a table for the trading log
-        self.logTreeView = ttk.Treeview(self.shareTradingPage)
-        self.logTreeView.pack(fill='x',side='bottom', anchor="n")
+        self.logTreeView = ttk.Treeview(tableFrame)
+        self.logTreeView.pack(fill='x', side="left", expand=True)
         self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
@@ -159,7 +169,7 @@ class View():
         self.logTreeView.column("fee", width=100)
         # Create a scrollbar for the history log
         #TODO finish this shit
-        scrollBar = tk.Scrollbar(self.shareTradingPage, orient="vertical", command=self.logTreeView.yview)
+        scrollBar = tk.Scrollbar(tableFrame, orient="vertical", command=self.logTreeView.yview)
         scrollBar.pack(side='right', fill='y')
         self.logTreeView.configure(yscrollcommand=scrollBar.set)
         # Create popup menu for the trade history log
