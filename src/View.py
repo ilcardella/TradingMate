@@ -31,13 +31,12 @@ class View():
         self.menubar.add_cascade(label="File", menu=filemenu)
         # Menu Edit
         editmenu = tk.Menu(self.menubar, tearoff=0)
-        editmenu.add_command(label="Add trade...", command=self.add_trade_to_log)
+        editmenu.add_command(label="Add trade...", command=self.display_add_trade_panel)
         self.menubar.add_cascade(label="Edit", menu=editmenu)
         # Menu About
         helpmenu = tk.Menu(self.menubar, tearoff=0)
         helpmenu.add_command(label="About", command=self.show_about_popup)
         self.menubar.add_cascade(label="Help", menu=helpmenu)
-
         # Display the menu
         self.mainWindow.config(menu=self.menubar)
 
@@ -51,31 +50,42 @@ class View():
         nb.add(self.cryptocurrPage, text="Cryptocurrencies")
         # Notebook layout definition
         nb.pack(expand=1, fill="both")
+
+        # Add button for the share trading page
+        self.addTradeButton = ttk.Button(self.stocksLogPage, text="Add Trade...", command=self.display_add_trade_panel)
+        self.addTradeButton.pack(anchor="e")
+
         # Portfolio summary label
         self.balancesString = StringVar()
         self.balancesString.set("[BALANCES] ")
         balancesLabel = ttk.Label(self.stocksLogPage, textvariable=self.balancesString)
         balancesLabel.pack(fill="x")
+        self.profitLossString = StringVar()
+        self.profitLossString.set("[PROFIT/LOSS] ")
+        plLabel = ttk.Label(self.stocksLogPage, textvariable=self.profitLossString)
+        plLabel.pack(fill="x")
         # Title label
         currLabel = ttk.Label(self.stocksLogPage, text="Live Price")
         currLabel.pack()        
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
         self.currentDataTreeView.pack(fill='x')
-        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl')
+        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl_pc','pl')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
         self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
-        self.currentDataTreeView.heading("open", text='Open', anchor='w')
-        self.currentDataTreeView.heading("last", text='Last', anchor='w')
-        self.currentDataTreeView.heading("cost", text='Cost', anchor='w')
-        self.currentDataTreeView.heading("value", text='Value', anchor='w')
-        self.currentDataTreeView.heading("pl", text='% P/L', anchor='w')
+        self.currentDataTreeView.heading("open", text='Open [p]', anchor='w')
+        self.currentDataTreeView.heading("last", text='Last [p]', anchor='w')
+        self.currentDataTreeView.heading("cost", text='Cost [£]', anchor='w')
+        self.currentDataTreeView.heading("value", text='Value [£]', anchor='w')
+        self.currentDataTreeView.heading("pl_pc", text='P/L %', anchor='w')
+        self.currentDataTreeView.heading("pl", text='P/L £', anchor='w')
         self.currentDataTreeView.column("#0", width=100)
         self.currentDataTreeView.column("amount", width=100)
         self.currentDataTreeView.column("open", width=100)
         self.currentDataTreeView.column("last", width=100)
         self.currentDataTreeView.column("cost", width=100)
         self.currentDataTreeView.column("value", width=100)
+        self.currentDataTreeView.column("pl_pc", width=100)
         self.currentDataTreeView.column("pl", width=100)
         # Title label
         logLabel = ttk.Label(self.stocksLogPage, text="Trades History")
@@ -96,6 +106,10 @@ class View():
         self.logTreeView.column("amount", width=100)
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
+        # Crate popup menu for the trade history log
+        self.logPopupMenu = tk.Menu(self.logTreeView, tearoff=0)
+        self.logPopupMenu.add_command(label="Add trade...", command=self.display_add_trade_panel)
+        self.logTreeView.bind("<Button-3>", self.trade_log_popup_menu_event)
 
     def on_close_event(self):
         # Notify the Controller and close the main window
@@ -137,6 +151,7 @@ class View():
                                                             round(holdingData['last'], 3),
                                                             round(holdingData['cost'], 3),
                                                             round(holdingData['value'], 3),
+                                                            round(holdingData['pl_pc'], 2),
                                                             round(holdingData['pl'], 2)))
                     break
             if not found:
@@ -145,6 +160,7 @@ class View():
                                                                                     round(holdingData['last'], 3),
                                                                                     round(holdingData['cost'], 3),
                                                                                     round(holdingData['value'], 3),
+                                                                                    round(holdingData['pl_pc'], 2),
                                                                                     round(holdingData['pl'], 2)))
 
     def start(self):
@@ -161,8 +177,21 @@ class View():
         return valid_var
 
     def update_balances(self, balances):
-        balString = "[BALANCES] Cash: " + str(balances["cash"]) + "£ - Portfolio: " + str(balances["portfolio"]) + "£ - Total: " + str(balances["total"]) +"£"
+        balString = "[BALANCES] Cash: " + str(balances["cash"]) + "£ + Portfolio: " + str(balances["portfolio"]) + "£ = " + str(balances["total"]) +"£"
         self.balancesString.set(balString)
 
-    def add_trade_to_log(self):
-        print("TODO add_trade_to_log")
+    def display_add_trade_panel(self):
+        print("TODO display_add_trade_panel")
+        #self.add_entry_to_log(...)
+
+    def update_profits(self, value):
+        s = "[PROFIT/LOSS]"
+        if value >= 0:
+            s += " +"
+        else:
+            s += " -"
+        s += str(round(value, 2)) + "£"
+        self.profitLossString.set(s)
+
+    def trade_log_popup_menu_event(self, event):
+        self.logPopupMenu.post(event.x_root, event.y_root)
