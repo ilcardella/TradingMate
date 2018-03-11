@@ -24,11 +24,15 @@ class View():
         self.menubar = tk.Menu(self.mainWindow)
         # Menu File
         filemenu = tk.Menu(self.menubar, tearoff=0)
-        filemenu.add_command(label="Open", command=self.open_log)
-        filemenu.add_command(label="Save", command=self.save_log)
+        filemenu.add_command(label="Open...", command=self.open_log)
+        filemenu.add_command(label="Save...", command=self.save_log)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.on_close_event)
         self.menubar.add_cascade(label="File", menu=filemenu)
+        # Menu Edit
+        editmenu = tk.Menu(self.menubar, tearoff=0)
+        editmenu.add_command(label="Add trade...", command=self.add_trade_to_log)
+        self.menubar.add_cascade(label="Edit", menu=editmenu)
         # Menu About
         helpmenu = tk.Menu(self.menubar, tearoff=0)
         helpmenu.add_command(label="About", command=self.show_about_popup)
@@ -157,5 +161,8 @@ class View():
         return valid_var
 
     def update_balances(self, balances):
-        balString = "[BALANCES] Cash: " + str(balances["cash"]) + " - Portfolio: " + str(balances["portfolio"]) + " - Total: " + str(balances["total"])
+        balString = "[BALANCES] Cash: " + str(balances["cash"]) + "£ - Portfolio: " + str(balances["portfolio"]) + "£ - Total: " + str(balances["total"]) +"£"
         self.balancesString.set(balString)
+
+    def add_trade_to_log(self):
+        print("TODO add_trade_to_log")
