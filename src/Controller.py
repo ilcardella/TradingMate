@@ -66,9 +66,11 @@ class Controller():
         balances["cash"] = freeCash
         balances["portfolio"] = holdingValue
         balances["total"] = freeCash + holdingValue
+        balances["pl"] = profitLoss
+        balances["pl_pc"] = 0
+        
 
         # Update the view
         self.view.update_live_price(holdingsData)
         self.view.update_balances(balances)
-        self.view.update_profits(profitLoss)
 

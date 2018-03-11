@@ -50,25 +50,74 @@ class View():
         self.mainWindow.config(menu=self.menubar)
 
     def create_share_trading_tab(self):
+        # Create the main frame container and add it to the notebook as a tab
         self.shareTradingPage = ttk.Frame(self.noteBook)
-        self.noteBook.add(self.shareTradingPage, text="Stocks Trading")
+        self.shareTradingPage.pack(expand=True)
+        self.noteBook.add(self.shareTradingPage, text="Shares Trading")
 
-        # Add button for the share trading page
-        self.addTradeButton = ttk.Button(self.shareTradingPage, text="Add Trade...", command=self.display_add_trade_panel)
-        self.addTradeButton.pack(anchor="w")
+        # Create frame containing buttons on the top row of the frame
+        buttonsFrame = ttk.Frame(self.shareTradingPage, relief="raised", borderwidth=1)
+        buttonsFrame.pack(fill="x", expand=True, anchor="n")
+        # Add buttons for the share trading page
+        self.openButton = ttk.Button(buttonsFrame, text="Open...", command=self.open_log)
+        self.openButton.pack(side="left", anchor="n", padx=5, pady=5)
+        self.saveButton = ttk.Button(buttonsFrame, text="Save...", command=self.save_log)
+        self.saveButton.pack(side="left", anchor="n", padx=5, pady=5)
+        self.addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self.display_add_trade_panel)
+        self.addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
+        self.autoRefresh = tk.IntVar(value=0)
+        self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
+                                            command=self.set_auto_refresh, onvalue=1, offvalue=0)
+        self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
+        self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self.refresh_live_data)
+        self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
 
-        # Portfolio summary label
-        self.balancesString = StringVar()
-        self.balancesString.set("[BALANCES] ")
-        balancesLabel = ttk.Label(self.shareTradingPage, textvariable=self.balancesString)
-        balancesLabel.pack(fill="x")
-        self.profitLossString = StringVar()
-        self.profitLossString.set("[PROFIT/LOSS] ")
-        plLabel = ttk.Label(self.shareTradingPage, textvariable=self.profitLossString)
-        plLabel.pack(fill="x")
+        # Create frame containing portfolio balances below the buttons
+        balancesFrame = ttk.Frame(self.shareTradingPage, relief="raised", borderwidth=1)
+        balancesFrame.pack(fill="none", expand=True, anchor="n", pady=5)
+        # Create four different frames for cash, portfolio, total and profit/loss
+        cashFrame = ttk.Frame(balancesFrame)
+        cashFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        cashLabel = ttk.Label(cashFrame, text="Cash:")
+        cashLabel.pack(side="top")
+        self.cashStringVar = tk.StringVar()
+        cashValueLabel = ttk.Label(cashFrame, textvariable=self.cashStringVar)
+        cashValueLabel.pack(side="bottom")
+        # Portfolio balance frame
+        portfolioFrame = ttk.Frame(balancesFrame)
+        portfolioFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio:")
+        portfolioLabel.pack(side="top")
+        self.portfolioStringVar = tk.StringVar()
+        portfolioValueLabel = ttk.Label(portfolioFrame, textvariable=self.portfolioStringVar)
+        portfolioValueLabel.pack(side="bottom")
+        # Total value balance frame
+        totalFrame = ttk.Frame(balancesFrame)
+        totalFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
+        totalLabel = ttk.Label(totalFrame, text="Total:")
+        totalLabel.pack(side="top")
+        self.totalStringVar = tk.StringVar()
+        totalValueLabel = ttk.Label(totalFrame, textvariable=self.totalStringVar)
+        totalValueLabel.pack(side="bottom")
+        # profits balance frame
+        plFrame = ttk.Frame(balancesFrame)
+        plFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
+        plLabel = ttk.Label(plFrame, text="P/L:")
+        plLabel.pack(side="top")
+        self.plStringVar = tk.StringVar()
+        plValueLabel = ttk.Label(plFrame, textvariable=self.plStringVar)
+        plValueLabel.pack(side="bottom")
+        plpcFrame = ttk.Frame(balancesFrame)
+        plpcFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
+        plpcLabel = ttk.Label(plpcFrame, text="P/L %:")
+        plpcLabel.pack(side="top")
+        self.plpcStringVar = tk.StringVar()
+        plpcValueLabel = ttk.Label(plpcFrame, textvariable=self.plpcStringVar)
+        plpcValueLabel.pack(side="bottom")
+
         # Title label
         currLabel = ttk.Label(self.shareTradingPage, text="Portfolio")
-        currLabel.pack()        
+        currLabel.pack()
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(self.shareTradingPage)
         self.currentDataTreeView.pack(fill='x')
@@ -94,7 +143,7 @@ class View():
         logLabel.pack()
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(self.shareTradingPage)
-        self.logTreeView.pack(fill='x',side='bottom')
+        self.logTreeView.pack(fill='x',side='bottom', anchor="n")
         self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
@@ -121,6 +170,7 @@ class View():
     def create_crypto_tab(self):
         self.cryptocurrPage = ttk.Frame(self.noteBook)
         self.noteBook.add(self.cryptocurrPage, text="Cryptocurrencies")
+        # TODO cryptocurrencies feature
 
     def on_close_event(self):
         # Notify the Controller and close the main window
@@ -128,12 +178,15 @@ class View():
         self.mainWindow.destroy()
 
     def open_log(self):
+        # Open a saved log
         print("TODO: open_log")
 
     def save_log(self):
+        # Save the current log
         print("TODO: save_log")
 
     def show_about_popup(self):
+        # Show the about panel
         print("TODO: show_about_popup")
 
     def add_entry_to_log(self, date, action, symbol, amount, price, fee):
@@ -188,21 +241,30 @@ class View():
         return valid_var
 
     def update_balances(self, balances):
-        balString = "[BALANCES] Cash: " + str(balances["cash"]) + "£ + Portfolio: " + str(balances["portfolio"]) + "£ = " + str(balances["total"]) +"£"
-        self.balancesString.set(balString)
+        self.cashStringVar.set(str(round(balances["cash"],2)) + "£")
+        self.portfolioStringVar.set(str(round(balances["portfolio"],2)) + "£")
+        self.totalStringVar.set(str(round(balances["total"],2)) + "£")
+        self.plStringVar.set(str(round(balances["pl"],2)) + "£")
+        self.plpcStringVar.set(str(round(balances["pl_pc"],2)) + "%")
+        
 
     def display_add_trade_panel(self):
+        # Display a new panel to insert a new row in the trade log
         print("TODO display_add_trade_panel")
-        #self.add_entry_to_log(...)
-
-    def update_profits(self, value):
-        s = "[PROFIT/LOSS]"
-        if value >= 0:
-            s += " +"
-        else:
-            s += " -"
-        s += str(round(value, 2)) + "£"
-        self.profitLossString.set(s)
 
     def trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)
+
+    def refresh_live_data(self):
+        print("TODO refresh_live_data")
+        # Notify the Controller to request new data
+
+    def set_auto_refresh(self):
+        # Disable the Refresh button when AutoRefresh is active
+        if self.autoRefresh.get() == 1:
+            self.refreshButton.config(state="disabled")
+        else:
+            self.refreshButton.config(state="enabled")
+        # Notify the Controller to activate the auto fetch of live data
+        print("TODO set_auto_refresh")
+            
