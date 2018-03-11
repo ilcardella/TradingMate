@@ -70,8 +70,8 @@ class LivePricesWebThread(TaskThread):
         priceDict = {}
         for symbol in self.model.get_holdings().keys():
             priceDict[symbol] = self.fetch_price_data(symbol)
-            
-        self.model.update_live_price(priceDict)
+        if not self._finished.isSet():
+            self.model.update_live_price(priceDict)
 
     def build_url(self, aLength, aSymbol, anInterval, anApiKey):
         function = "function=" + aLength

@@ -18,9 +18,18 @@ class View():
         self.mainWindow = tk.Tk()
         self.mainWindow.title(APP_NAME)
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
-        self.mainWindow.geometry("1000x500")
-
+        self.mainWindow.geometry("1024x512")
         # Define the app menu
+        self.create_menu()
+        # Create the tab format window
+        self.noteBook = ttk.Notebook(self.mainWindow)
+        self.noteBook.pack(expand=1, fill="both")
+        # Create Share trading Tab
+        self.create_share_trading_tab()
+        # Create Cryptocurencies Tab
+        self.create_crypto_tab()
+
+    def create_menu(self):
         self.menubar = tk.Menu(self.mainWindow)
         # Menu File
         filemenu = tk.Menu(self.menubar, tearoff=0)
@@ -40,35 +49,28 @@ class View():
         # Display the menu
         self.mainWindow.config(menu=self.menubar)
 
-        # Create the notebook (tab format window)
-        nb = ttk.Notebook(self.mainWindow)
-        # Create Share trading Tab
-        self.stocksLogPage = ttk.Frame(nb)
-        nb.add(self.stocksLogPage, text="Stocks Trading")
-        # Create Cryptocurencies Tab
-        self.cryptocurrPage = ttk.Frame(nb)
-        nb.add(self.cryptocurrPage, text="Cryptocurrencies")
-        # Notebook layout definition
-        nb.pack(expand=1, fill="both")
+    def create_share_trading_tab(self):
+        self.shareTradingPage = ttk.Frame(self.noteBook)
+        self.noteBook.add(self.shareTradingPage, text="Stocks Trading")
 
         # Add button for the share trading page
-        self.addTradeButton = ttk.Button(self.stocksLogPage, text="Add Trade...", command=self.display_add_trade_panel)
-        self.addTradeButton.pack(anchor="e")
+        self.addTradeButton = ttk.Button(self.shareTradingPage, text="Add Trade...", command=self.display_add_trade_panel)
+        self.addTradeButton.pack(anchor="w")
 
         # Portfolio summary label
         self.balancesString = StringVar()
         self.balancesString.set("[BALANCES] ")
-        balancesLabel = ttk.Label(self.stocksLogPage, textvariable=self.balancesString)
+        balancesLabel = ttk.Label(self.shareTradingPage, textvariable=self.balancesString)
         balancesLabel.pack(fill="x")
         self.profitLossString = StringVar()
         self.profitLossString.set("[PROFIT/LOSS] ")
-        plLabel = ttk.Label(self.stocksLogPage, textvariable=self.profitLossString)
+        plLabel = ttk.Label(self.shareTradingPage, textvariable=self.profitLossString)
         plLabel.pack(fill="x")
         # Title label
-        currLabel = ttk.Label(self.stocksLogPage, text="Live Price")
+        currLabel = ttk.Label(self.shareTradingPage, text="Portfolio")
         currLabel.pack()        
         # Create a table for the current data
-        self.currentDataTreeView = ttk.Treeview(self.stocksLogPage)
+        self.currentDataTreeView = ttk.Treeview(self.shareTradingPage)
         self.currentDataTreeView.pack(fill='x')
         self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl_pc','pl')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
@@ -88,10 +90,10 @@ class View():
         self.currentDataTreeView.column("pl_pc", width=100)
         self.currentDataTreeView.column("pl", width=100)
         # Title label
-        logLabel = ttk.Label(self.stocksLogPage, text="Trades History")
+        logLabel = ttk.Label(self.shareTradingPage, text="Trades History")
         logLabel.pack()
         # Create a table for the trading log
-        self.logTreeView = ttk.Treeview(self.stocksLogPage)
+        self.logTreeView = ttk.Treeview(self.shareTradingPage)
         self.logTreeView.pack(fill='x',side='bottom')
         self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
         self.logTreeView.heading("#0", text='Date', anchor='w')
@@ -106,10 +108,19 @@ class View():
         self.logTreeView.column("amount", width=100)
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
-        # Crate popup menu for the trade history log
+        # Create a scrollbar for the history log
+        #TODO finish this shit
+        scrollBar = tk.Scrollbar(self.shareTradingPage, orient="vertical", command=self.logTreeView.yview)
+        scrollBar.pack(side='right', fill='y')
+        self.logTreeView.configure(yscrollcommand=scrollBar.set)
+        # Create popup menu for the trade history log
         self.logPopupMenu = tk.Menu(self.logTreeView, tearoff=0)
         self.logPopupMenu.add_command(label="Add trade...", command=self.display_add_trade_panel)
         self.logTreeView.bind("<Button-3>", self.trade_log_popup_menu_event)
+
+    def create_crypto_tab(self):
+        self.cryptocurrPage = ttk.Frame(self.noteBook)
+        self.noteBook.add(self.cryptocurrPage, text="Cryptocurrencies")
 
     def on_close_event(self):
         # Notify the Controller and close the main window

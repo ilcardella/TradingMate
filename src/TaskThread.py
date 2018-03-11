@@ -21,7 +21,8 @@ class TaskThread(threading.Thread):
     
     def run(self):
         while 1:
-            if self._finished.isSet(): return
+            if self._finished.isSet():
+                return
             self.task()
             
             # sleep for interval or until shutdown
