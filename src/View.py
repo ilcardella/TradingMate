@@ -124,23 +124,23 @@ class View():
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(holdingsFrame)
         self.currentDataTreeView.pack(fill='x')
-        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl_pc','pl')
+        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl','pl_pc')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
         self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
         self.currentDataTreeView.heading("open", text='Open [p]', anchor='w')
         self.currentDataTreeView.heading("last", text='Last [p]', anchor='w')
         self.currentDataTreeView.heading("cost", text='Cost [£]', anchor='w')
         self.currentDataTreeView.heading("value", text='Value [£]', anchor='w')
-        self.currentDataTreeView.heading("pl_pc", text='P/L %', anchor='w')
         self.currentDataTreeView.heading("pl", text='P/L £', anchor='w')
+        self.currentDataTreeView.heading("pl_pc", text='P/L %', anchor='w')
         self.currentDataTreeView.column("#0", width=100)
         self.currentDataTreeView.column("amount", width=100)
         self.currentDataTreeView.column("open", width=100)
         self.currentDataTreeView.column("last", width=100)
         self.currentDataTreeView.column("cost", width=100)
         self.currentDataTreeView.column("value", width=100)
-        self.currentDataTreeView.column("pl_pc", width=100)
         self.currentDataTreeView.column("pl", width=100)
+        self.currentDataTreeView.column("pl_pc", width=100)
 
         # Frame containing the trading history
         logFrame = ttk.Frame(self.shareTradingPage, relief="groove", borderwidth=1)
@@ -168,7 +168,6 @@ class View():
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
         # Create a scrollbar for the history log
-        #TODO finish this shit
         scrollBar = tk.Scrollbar(tableFrame, orient="vertical", command=self.logTreeView.yview)
         scrollBar.pack(side='right', fill='y')
         self.logTreeView.configure(yscrollcommand=scrollBar.set)
@@ -225,8 +224,8 @@ class View():
                                                             round(holdingData['last'], 3),
                                                             round(holdingData['cost'], 3),
                                                             round(holdingData['value'], 3),
-                                                            round(holdingData['pl_pc'], 2),
-                                                            round(holdingData['pl'], 2)))
+                                                            round(holdingData['pl'], 2),
+                                                            round(holdingData['pl_pc'], 2)))
                     break
             if not found:
                 self.currentDataTreeView.insert('','end',text=holdingSymbol, values=(holdingData['amount'],
@@ -234,8 +233,8 @@ class View():
                                                                                     round(holdingData['last'], 3),
                                                                                     round(holdingData['cost'], 3),
                                                                                     round(holdingData['value'], 3),
-                                                                                    round(holdingData['pl_pc'], 2),
-                                                                                    round(holdingData['pl'], 2)))
+                                                                                    round(holdingData['pl'], 2),
+                                                                                    round(holdingData['pl_pc'], 2)))
 
     def start(self):
         # Start the view thread

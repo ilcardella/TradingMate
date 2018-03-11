@@ -36,13 +36,14 @@ class Controller():
         # priceDict is a simple match of symbols and price
         # Here we calculate the cost, fees and profits before updating the view
         profitLoss = 0
+        wholeCost = 0
         holdingsData = {}
         for symbol in priceDict.keys():
             amount = self.model.get_holdings()[symbol]
             openPrice = self.model.get_holding_open_price(symbol)
             lastPrice = priceDict[symbol]
-            cost = amount * (openPrice / 100) # in [GBP]
-            value = amount * (lastPrice / 100) # in [GBP]
+            cost = amount * (openPrice / 100) # in [£]
+            value = amount * (lastPrice / 100) # in [£]
             pl = value - cost
             pl_pc = ((value - cost) * 100) / cost
             liveData = {}
@@ -56,6 +57,7 @@ class Controller():
             holdingsData[symbol] = liveData
 
             profitLoss += pl
+            wholeCost += cost
         
         # Calculate current balances (portfolio value)
         freeCash = self.model.get_cash_available()
@@ -67,7 +69,7 @@ class Controller():
         balances["portfolio"] = holdingValue
         balances["total"] = freeCash + holdingValue
         balances["pl"] = profitLoss
-        balances["pl_pc"] = 0
+        balances["pl_pc"] = (profitLoss * 100) / wholeCost
         
 
         # Update the view
