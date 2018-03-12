@@ -1,5 +1,5 @@
 from .TaskThread import TaskThread
-from .Utils import Callbacks
+from .Utils import *
 
 import sys
 from enum import Enum
@@ -9,14 +9,6 @@ import time
 import sys
 import urllib.request
 import json
-
-# Enumerations
-class Actions(Enum):
-    BUY = 1
-    SELL = 2
-    FUNDING = 3
-    DIVIDEND = 4
-    WITHDRAW = 5
 
 # Globals
 CONFIG_FILE_PATH = "data/config_private.xml" # Change this to data/config.xml

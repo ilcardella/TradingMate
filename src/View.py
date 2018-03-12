@@ -1,4 +1,4 @@
-from .Utils import Callbacks
+from .Utils import *
 
 import tkinter as tk
 from tkinter import ttk
@@ -274,10 +274,14 @@ class View():
         ttk.Label(self.addTradeWindow, text="Amount:").grid(row=3, sticky="w", padx=5, pady=5)
         ttk.Label(self.addTradeWindow, text="Price:").grid(row=4, sticky="w", padx=5, pady=5)
         ttk.Label(self.addTradeWindow, text="Fee:").grid(row=5, sticky="w", padx=5, pady=5)
+        ttk.Label(self.addTradeWindow, text="Stamp Duty:").grid(row=6, sticky="w", padx=5, pady=5)
 
         eDate = ttk.Entry(self.addTradeWindow)
         eDate.grid(row=0, column=1, sticky="w", padx=5, pady=5)
-        eAction = ttk.Entry(self.addTradeWindow)
+
+        self.actionSelected = tk.StringVar()
+        menuList = [a.name for a in Actions]
+        eAction = ttk.OptionMenu(self.addTradeWindow, self.actionSelected, menuList[0], *menuList, command=self.on_action_selected)
         eAction.grid(row=1, column=1, sticky="w", padx=5, pady=5)
         eSymbol = ttk.Entry(self.addTradeWindow)
         eSymbol.grid(row=2, column=1, sticky="w", padx=5, pady=5)
@@ -287,13 +291,18 @@ class View():
         ePrice.grid(row=4, column=1, sticky="w", padx=5, pady=5)
         eFee = ttk.Entry(self.addTradeWindow)
         eFee.grid(row=5, column=1, sticky="w", padx=5, pady=5)
+        eStampDuty = ttk.Entry(self.addTradeWindow)
+        eStampDuty.grid(row=6, column=1, sticky="w", padx=5, pady=5)
 
         cancelButton = ttk.Button(self.addTradeWindow, text="Cancel", command=self.addTradeWindow.destroy)
-        cancelButton.grid(row=6, column=0, sticky="e", padx=5, pady=5)
+        cancelButton.grid(row=7, column=0, sticky="e", padx=5, pady=5)
         addButton = ttk.Button(self.addTradeWindow, text="Add", command=self.add_new_trade_from_panel)
-        addButton.grid(row=6, column=1, sticky="e", padx=5, pady=5)
+        addButton.grid(row=7, column=1, sticky="e", padx=5, pady=5)
 
         self.mainWindow.wait_window(self.addTradeWindow)
+
+    def on_action_selected(self, value):
+        print("TODO on_action_selected " + value)
 
     def add_new_trade_from_panel(self):
         print("TODO add_new_trade_from_panel")
