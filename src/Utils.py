@@ -9,6 +9,6 @@ class Callbacks(Enum):
 class Actions(Enum):
     BUY = 1
     SELL = 2
-    FUNDING = 3
+    DEPOSIT = 3
     DIVIDEND = 4
     WITHDRAW = 5

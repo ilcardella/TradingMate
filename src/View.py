@@ -1,4 +1,5 @@
 from .Utils import *
+from .AddTradeDialogWindow import AddTradeDialogWindow
 
 import tkinter as tk
 from tkinter import ttk
@@ -198,7 +199,7 @@ class View():
         # Show the about panel
         print("TODO: show_about_popup")
 
-    def add_entry_to_log(self, date, action, symbol, amount, price, fee):
+    def add_entry_to_log_table(self, date, action, symbol, amount, price, fee, stampDuty):
         v_date = self.check_none_value(date)
         v_act = self.check_none_value(action)
         v_sym = self.check_none_value(symbol)
@@ -207,7 +208,7 @@ class View():
         v_fee = self.check_none_value(fee)
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee))
 
-    def remove_entry_from_log(self, position):
+    def remove_entry_from_log_table(self, position):
         self.logTreeView.delete(position)
 
     def update_live_price(self, holdingDict):
@@ -258,55 +259,12 @@ class View():
         
 
     def display_add_trade_panel(self):
-        # Display a new panel to insert a new row in the trade log
-        self.addTradeWindow = tk.Toplevel()
-        self.addTradeWindow.transient(self.mainWindow)
-        self.addTradeWindow.title("Add Trade")
-        self.addTradeWindow.geometry("+%d+%d" % (self.mainWindow.winfo_rootx()+400,
-                                  self.mainWindow.winfo_rooty()+100))
-        self.addTradeWindow.protocol("WM_DELETE_WINDOW", self.addTradeWindow.destroy)
-        self.addTradeWindow.grab_set()
-        self.addTradeWindow.focus_set()
+        AddTradeDialogWindow(self.mainWindow, self.add_new_trade_from_panel)
 
-        ttk.Label(self.addTradeWindow, text="Date:").grid(row=0, sticky="w", padx=5, pady=5)
-        ttk.Label(self.addTradeWindow, text="Action:").grid(row=1, sticky="w", padx=5, pady=5)
-        ttk.Label(self.addTradeWindow, text="Symbol:").grid(row=2, sticky="w", padx=5, pady=5)
-        ttk.Label(self.addTradeWindow, text="Amount:").grid(row=3, sticky="w", padx=5, pady=5)
-        ttk.Label(self.addTradeWindow, text="Price:").grid(row=4, sticky="w", padx=5, pady=5)
-        ttk.Label(self.addTradeWindow, text="Fee:").grid(row=5, sticky="w", padx=5, pady=5)
-        ttk.Label(self.addTradeWindow, text="Stamp Duty:").grid(row=6, sticky="w", padx=5, pady=5)
-
-        eDate = ttk.Entry(self.addTradeWindow)
-        eDate.grid(row=0, column=1, sticky="w", padx=5, pady=5)
-
-        self.actionSelected = tk.StringVar()
-        menuList = [a.name for a in Actions]
-        eAction = ttk.OptionMenu(self.addTradeWindow, self.actionSelected, menuList[0], *menuList, command=self.on_action_selected)
-        eAction.grid(row=1, column=1, sticky="w", padx=5, pady=5)
-        eSymbol = ttk.Entry(self.addTradeWindow)
-        eSymbol.grid(row=2, column=1, sticky="w", padx=5, pady=5)
-        eAmount = ttk.Entry(self.addTradeWindow)
-        eAmount.grid(row=3, column=1, sticky="w", padx=5, pady=5)
-        ePrice = ttk.Entry(self.addTradeWindow)
-        ePrice.grid(row=4, column=1, sticky="w", padx=5, pady=5)
-        eFee = ttk.Entry(self.addTradeWindow)
-        eFee.grid(row=5, column=1, sticky="w", padx=5, pady=5)
-        eStampDuty = ttk.Entry(self.addTradeWindow)
-        eStampDuty.grid(row=6, column=1, sticky="w", padx=5, pady=5)
-
-        cancelButton = ttk.Button(self.addTradeWindow, text="Cancel", command=self.addTradeWindow.destroy)
-        cancelButton.grid(row=7, column=0, sticky="e", padx=5, pady=5)
-        addButton = ttk.Button(self.addTradeWindow, text="Add", command=self.add_new_trade_from_panel)
-        addButton.grid(row=7, column=1, sticky="e", padx=5, pady=5)
-
-        self.mainWindow.wait_window(self.addTradeWindow)
-
-    def on_action_selected(self, value):
-        print("TODO on_action_selected " + value)
-
-    def add_new_trade_from_panel(self):
-        print("TODO add_new_trade_from_panel")
-        self.addTradeWindow.destroy()
+    def add_new_trade_from_panel(self, newTrade):
+        self.add_entry_to_log_table(newTrade["date"],newTrade["action"],newTrade["symbol"],
+                                    newTrade["amount"],newTrade["price"],newTrade["fee"],newTrade["stampduty"])
+        self.refresh_live_data()
 
     def trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)

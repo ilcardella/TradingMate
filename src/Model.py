@@ -125,7 +125,7 @@ class Model():
             amount = int(row.find("amount").text)
             symbol = row.find("symbol").text
 
-            if action == Actions.FUNDING.name or action == Actions.DIVIDEND.name:
+            if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
                 self.cashAv += amount
             elif action == Actions.WITHDRAW.name:
                 self.cashAv -= amount

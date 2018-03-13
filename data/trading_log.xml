@@ -25,7 +25,7 @@
     </row>
     <row>
         <date>03/01/2018</date>
-        <action>FUNDING</action>
+        <action>DEPOSIT</action>
         <symbol></symbol>
         <amount>5000</amount>
         <fee></fee>
