@@ -8,31 +8,38 @@ class Controller():
     def __init__(self):
         # Init the model
         self.model = Model()
-        self.model.set_callback(Callbacks.UPDATE_LIVE_PRICES, self.update_live_price)
+        self.model.set_callback(Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
         self.view = View()
         self.view.set_callback(Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
+        self.view.set_callback(Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
 
     def start(self):
         self.model.start()
         for logEntry in self.model.get_log_as_list():
-            self.view.add_entry_to_log_table(logEntry.get_date(),
-                                        logEntry.get_action(), 
-                                        logEntry.get_symbol(),
-                                        logEntry.get_amount(),
-                                        logEntry.get_price(),
-                                        logEntry.get_fee(),
-                                        0)
+            self.view.add_entry_to_log_table(logEntry["date"],
+                                        logEntry["action"],
+                                        logEntry["symbol"], 
+                                        logEntry["amount"],
+                                        logEntry["price"],
+                                        logEntry["fee"],
+                                        logEntry["stamp_duty"])
         self.view.start() # This should be the last instruction in this function
+    
+    def stop_application(self):
+        print("TODO Controller stop_application")
+
+# EVENTS
 
     def on_close_view_event(self):
         self.model.stop_application()
         self.stop_application()
 
-    def stop_application(self):
-        print("TODO Controller stop_application")
+    def on_manual_refresh_event(self):
+        newData = self.model.get_live_data() # Return the latest live data to the caller
+        self.on_update_live_price(newData)
 
-    def update_live_price(self, priceDict):
+    def on_update_live_price(self, priceDict):
         # priceDict is a simple match of symbols and price
         # Here we calculate the cost, fees and profits before updating the view
         profitLoss = 0

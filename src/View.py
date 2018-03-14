@@ -256,22 +256,22 @@ class View():
         self.totalStringVar.set(str(round(balances["total"],2)) + "£")
         self.plStringVar.set(str(round(balances["pl"],2)) + "£")
         self.plpcStringVar.set(str(round(balances["pl_pc"],2)) + "%")
-        
 
     def display_add_trade_panel(self):
         AddTradeDialogWindow(self.mainWindow, self.add_new_trade_from_panel)
 
     def add_new_trade_from_panel(self, newTrade):
         self.add_entry_to_log_table(newTrade["date"],newTrade["action"],newTrade["symbol"],
-                                    newTrade["amount"],newTrade["price"],newTrade["fee"],newTrade["stampduty"])
+                                    newTrade["amount"],newTrade["price"],newTrade["fee"],newTrade["stamp_duty"])
         self.refresh_live_data()
 
     def trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)
 
     def refresh_live_data(self):
-        print("TODO refresh_live_data")
         # Notify the Controller to request new data
+        self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
+
 
     def set_auto_refresh(self):
         # Disable the Refresh button when AutoRefresh is active

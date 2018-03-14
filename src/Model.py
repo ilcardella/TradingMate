@@ -14,33 +14,6 @@ import json
 CONFIG_FILE_PATH = "data/config_private.xml" # Change this to data/config.xml
 WEB_POLLING_SECONDS = 15 #Seconds
 
-#Class definitions
-class StockLogEntry():
-
-    def __init__(self, date, action, symbol, amount, fee, price):
-        self.date = date
-        self.action = action
-        self.symbol = symbol
-        self.amount = amount
-        self.price = price
-        self.fee = fee
-
-    def get_date(self):
-        return self.date
-    def get_action(self):
-        return self.action
-    def get_symbol(self):
-        return self.symbol
-    def get_amount(self):
-        return self.amount
-    def get_price(self):
-        return self.price
-    def get_fee(self):
-        return self.fee
-
-    def __str__(self):
-        return str(self.date)+","+str(self.action)+","+str(self.symbol)+","+str(self.amount)+","+str(self.price)+","+str(self.fee)
-
 class LivePricesWebThread(TaskThread):
 
     def __init__(self, model, updatePeriod):
@@ -84,7 +57,7 @@ class LivePricesWebThread(TaskThread):
             value = float(last["4. close"])
         except Exception as e:
             print("Model: fetch_price_data(): {0}".format(e))
-            value = 0
+            value = 0 # TODO manage the exception
 
         return value
 
@@ -93,8 +66,9 @@ class Model():
     def __init__(self):
         self.read_configuration() # From config.xml file
         self.callbacks = {} # DataStruct containing the callbacks
-        self.holdings = {} # DataStruct containing the current holdings and cash
-        self.cashAv = 0 # Available cash in the portfolio [GBP]
+        self.holdings = {} # DataStruct containing the current holdings
+        self.cashAvailable = 0 # Available cash in the portfolio [GBP]
+        self.lastLiveData = {} # Buffer to store the latest live data fetched from the web api
         self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
         self.read_database()
         self.update_portfolio()
@@ -126,9 +100,9 @@ class Model():
             symbol = row.find("symbol").text
 
             if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
-                self.cashAv += amount
+                self.cashAvailable += amount
             elif action == Actions.WITHDRAW.name:
-                self.cashAv -= amount
+                self.cashAvailable -= amount
             elif action == Actions.BUY.name:
                 if symbol not in self.holdings:
                     self.holdings[symbol] = amount
@@ -140,14 +114,19 @@ class Model():
 # GETTERS
 
     def get_log_as_list(self):
-        # Return a list of StockLogEntry objects
-        # TODO return a list of Dict instead of using a class
-        return [StockLogEntry(row.find('date').text,
-                                row.find('action').text,
-                                row.find('symbol').text,
-                                row.find('amount').text,
-                                row.find('fee').text,
-                                row.find('price').text) for row in self.log]
+        # return a list of Dict with the log data
+        listOfEntries = []
+        for row in self.log:
+            d = {}
+            d["date"] = row.find('date').text
+            d["action"] = row.find('action').text
+            d["symbol"] = row.find('symbol').text
+            d["amount"] = row.find('amount').text
+            d["price"] = row.find('price').text
+            d["fee"] = row.find('fee').text
+            d["stamp_duty"] = row.find('stamp_duty').text
+            listOfEntries.append(d)
+        return listOfEntries
                              
     def get_holdings(self):
         # Returns a dict {symbol: amount} for each current holding  
@@ -165,8 +144,10 @@ class Model():
         return round(avg, 4)
 
     def get_cash_available(self):
-        return self.cashAv
+        return self.cashAvailable
 
+    def get_live_data(self):
+        return self.lastLiveData
     
 # INTERFACES
 
@@ -188,5 +169,6 @@ class Model():
         self.callbacks[id] = callback
 
     def update_live_price(self, priceDict):
-        self.callbacks[Callbacks.UPDATE_LIVE_PRICES](priceDict)
+        self.lastLiveData = priceDict # Store locally
+        self.callbacks[Callbacks.UPDATE_LIVE_PRICES](priceDict) # Call callback
     
