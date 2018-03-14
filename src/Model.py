@@ -1,5 +1,5 @@
 from .TaskThread import TaskThread
-from .Utils import *
+from .Utils import Callbacks, Actions
 
 import sys
 from enum import Enum
@@ -28,7 +28,7 @@ class LivePricesWebThread(TaskThread):
             self.alphaVantageBaseURL = self.configValues.find("ALPHAVANTAGE_BASE_URL").text
             # add other config parameters
         except Exception as e:
-            print("Model:read_configuration() {0}".format(e))
+            print("LivePricesWebThread:read_configuration() {0}".format(e))
             sys.exit(1)
 
     def task(self):
@@ -37,14 +37,6 @@ class LivePricesWebThread(TaskThread):
             priceDict[symbol] = self.fetch_price_data(symbol)
         if not self._finished.isSet():
             self.model.update_live_price(priceDict)
-
-    def build_url(self, aLength, aSymbol, anInterval, anApiKey):
-        function = "function=" + aLength
-        symbol = "symbol=" + aSymbol
-        interval = "interval=" + anInterval
-        apiKey = "apikey=" + anApiKey
-        url = self.alphaVantageBaseURL + function + "&" + symbol + "&" + interval + "&" + apiKey
-        return url
 
     def fetch_price_data(self, symbol):
         try:
@@ -57,9 +49,16 @@ class LivePricesWebThread(TaskThread):
             value = float(last["4. close"])
         except Exception as e:
             print("Model: fetch_price_data(): {0}".format(e))
-            value = 0 # TODO manage the exception
-
+            value = None
         return value
+
+    def build_url(self, aLength, aSymbol, anInterval, anApiKey):
+        function = "function=" + aLength
+        symbol = "symbol=" + aSymbol
+        interval = "interval=" + anInterval
+        apiKey = "apikey=" + anApiKey
+        url = self.alphaVantageBaseURL + function + "&" + symbol + "&" + interval + "&" + apiKey
+        return url
 
 class Model():
 
@@ -157,18 +156,44 @@ class Model():
     def stop_application(self):
         self.livePricesThread.shutdown()
 
-    def add_log_entry(self, logEntry):
-        self.log.append(logEntry)
-        self.tradingLogXMLTree.write(self.dbFilePath)
-    
-    def remove_log_entry(self, logEntry):
-        self.log.remove(logEntry)
-        self.tradingLogXMLTree.write(self.dbFilePath)
-
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
 
+    def add_new_trade(self, newTrade):
+        self.add_entry_to_db(newTrade)
+        self.update_portfolio()
+        self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
+        return True
+
+    def add_entry_to_db(self, logEntry):
+        row = ET.SubElement(self.log, "row")
+        date = ET.SubElement(row, "date")
+        date.text = logEntry["date"]
+        action = ET.SubElement(row, "action")
+        action.text = logEntry["action"]
+        symbol = ET.SubElement(row, "symbol")
+        symbol.text = logEntry["symbol"]
+        amount = ET.SubElement(row, "amount")
+        amount.text = logEntry["amount"]
+        price = ET.SubElement(row, "price")
+        price.text = logEntry["price"]
+        fee = ET.SubElement(row, "fee")
+        fee.text = logEntry["fee"]
+        sd = ET.SubElement(row, "stamp_duty")
+        sd.text = logEntry["stamp_duty"]
+        self.log.append(row)
+        self.tradingLogXMLTree.write(self.dbFilePath)
+    
+    def remove_entry_from_db(self, logEntry):
+        self.log.remove(logEntry)
+        self.tradingLogXMLTree.write(self.dbFilePath)
+
     def update_live_price(self, priceDict):
+        # Replace None values with the last valid data
+        for symbol in priceDict.keys():
+            if priceDict[symbol] is None:
+                priceDict[symbol] = self.lastLiveData[symbol]
+
         self.lastLiveData = priceDict # Store locally
         self.callbacks[Callbacks.UPDATE_LIVE_PRICES](priceDict) # Call callback
     

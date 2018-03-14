@@ -13,17 +13,12 @@ class Controller():
         self.view = View()
         self.view.set_callback(Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
         self.view.set_callback(Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
+        self.view.set_callback(Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
 
     def start(self):
         self.model.start()
         for logEntry in self.model.get_log_as_list():
-            self.view.add_entry_to_log_table(logEntry["date"],
-                                        logEntry["action"],
-                                        logEntry["symbol"], 
-                                        logEntry["amount"],
-                                        logEntry["price"],
-                                        logEntry["fee"],
-                                        logEntry["stamp_duty"])
+            self.view.add_entry_to_log_table(logEntry)
         self.view.start() # This should be the last instruction in this function
     
     def stop_application(self):
@@ -40,7 +35,7 @@ class Controller():
         self.on_update_live_price(newData)
 
     def on_update_live_price(self, priceDict):
-        # priceDict is a simple match of symbols and price
+        # priceDict is a dict {symbol: price}
         # Here we calculate the cost, fees and profits before updating the view
         profitLoss = 0
         wholeCost = 0
@@ -82,3 +77,8 @@ class Controller():
         self.view.update_live_price(holdingsData)
         self.view.update_balances(balances)
 
+    def on_new_trade_event(self, newTrade):
+        success = self.model.add_new_trade(newTrade) # Update the model
+        if success == True:
+            self.view.add_entry_to_log_table(newTrade) # Update the view
+            self.view.refresh_live_data()

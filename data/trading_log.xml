@@ -29,29 +29,29 @@
     <row>
         <date>03/01/2018</date>
         <action>DEPOSIT</action>
-        <symbol></symbol>
+        <symbol />
         <amount>5000</amount>
-        <fee></fee>
-        <price></price>
-        <stamp_duty>0</stamp_duty>
+        <fee />
+        <price />
+        <stamp_duty />
     </row>
     <row>
         <date>04/01/2018</date>
         <action>DIVIDEND</action>
         <symbol>FB</symbol>
         <amount>200</amount>
-        <fee></fee>
-        <price></price>
-        <stamp_duty>0</stamp_duty>
+        <fee />
+        <price />
+        <stamp_duty />
     </row>
     <row>
         <date>05/01/2018</date>
         <action>WITHDRAW</action>
-        <symbol></symbol>
+        <symbol />
         <amount>1000</amount>
-        <fee></fee>
-        <price></price>
-        <stamp_duty>0</stamp_duty>
+        <fee />
+        <price />
+        <stamp_duty />
     </row>
     <row>
         <date>10/01/2018</date>

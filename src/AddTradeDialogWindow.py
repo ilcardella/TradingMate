@@ -24,9 +24,9 @@ class AddTradeDialogWindow(tk.Toplevel):
         ttk.Label(self, text="Action:").grid(row=1, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Symbol:").grid(row=2, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Amount:").grid(row=3, sticky="w", padx=5, pady=5)
-        ttk.Label(self, text="Price:").grid(row=4, sticky="w", padx=5, pady=5)
-        ttk.Label(self, text="Fee:").grid(row=5, sticky="w", padx=5, pady=5)
-        ttk.Label(self, text="Stamp Duty:").grid(row=6, sticky="w", padx=5, pady=5)
+        ttk.Label(self, text="Price [p] :").grid(row=4, sticky="w", padx=5, pady=5)
+        ttk.Label(self, text="Fee [£] :").grid(row=5, sticky="w", padx=5, pady=5)
+        ttk.Label(self, text="Stamp Duty [%] :").grid(row=6, sticky="w", padx=5, pady=5)
 
         # Define the date entry widget
         self.dateSelected = tk.StringVar()
@@ -108,6 +108,6 @@ class AddTradeDialogWindow(tk.Toplevel):
         newTrade["amount"] = self.amountSelected.get()
         newTrade["price"] = self.priceSelected.get()
         newTrade["fee"] = self.feeSelected.get()
-        newTrade["stampduty"] = self.stampDutySelected.get()
+        newTrade["stamp_duty"] = self.stampDutySelected.get()
         self.confirmCallback(newTrade)
         self.destroy()

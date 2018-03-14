@@ -1,4 +1,4 @@
-from .Utils import *
+from .Utils import Callbacks
 from .AddTradeDialogWindow import AddTradeDialogWindow
 
 import tkinter as tk
@@ -13,6 +13,8 @@ class View():
         # Local data initialisation
         self.callbacks = {}
         self.create_UI()
+
+# GRAPHICAL DEFINITIONS
 
     def create_UI(self):
         # Create main window
@@ -155,19 +157,21 @@ class View():
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(tableFrame)
         self.logTreeView.pack(fill='x', side="left", expand=True)
-        self.logTreeView["columns"] = ('action','symbol','amount','price','fee')
+        self.logTreeView["columns"] = ('action','symbol','amount','price','fee', 'stamp_duty')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
         self.logTreeView.heading("symbol", text='Symbol', anchor='w')
         self.logTreeView.heading("amount", text='Amount', anchor='w')
-        self.logTreeView.heading("price", text='Price', anchor='w')
-        self.logTreeView.heading("fee", text='Fee', anchor='w')
+        self.logTreeView.heading("price", text='Price [p]', anchor='w')
+        self.logTreeView.heading("fee", text='Fee [£]', anchor='w')
+        self.logTreeView.heading("stamp_duty", text='Stamp Duty [£]', anchor='w')
         self.logTreeView.column("#0", width=100)
         self.logTreeView.column("action", width=100)
         self.logTreeView.column("symbol", width=100)
         self.logTreeView.column("amount", width=100)
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
+        self.logTreeView.column("stamp_duty", width=100)
         # Create a scrollbar for the history log
         scrollBar = tk.Scrollbar(tableFrame, orient="vertical", command=self.logTreeView.yview)
         scrollBar.pack(side='right', fill='y')
@@ -181,6 +185,15 @@ class View():
         self.cryptocurrPage = ttk.Frame(self.noteBook)
         self.noteBook.add(self.cryptocurrPage, text="Cryptocurrencies")
         # TODO cryptocurrencies feature
+
+    def start(self):
+        # Start the view thread
+        self.mainWindow.mainloop()
+
+    def set_callback(self, id, callback):
+        self.callbacks[id] = callback
+
+# EVENTS
 
     def on_close_event(self):
         # Notify the Controller and close the main window
@@ -199,14 +212,15 @@ class View():
         # Show the about panel
         print("TODO: show_about_popup")
 
-    def add_entry_to_log_table(self, date, action, symbol, amount, price, fee, stampDuty):
-        v_date = self.check_none_value(date)
-        v_act = self.check_none_value(action)
-        v_sym = self.check_none_value(symbol)
-        v_am = self.check_none_value(amount)
-        v_pri = self.check_none_value(price)
-        v_fee = self.check_none_value(fee)
-        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee))
+    def add_entry_to_log_table(self, logEntry):
+        v_date = self.check_none_value(logEntry["date"])
+        v_act = self.check_none_value(logEntry["action"])
+        v_sym = self.check_none_value(logEntry["symbol"])
+        v_am = self.check_none_value(logEntry["amount"])
+        v_pri = self.check_none_value(logEntry["price"])
+        v_fee = self.check_none_value(logEntry["fee"])
+        v_sd = self.check_none_value(logEntry["stamp_duty"])
+        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee, v_sd))
 
     def remove_entry_from_log_table(self, position):
         self.logTreeView.delete(position)
@@ -237,13 +251,6 @@ class View():
                                                                                     round(holdingData['pl'], 2),
                                                                                     round(holdingData['pl_pc'], 2)))
 
-    def start(self):
-        # Start the view thread
-        self.mainWindow.mainloop()
-
-    def set_callback(self, id, callback):
-        self.callbacks[id] = callback
-
     def check_none_value(self, var):
         valid_var = var
         if var is None:
@@ -261,9 +268,7 @@ class View():
         AddTradeDialogWindow(self.mainWindow, self.add_new_trade_from_panel)
 
     def add_new_trade_from_panel(self, newTrade):
-        self.add_entry_to_log_table(newTrade["date"],newTrade["action"],newTrade["symbol"],
-                                    newTrade["amount"],newTrade["price"],newTrade["fee"],newTrade["stamp_duty"])
-        self.refresh_live_data()
+        self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
 
     def trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)
