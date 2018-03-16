@@ -37,6 +37,7 @@ class Controller():
     def on_update_live_price(self, priceDict):
         # priceDict is a dict {symbol: price}
         # Here we calculate the cost, fees and profits before updating the view
+        holdingValue = 0
         profitLoss = 0
         wholeCost = 0
         holdingsData = {}
@@ -58,20 +59,21 @@ class Controller():
             liveData["pl"] = pl
             holdingsData[symbol] = liveData
 
+            holdingValue += value
             profitLoss += pl
             wholeCost += cost
         
         # Calculate current balances (portfolio value)
         freeCash = self.model.get_cash_available()
-        holdingValue = 0
-        for liveDataDict in holdingsData.values():
-            holdingValue += liveDataDict["value"]
         balances = {}
         balances["cash"] = freeCash
         balances["portfolio"] = holdingValue
         balances["total"] = freeCash + holdingValue
         balances["pl"] = profitLoss
-        balances["pl_pc"] = (profitLoss * 100) / wholeCost
+        if not wholeCost == 0:
+            balances["pl_pc"] = (profitLoss * 100) / wholeCost
+        else:
+            balances["pl_pc"] = 0
 
         # Update the view
         self.view.update_live_price(holdingsData)

@@ -4,6 +4,7 @@ from .Utils import Callbacks, Actions
 import sys
 from enum import Enum
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
 import threading
 import time
 import sys
@@ -93,6 +94,8 @@ class Model():
             sys.exit(1)
 
     def update_portfolio(self):
+        self.cashAvailable = 0
+        self.holdings.clear()
         for row in self.log:
             action = row.find("action").text
             amount = int(row.find("amount").text)
@@ -155,6 +158,10 @@ class Model():
 
     def stop_application(self):
         self.livePricesThread.shutdown()
+        # write the in memory db to a file
+        xmlstr = minidom.parseString(ET.tostring(self.tradingLogXMLTree)).toprettyxml(indent="   ")
+        with open(self.dbFilePath, "w") as f:
+            f.write(xmlstr.encode('utf-8'))
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
@@ -162,7 +169,20 @@ class Model():
     def add_new_trade(self, newTrade):
         self.add_entry_to_db(newTrade)
         self.update_portfolio()
-        self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
+
+        action = newTrade["action"]
+        if action == Actions.BUY:
+            print("BUY")
+            self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
+        elif action == Actions.SELL:
+            print("SELL")
+        elif action == Actions.DEPOSIT:
+            print("DEPOSIT")
+        elif action == Actions.WITHDRAW:
+            print("WITHDRAW")
+        elif action == Actions.DIVIDEND:
+            print("DIVIDEND")
+        
         return True
 
     def add_entry_to_db(self, logEntry):
@@ -182,7 +202,7 @@ class Model():
         sd = ET.SubElement(row, "stamp_duty")
         sd.text = logEntry["stamp_duty"]
         self.log.append(row)
-        self.tradingLogXMLTree.write(self.dbFilePath)
+        #self.tradingLogXMLTree.write(self.dbFilePath)
     
     def remove_entry_from_db(self, logEntry):
         self.log.remove(logEntry)
