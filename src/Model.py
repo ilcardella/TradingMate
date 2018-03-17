@@ -1,5 +1,5 @@
 from .TaskThread import TaskThread
-from .Utils import Callbacks, Actions
+from .Utils import *
 
 import sys
 from enum import Enum
@@ -90,8 +90,8 @@ class Model():
             self.tradingLogXMLTree = ET.parse(self.dbFilePath)
             self.log = self.tradingLogXMLTree.getroot()
         except Exception as e:
-            print("Model: read_database(): {0}".format(e))
-            sys.exit(1)
+            print("Model: Error reading database! {0}".format(e))
+            self.log = ET.Element("log")
 
     def update_portfolio(self):
         self.cashAvailable = 0
@@ -112,6 +112,26 @@ class Model():
                     self.holdings[symbol] += amount
             elif action == Actions.SELL.name:
                 self.holdings[symbol] -= amount
+    
+    def add_entry_to_db(self, logEntry):
+        row = ET.SubElement(self.log, "row")
+        date = ET.SubElement(row, "date")
+        date.text = str(logEntry["date"]).strip()
+        action = ET.SubElement(row, "action")
+        action.text = str(logEntry["action"]).strip()
+        symbol = ET.SubElement(row, "symbol")
+        symbol.text = str(logEntry["symbol"]).strip()
+        amount = ET.SubElement(row, "amount")
+        amount.text = str(logEntry["amount"]).strip()
+        price = ET.SubElement(row, "price")
+        price.text = str(logEntry["price"]).strip()
+        fee = ET.SubElement(row, "fee")
+        fee.text = str(logEntry["fee"]).strip()
+        sd = ET.SubElement(row, "stamp_duty")
+        sd.text = str(logEntry["stamp_duty"]).strip()
+    
+    def remove_entry_from_db(self, logEntry):
+        self.log.remove(logEntry)
 
 # GETTERS
 
@@ -159,9 +179,9 @@ class Model():
     def stop_application(self):
         self.livePricesThread.shutdown()
         # write the in memory db to a file
-        xmlstr = minidom.parseString(ET.tostring(self.tradingLogXMLTree)).toprettyxml(indent="   ")
-        with open(self.dbFilePath, "w") as f:
-            f.write(xmlstr.encode('utf-8'))
+        utils_indent_xml_tree(self.log)
+        newTree = ET.ElementTree(self.log)
+        newTree.write(self.dbFilePath, xml_declaration=True, encoding='utf-8', method="xml")
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
@@ -171,42 +191,19 @@ class Model():
         self.update_portfolio()
 
         action = newTrade["action"]
-        if action == Actions.BUY:
+        if action == Actions.BUY.name:
             print("BUY")
             self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
-        elif action == Actions.SELL:
+        elif action == Actions.SELL.name:
             print("SELL")
-        elif action == Actions.DEPOSIT:
+        elif action == Actions.DEPOSIT.name:
             print("DEPOSIT")
-        elif action == Actions.WITHDRAW:
+        elif action == Actions.WITHDRAW.name:
             print("WITHDRAW")
-        elif action == Actions.DIVIDEND:
+        elif action == Actions.DIVIDEND.name:
             print("DIVIDEND")
         
         return True
-
-    def add_entry_to_db(self, logEntry):
-        row = ET.SubElement(self.log, "row")
-        date = ET.SubElement(row, "date")
-        date.text = logEntry["date"]
-        action = ET.SubElement(row, "action")
-        action.text = logEntry["action"]
-        symbol = ET.SubElement(row, "symbol")
-        symbol.text = logEntry["symbol"]
-        amount = ET.SubElement(row, "amount")
-        amount.text = logEntry["amount"]
-        price = ET.SubElement(row, "price")
-        price.text = logEntry["price"]
-        fee = ET.SubElement(row, "fee")
-        fee.text = logEntry["fee"]
-        sd = ET.SubElement(row, "stamp_duty")
-        sd.text = logEntry["stamp_duty"]
-        self.log.append(row)
-        #self.tradingLogXMLTree.write(self.dbFilePath)
-    
-    def remove_entry_from_db(self, logEntry):
-        self.log.remove(logEntry)
-        self.tradingLogXMLTree.write(self.dbFilePath)
 
     def update_live_price(self, priceDict):
         # Replace None values with the last valid data
