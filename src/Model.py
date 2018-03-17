@@ -190,10 +190,10 @@ class Model():
             self.add_entry_to_db(newTrade)
             self.update_portfolio()
 
-            # TODO
+            # TODO check all conditions
             action = newTrade["action"]
             if action == Actions.BUY.name:
-                print("BUY")
+                # TODO use manual refresh function 
                 self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
             elif action == Actions.SELL.name:
                 print("SELL")
