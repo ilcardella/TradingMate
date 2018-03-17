@@ -98,15 +98,14 @@ class Controller():
     def check_new_trade_validity(self, newTrade):
         result = {"success":True,"message":"ok"}
 
-        # TODO add check on the date format
-
         if newTrade["action"] == Actions.WITHDRAW.name:
             if newTrade["amount"] > self.model.get_cash_available():
                 result["success"] = False
-                result["message"] = "Not enough fund available!"
+                result["message"] = "Error: Insufficient funding available"
         elif newTrade["action"] == Actions.SELL.name:
-            # TODO add check symbol name
-            # TODO add check on amount available
-            print ("TODO check validity")
+            if newTrade["symbol"] not in self.model.get_holdings() \
+                or newTrade["amount"] > self.model.get_holdings()[newTrade["symbol"]]:
+                result["success"] = False
+                result["message"] = "Error: Insufficient holding available"
 
         return result

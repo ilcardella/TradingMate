@@ -205,8 +205,9 @@ class Model():
                 print("WITHDRAW")
             elif action == Actions.DIVIDEND.name:
                 print("DIVIDEND")
-        except Exception as e:
-            result = dict(("success", False),("message", e))
+        except Exception:
+            result["success"] = False
+            result["message"] = "Error: Invalid operation"
         
         return result
 
