@@ -220,7 +220,7 @@ class View():
         v_pri = self.check_none_value(logEntry["price"])
         v_fee = self.check_none_value(logEntry["fee"])
         v_sd = self.check_none_value(logEntry["stamp_duty"])
-        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee, v_sd))
+        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd))
 
     def remove_entry_from_log_table(self, position):
         self.logTreeView.delete(position)
@@ -268,7 +268,7 @@ class View():
         AddTradeDialogWindow(self.mainWindow, self.add_new_trade_from_panel)
 
     def add_new_trade_from_panel(self, newTrade):
-        self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
+        return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
 
     def trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)

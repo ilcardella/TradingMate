@@ -143,10 +143,10 @@ class Model():
             d["date"] = row.find('date').text
             d["action"] = row.find('action').text
             d["symbol"] = row.find('symbol').text
-            d["amount"] = row.find('amount').text
-            d["price"] = row.find('price').text
-            d["fee"] = row.find('fee').text
-            d["stamp_duty"] = row.find('stamp_duty').text
+            d["amount"] = int(row.find('amount').text) if row.find('amount').text is not None else 0
+            d["price"] = float(row.find('price').text)  if row.find('price').text is not None else 0.0
+            d["fee"] = float(row.find('fee').text)  if row.find('fee').text is not None else 0.0
+            d["stamp_duty"] = float(row.find('stamp_duty').text) if row.find('stamp_duty').text is not None else 0.0
             listOfEntries.append(d)
         return listOfEntries
                              
@@ -187,23 +187,28 @@ class Model():
         self.callbacks[id] = callback
 
     def add_new_trade(self, newTrade):
-        self.add_entry_to_db(newTrade)
-        self.update_portfolio()
+        result = {"success":True,"message":"ok"}
+        try:
+            self.add_entry_to_db(newTrade)
+            self.update_portfolio()
 
-        action = newTrade["action"]
-        if action == Actions.BUY.name:
-            print("BUY")
-            self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
-        elif action == Actions.SELL.name:
-            print("SELL")
-        elif action == Actions.DEPOSIT.name:
-            print("DEPOSIT")
-        elif action == Actions.WITHDRAW.name:
-            print("WITHDRAW")
-        elif action == Actions.DIVIDEND.name:
-            print("DIVIDEND")
+            # TODO
+            action = newTrade["action"]
+            if action == Actions.BUY.name:
+                print("BUY")
+                self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
+            elif action == Actions.SELL.name:
+                print("SELL")
+            elif action == Actions.DEPOSIT.name:
+                print("DEPOSIT")
+            elif action == Actions.WITHDRAW.name:
+                print("WITHDRAW")
+            elif action == Actions.DIVIDEND.name:
+                print("DIVIDEND")
+        except Exception as e:
+            result = dict(("success", False),("message", e))
         
-        return True
+        return result
 
     def update_live_price(self, priceDict):
         # Replace None values with the last valid data

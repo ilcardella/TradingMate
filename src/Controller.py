@@ -1,5 +1,5 @@
 from .Model import Model
-from .Utils import Callbacks
+from .Utils import Callbacks, Actions
 from .View import View
 
 
@@ -80,7 +80,33 @@ class Controller():
         self.view.update_balances(balances)
 
     def on_new_trade_event(self, newTrade):
-        success = self.model.add_new_trade(newTrade) # Update the model
-        if success == True:
-            self.view.add_entry_to_log_table(newTrade) # Update the view
-            self.view.refresh_live_data()
+        result = {"success":True,"message":"ok"}
+
+        valResult = self.check_new_trade_validity(newTrade)
+
+        if valResult["success"]:
+            modelResult = self.model.add_new_trade(newTrade) # Update the model
+            if modelResult["success"]:
+                self.view.add_entry_to_log_table(newTrade) # Update the view
+                self.view.refresh_live_data()
+            else:
+                return modelResult
+        else:
+            return valResult
+        return result
+
+    def check_new_trade_validity(self, newTrade):
+        result = {"success":True,"message":"ok"}
+
+        # TODO add check on the date format
+
+        if newTrade["action"] == Actions.WITHDRAW.name:
+            if newTrade["amount"] > self.model.get_cash_available():
+                result["success"] = False
+                result["message"] = "Not enough fund available!"
+        elif newTrade["action"] == Actions.SELL.name:
+            # TODO add check symbol name
+            # TODO add check on amount available
+            print ("TODO check validity")
+
+        return result
