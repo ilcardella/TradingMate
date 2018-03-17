@@ -275,7 +275,6 @@ class View():
         # Notify the Controller to request new data
         self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
 
-
     def set_auto_refresh(self):
         value = self.autoRefresh.get()
         # Disable the Refresh button when AutoRefresh is active

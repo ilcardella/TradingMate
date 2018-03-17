@@ -32,8 +32,6 @@ class Controller():
         self.stop_application()
 
     def on_manual_refresh_event(self):
-        #newData = self.model.get_live_data()
-        #self.on_update_live_price(newData)
         self.model.on_manual_refresh_live_data()
 
     def on_set_auto_refresh(self, enabled):

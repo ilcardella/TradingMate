@@ -1,21 +1,3 @@
 <?xml version='1.0' encoding='utf-8'?>
 <log>
-  <row>
-    <date>22</date>
-    <action>DEPOSIT</action>
-    <symbol />
-    <amount>12</amount>
-    <price />
-    <fee />
-    <stamp_duty />
-  </row>
-  <row>
-    <date>123</date>
-    <action>DEPOSIT</action>
-    <symbol />
-    <amount>412</amount>
-    <price />
-    <fee />
-    <stamp_duty />
-  </row>
 </log>

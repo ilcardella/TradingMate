@@ -13,6 +13,7 @@ class TaskThread(threading.Thread):
         self._interval = updatePeriod
         self._enabled = threading.Event()
         self._enabled.set()
+        self._singleRun = False
     
     def setInterval(self, interval):
         """Set the number of seconds we sleep between executing our task"""
@@ -20,6 +21,8 @@ class TaskThread(threading.Thread):
     
     def shutdown(self):
         """Stop this thread"""
+        self.cancel_timeout()
+        self.enable(True)
         self._finished.set()
 
     def enable(self, enabled):
@@ -32,11 +35,19 @@ class TaskThread(threading.Thread):
     def cancel_timeout(self):
         """Cancel the timeout and run the task"""
         self._timeout.set()
+
+    def force_single_run(self):
+        self._singleRun = True
+        self.enable(True)
+        self.cancel_timeout()
     
     def run(self):
         while 1:
             # reset timeout
             self._timeout.clear()
+            if self._singleRun:
+                self.enable(False)
+            self._singleRun = False
             # check shutdown flag
             if self._finished.isSet():
                 return

@@ -168,11 +168,6 @@ class Model():
 
     def get_cash_available(self):
         return self.cashAvailable
-
-    def get_live_data(self):
-        if self.livePricesThread.is_enabled():
-            self.livePricesThread.cancel_timeout()
-        return self.lastLiveData
     
 # INTERFACES
 
@@ -227,7 +222,8 @@ class Model():
         self.livePricesThread.enable(enabled)
 
     def on_manual_refresh_live_data(self):
-        #TODO
-        # trigger a one single run of the thread
-        # in exception return stored livedata
-        return 1
+        if self.livePricesThread.is_enabled():
+            self.livePricesThread.cancel_timeout()
+        else:
+            self.livePricesThread.force_single_run()
+
