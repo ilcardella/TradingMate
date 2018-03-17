@@ -1,5 +1,6 @@
 from .Utils import Callbacks
 from .AddTradeDialogWindow import AddTradeDialogWindow
+from .WarningWindow import WarningWindow
 
 import tkinter as tk
 from tkinter import ttk
@@ -62,10 +63,6 @@ class View():
         buttonsFrame = ttk.Frame(self.shareTradingPage, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
-        # self.openButton = ttk.Button(buttonsFrame, text="Open...", command=self.open_log)
-        # self.openButton.pack(side="left", anchor="n", padx=5, pady=5)
-        # self.saveButton = ttk.Button(buttonsFrame, text="Save...", command=self.save_log)
-        # self.saveButton.pack(side="left", anchor="n", padx=5, pady=5)
         self.addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self.display_add_trade_panel)
         self.addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
         self.autoRefresh = tk.IntVar(value=0)
@@ -210,7 +207,7 @@ class View():
 
     def show_about_popup(self):
         # Show the about panel
-        print("TODO: show_about_popup")
+        WarningWindow(self.mainWindow, "About", "Creator: Alberto Cardellini\nEmail: albe.carde@gmail.com")
 
     def add_entry_to_log_table(self, logEntry):
         v_date = self.check_none_value(logEntry["date"])

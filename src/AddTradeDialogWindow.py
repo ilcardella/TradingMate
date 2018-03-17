@@ -132,7 +132,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         if result["success"]:
             self.destroy()
         else:
-            WarningWindow(self, result["message"])
+            WarningWindow(self, "Warning", result["message"])
 
     def check_data_validity(self, *args):
         # Check the validity of the Entry widgets data to enable the Add button

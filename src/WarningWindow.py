@@ -3,12 +3,12 @@ from tkinter import ttk
 
 class WarningWindow(tk.Toplevel):
 
-    def __init__(self, master, message):
+    def __init__(self, master, title, message):
         tk.Toplevel.__init__(self)
         self.parent = master
         self.message = message
         self.transient(self.parent)
-        self.title("Warning")
+        self.title(title)
         self.geometry("+%d+%d" % (self.parent.winfo_rootx()+10, self.parent.winfo_rooty()+10))
         self.protocol("WM_DELETE_WINDOW", self.destroy)
         self.grab_set()
