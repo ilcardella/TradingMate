@@ -1,8 +1,10 @@
 from .Utils import Actions
 from .WarningWindow import WarningWindow
+from .Widgets import DatePicker
 
 import tkinter as tk
 from tkinter import ttk
+import datetime
 
 class AddTradeDialogWindow(tk.Toplevel):
 
@@ -31,8 +33,10 @@ class AddTradeDialogWindow(tk.Toplevel):
 
         # Define the date entry widget
         self.dateSelected = tk.StringVar()
-        eDate = ttk.Entry(self, textvariable=self.dateSelected)
-        eDate.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+        self.dateSelected.trace_add('write', self.check_data_validity)
+        datePicker = DatePicker(self, self.dateSelected)
+        datePicker.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+        datePicker.focus_set()
 
         # Define an option menu for the action
         self.actionSelected = tk.StringVar()
@@ -41,34 +45,47 @@ class AddTradeDialogWindow(tk.Toplevel):
         eAction.grid(row=1, column=1, sticky="w", padx=5, pady=5)
        
         self.symbolSelected = tk.StringVar()
+        self.symbolSelected.trace_add('write', self.check_data_validity)
         self.eSymbol = ttk.Entry(self, textvariable=self.symbolSelected)
         self.eSymbol.grid(row=2, column=1, sticky="w", padx=5, pady=5)
 
         self.amountSelected = tk.StringVar()
+        self.amountSelected.trace_add('write', self.check_data_validity)
         self.eAmount = ttk.Entry(self, textvariable=self.amountSelected)
         self.eAmount.grid(row=3, column=1, sticky="w", padx=5, pady=5)
 
         self.priceSelected = tk.StringVar()
+        self.priceSelected.trace_add('write', self.check_data_validity)
         self.ePrice = ttk.Entry(self, textvariable=self.priceSelected)
         self.ePrice.grid(row=4, column=1, sticky="w", padx=5, pady=5)
 
         self.feeSelected = tk.StringVar()
+        self.feeSelected.trace_add('write', self.check_data_validity)
         self.eFee = ttk.Entry(self, textvariable=self.feeSelected)
         self.eFee.grid(row=5, column=1, sticky="w", padx=5, pady=5)
 
         self.stampDutySelected = tk.StringVar()
+        self.stampDutySelected.trace_add('write', self.check_data_validity)
         self.eStampDuty = ttk.Entry(self, textvariable=self.stampDutySelected)
         self.eStampDuty.grid(row=6, column=1, sticky="w", padx=5, pady=5)
 
         cancelButton = ttk.Button(self, text="Cancel", command=self.destroy)
         cancelButton.grid(row=7, column=0, sticky="e", padx=5, pady=5)
-        addButton = ttk.Button(self, text="Add", command=self.add_new_trade)
-        addButton.grid(row=7, column=1, sticky="e", padx=5, pady=5)
+        self.addButton = ttk.Button(self, text="Add", command=self.add_new_trade)
+        self.addButton.grid(row=7, column=1, sticky="e", padx=5, pady=5)
+        self.addButton.config(state="disabled")
 
         # Make the mas ter thread block execution until this window is closed
         self.master.wait_window(self)
 
     def on_action_selected(self, selection):
+        # Clear data entry
+        self.symbolSelected.set("")
+        self.amountSelected.set("")
+        self.priceSelected.set("")
+        self.feeSelected.set("")
+        self.stampDutySelected.set("")
+        # Change layout
         if selection == Actions.BUY.name:
             self.eSymbol.config(state='enabled')
             self.eAmount.config(state='enabled')
@@ -116,3 +133,35 @@ class AddTradeDialogWindow(tk.Toplevel):
             self.destroy()
         else:
             WarningWindow(self, result["message"])
+
+    def check_data_validity(self, *args):
+        # Check the validity of the Entry widgets data to enable the Add button
+        valid = self.is_date_valid() and self.is_symbol_valid() and self.is_amount_valid() and self.is_price_valid() and self.is_fee_valid() and self.is_sd_valid()
+        if valid:
+            self.addButton.config(state="normal")
+        else:
+            self.addButton.config(state="disabled")
+
+    def is_date_valid(self):
+        value = self.dateSelected.get()
+        print(value)
+        try:
+            datetime.datetime.strptime(value, "%d/%m/%Y")
+        except ValueError:
+            return False
+        return True
+
+    def is_symbol_valid(self):
+        return True
+
+    def is_amount_valid(self):
+        return True
+
+    def is_price_valid(self):
+        return True
+
+    def is_fee_valid(self):
+        return True
+
+    def is_sd_valid(self):
+        return True
