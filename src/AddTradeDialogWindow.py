@@ -136,15 +136,12 @@ class AddTradeDialogWindow(tk.Toplevel):
 
     def check_data_validity(self, *args):
         # Check the validity of the Entry widgets data to enable the Add button
-        valid = self.is_date_valid() and self.is_symbol_valid() and self.is_amount_valid() and self.is_price_valid() and self.is_fee_valid() and self.is_sd_valid()
-        if valid:
-            self.addButton.config(state="normal")
-        else:
-            self.addButton.config(state="disabled")
+        valid = self.is_date_valid() and self.is_symbol_valid() and self.is_amount_valid() \
+                and self.is_price_valid() and self.is_fee_valid() and self.is_sd_valid()
+        self.addButton.config(state="normal" if valid else "disabled")
 
     def is_date_valid(self):
         value = self.dateSelected.get()
-        print(value)
         try:
             datetime.datetime.strptime(value, "%d/%m/%Y")
         except ValueError:
@@ -152,16 +149,59 @@ class AddTradeDialogWindow(tk.Toplevel):
         return True
 
     def is_symbol_valid(self):
+        # If widget is disabled it should not affect the overall validity
+        if str(self.eSymbol.cget("state")) == tk.DISABLED:
+            return True
+        if len(self.symbolSelected.get()) < 1:
+            return False
+        # Force uppercase
+        self.symbolSelected.set(self.symbolSelected.get().upper())
         return True
 
     def is_amount_valid(self):
-        return True
+        # If widget is disabled it should not affect the overall validity
+        if str(self.eAmount.cget("state")) == tk.DISABLED:
+            return True
+        try:
+            value = int(self.amountSelected.get())
+            if value > 0:
+                return True
+            return False
+        except Exception:
+            return False
 
     def is_price_valid(self):
-        return True
+        # If widget is disabled it should not affect the overall validity
+        if str(self.ePrice.cget("state")) == tk.DISABLED:
+            return True
+        try:
+            value = float(self.priceSelected.get())
+            if value > 0.0:
+                return True
+            return False
+        except Exception:
+            return False
 
     def is_fee_valid(self):
-        return True
+        # If widget is disabled it should not affect the overall validity
+        if str(self.eFee.cget("state")) == tk.DISABLED:
+            return True
+        try:
+            value = float(self.feeSelected.get())
+            if value > 0.0:
+                return True
+            return False
+        except Exception:
+            return False
 
     def is_sd_valid(self):
-        return True
+        # If widget is disabled it should not affect the overall validity
+        if str(self.eStampDuty.cget("state")) == tk.DISABLED:
+            return True
+        try:
+            value = float(self.stampDutySelected.get())
+            if value > 0.0:
+                return True
+            return False
+        except Exception:
+            return False
