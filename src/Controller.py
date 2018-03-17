@@ -14,6 +14,7 @@ class Controller():
         self.view.set_callback(Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
         self.view.set_callback(Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
         self.view.set_callback(Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
+        self.view.set_callback(Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.on_set_auto_refresh)
 
     def start(self):
         self.model.start()
@@ -31,8 +32,12 @@ class Controller():
         self.stop_application()
 
     def on_manual_refresh_event(self):
-        newData = self.model.get_live_data() # Return the latest live data to the caller
-        self.on_update_live_price(newData)
+        #newData = self.model.get_live_data()
+        #self.on_update_live_price(newData)
+        self.model.on_manual_refresh_live_data()
+
+    def on_set_auto_refresh(self, enabled):
+        self.model.set_auto_refresh(enabled)
 
     def on_update_live_price(self, priceDict):
         # priceDict is a dict {symbol: price}

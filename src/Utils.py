@@ -7,6 +7,7 @@ class Callbacks(Enum):
     ON_CLOSE_VIEW_EVENT = 2
     ON_MANUAL_REFRESH_EVENT = 3
     ON_NEW_TRADE_EVENT = 4
+    ON_SET_AUTO_REFRESH_EVENT = 5
 
 class Actions(Enum):
     BUY = 1

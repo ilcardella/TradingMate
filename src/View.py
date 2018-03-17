@@ -65,7 +65,7 @@ class View():
         # Add buttons for the share trading page
         self.addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self.display_add_trade_panel)
         self.addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
-        self.autoRefresh = tk.IntVar(value=0)
+        self.autoRefresh = tk.IntVar(value=1)
         self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
                                             command=self.set_auto_refresh, onvalue=1, offvalue=0)
         self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
@@ -184,6 +184,7 @@ class View():
         # TODO cryptocurrencies feature
 
     def start(self):
+        self.set_auto_refresh()
         # Start the view thread
         self.mainWindow.mainloop()
 
@@ -276,11 +277,13 @@ class View():
 
 
     def set_auto_refresh(self):
+        value = self.autoRefresh.get()
         # Disable the Refresh button when AutoRefresh is active
-        if self.autoRefresh.get() == 1:
-            self.refreshButton.config(state="disabled")
-        else:
-            self.refreshButton.config(state="enabled")
+        self.refreshButton.config(state="disabled" if value == 1 else "enabled")
+        # if self.autoRefresh.get() == 1:
+        #     self.refreshButton.config(state="disabled")
+        # else:
+        #     self.refreshButton.config(state="enabled")
         # Notify the Controller to activate the auto fetch of live data
-        print("TODO set_auto_refresh")
+        self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](bool(value))
             
