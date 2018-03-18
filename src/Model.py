@@ -189,20 +189,6 @@ class Model():
         try:
             self.add_entry_to_db(newTrade)
             self.update_portfolio()
-
-            # TODO check all conditions
-            action = newTrade["action"]
-            if action == Actions.BUY.name:
-                # TODO use manual refresh function 
-                self.lastLiveData[newTrade["symbol"]] = self.livePricesThread.fetch_price_data(newTrade["symbol"])
-            elif action == Actions.SELL.name:
-                print("SELL")
-            elif action == Actions.DEPOSIT.name:
-                print("DEPOSIT")
-            elif action == Actions.WITHDRAW.name:
-                print("WITHDRAW")
-            elif action == Actions.DIVIDEND.name:
-                print("DIVIDEND")
         except Exception:
             result["success"] = False
             result["message"] = "Error: Invalid operation"
