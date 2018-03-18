@@ -5,6 +5,7 @@ from .WarningWindow import WarningWindow
 import tkinter as tk
 from tkinter import ttk
 from tkinter import StringVar
+from tkinter import filedialog
 
 APP_NAME = "TradingMate"
 
@@ -200,11 +201,17 @@ class View():
 
     def open_log(self):
         # Open a saved log
-        print("TODO: open_log")
+        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
+        result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+        if result["success"] == False:
+            WarningWindow(self.mainWindow, "Warning", result["message"])
 
     def save_log(self):
         # Save the current log
-        print("TODO: save_log")
+        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
+        result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+        if result["success"] == False:
+            WarningWindow(self.mainWindow, "Warning", result["message"])
 
     def show_about_popup(self):
         # Show the about panel
@@ -286,3 +293,11 @@ class View():
         # Notify the Controller to activate the auto fetch of live data
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](bool(value))
             
+    def reset_view(self):
+        self.cashStringVar.set(str(0))
+        self.portfolioStringVar.set(str(0))
+        self.totalStringVar.set(str(0))
+        self.plStringVar.set(str(0))
+        self.plpcStringVar.set(str(0))
+        self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
+        self.logTreeView.delete(*self.logTreeView.get_children())

@@ -15,21 +15,36 @@ class Controller():
         self.view.set_callback(Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
         self.view.set_callback(Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
         self.view.set_callback(Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.on_set_auto_refresh)
+        self.view.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
+        self.view.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
 
     def start(self):
         self.model.start()
         for logEntry in self.model.get_log_as_list():
             self.view.add_entry_to_log_table(logEntry)
         self.view.start() # This should be the last instruction in this function
-    
-    def stop_application(self):
-        print("TODO Controller stop_application")
+
+# Functions
+
+    def _check_new_trade_validity(self, newTrade):
+        result = {"success":True,"message":"ok"}
+
+        if newTrade["action"] == Actions.WITHDRAW.name:
+            if newTrade["amount"] > self.model.get_cash_available():
+                result["success"] = False
+                result["message"] = "Error: Insufficient funding available"
+        elif newTrade["action"] == Actions.SELL.name:
+            if newTrade["symbol"] not in self.model.get_holdings() \
+                or newTrade["amount"] > self.model.get_holdings()[newTrade["symbol"]]:
+                result["success"] = False
+                result["message"] = "Error: Insufficient holding available"
+
+        return result
 
 # EVENTS
 
     def on_close_view_event(self):
         self.model.stop_application()
-        self.stop_application()
 
     def on_manual_refresh_event(self):
         self.model.on_manual_refresh_live_data()
@@ -85,7 +100,7 @@ class Controller():
     def on_new_trade_event(self, newTrade):
         result = {"success":True,"message":"ok"}
 
-        valResult = self.check_new_trade_validity(newTrade)
+        valResult = self._check_new_trade_validity(newTrade)
 
         if valResult["success"]:
             modelResult = self.model.add_new_trade(newTrade) # Update the model
@@ -98,17 +113,14 @@ class Controller():
             return valResult
         return result
 
-    def check_new_trade_validity(self, newTrade):
-        result = {"success":True,"message":"ok"}
-
-        if newTrade["action"] == Actions.WITHDRAW.name:
-            if newTrade["amount"] > self.model.get_cash_available():
-                result["success"] = False
-                result["message"] = "Error: Insufficient funding available"
-        elif newTrade["action"] == Actions.SELL.name:
-            if newTrade["symbol"] not in self.model.get_holdings() \
-                or newTrade["amount"] > self.model.get_holdings()[newTrade["symbol"]]:
-                result["success"] = False
-                result["message"] = "Error: Insufficient holding available"
-
+    def on_open_log_file_event(self, filepath):
+        result = self.model.open_log_file(filepath)
+        if result["success"]:
+            self.view.reset_view()
+            for logEntry in self.model.get_log_as_list():
+                self.view.add_entry_to_log_table(logEntry)
+            self.on_manual_refresh_event()
         return result
+
+    def on_save_log_file_event(self, filepath):
+        return self.model.save_log_file(filepath)

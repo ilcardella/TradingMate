@@ -71,13 +71,13 @@ class Model():
         self.cashAvailable = 0 # Available cash in the portfolio [GBP]
         self.lastLiveData = {} # Buffer to store the latest live data fetched from the web api
         self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
-        self.read_database()
+        self.read_database(self.dbFilePath)
         self.update_portfolio()
 
 # INTERNAL FUNCTIONS
 
     def read_configuration(self):
-        self.dbFilePath = "data/config.xml"
+        self.dbFilePath = "data/trading_log.xml"
         self.webPollingPeriod = 15
         try:
             self.configValues = ET.parse(CONFIG_FILE_PATH).getroot()
@@ -86,9 +86,9 @@ class Model():
         except Exception as e:
             print("Model: read_configuration(): {0}".format(e))
 
-    def read_database(self):
+    def read_database(self, filepath):
         try:
-            self.tradingLogXMLTree = ET.parse(self.dbFilePath)
+            self.tradingLogXMLTree = ET.parse(filepath)
             self.log = self.tradingLogXMLTree.getroot()
         except Exception as e:
             print("Model: Error reading database! {0}".format(e))
@@ -134,6 +134,16 @@ class Model():
     def remove_entry_from_db(self, logEntry):
         self.log.remove(logEntry)
 
+    def reset(self, filepath=None):
+        self.read_configuration() # From config.xml file
+        self.holdings.clear() # DataStruct containing the current holdings
+        self.cashAvailable = 0 # Available cash in the portfolio [GBP]
+        self.lastLiveData.clear() # Buffer to store the latest live data fetched from the web api
+        if filepath is not None:
+            self.dbFilePath = filepath
+        self.read_database(self.dbFilePath)
+        self.update_portfolio()
+
 # GETTERS
 
     def get_log_as_list(self):
@@ -176,10 +186,13 @@ class Model():
 
     def stop_application(self):
         self.livePricesThread.shutdown()
+        self.write_log_to_file(self.dbFilePath)
+
+    def write_log_to_file(self, filepath):
         # write the in memory db to a file
         utils_indent_xml_tree(self.log)
         newTree = ET.ElementTree(self.log)
-        newTree.write(self.dbFilePath, xml_declaration=True, encoding='utf-8', method="xml")
+        newTree.write(filepath, xml_declaration=True, encoding='utf-8', method="xml")
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
@@ -212,4 +225,22 @@ class Model():
             self.livePricesThread.cancel_timeout()
         else:
             self.livePricesThread.force_single_run()
+
+    def save_log_file(self, filepath):
+        result = {"success":True,"message":"ok"}
+        try:
+            self.write_log_to_file(filepath)
+        except Exception:
+            result["success"] = False
+            result["message"] = "Error saving the log. Try again."
+        return result
+    
+    def open_log_file(self, filepath):
+        result = {"success":True,"message":"ok"}
+        try:
+            self.reset(filepath)
+        except Exception:
+            result["success"] = False
+            result["message"] = "Error opening the file. Try again."
+        return result
 

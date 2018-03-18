@@ -8,6 +8,8 @@ class Callbacks(Enum):
     ON_MANUAL_REFRESH_EVENT = 3
     ON_NEW_TRADE_EVENT = 4
     ON_SET_AUTO_REFRESH_EVENT = 5
+    ON_OPEN_LOG_FILE_EVENT = 6
+    ON_SAVE_LOG_FILE_EVENT = 7
 
 class Actions(Enum):
     BUY = 1
