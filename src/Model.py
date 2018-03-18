@@ -33,7 +33,6 @@ class LivePricesWebThread(TaskThread):
             sys.exit(1)
 
     def task(self):
-        print("task")
         priceDict = {}
         for symbol in self.model.get_holdings().keys():
             priceDict[symbol] = self.fetch_price_data(symbol)
@@ -176,15 +175,36 @@ class Model():
         # Return the average price paid to open the current positon of the requested stock
         sum = 0
         count = 0
+        tot = 0
         for row in self.log:
-            if row.find("symbol").text == symbol and row.find("action").text == Actions.BUY.name:
-                sum += float(row.find("price").text)
-                count += 1
+            action = row.find("action").text
+            sym = row.find("symbol").text
+            price = float(row.find("price").text)
+            amount = float(row.find("amount").text)
+            if sym == symbol:
+                if action == Actions.BUY.name:
+                    tot += amount
+                    sum += price
+                    count += 1
+                elif action == Actions.SELL.name:
+                    tot -= amount
         avg = sum / count
         return round(avg, 4)
 
     def get_cash_available(self):
         return self.cashAvailable
+
+    def get_invested_amount(self):
+        """Return the total invested amount in the portfolio"""
+        amount = 0.0
+        for row in self.log:
+            action = row.find("action").text
+            if action == Actions.DEPOSIT.name:
+                amount += float(row.find("amount").text)
+            elif action == Actions.WITHDRAW.name:
+                amount -= float(row.find("amount").text)
+        return amount
+            
     
 # INTERFACES
 

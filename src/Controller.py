@@ -56,8 +56,6 @@ class Controller():
         # priceDict is a dict {symbol: price}
         # Here we calculate the cost, fees and profits before updating the view
         holdingValue = 0
-        profitLoss = 0
-        wholeCost = 0
         holdingsData = {}
         for symbol in priceDict.keys():
             amount = self.model.get_holdings()[symbol]
@@ -66,7 +64,7 @@ class Controller():
             cost = amount * (openPrice / 100) # in [£]
             value = amount * (lastPrice / 100) # in [£]
             pl = value - cost
-            pl_pc = ((value - cost) * 100) / cost
+            pl_pc = (pl * 100) / cost
             liveData = {}
             liveData["amount"] = amount
             liveData["open"] = openPrice
@@ -78,18 +76,18 @@ class Controller():
             holdingsData[symbol] = liveData
 
             holdingValue += value
-            profitLoss += pl
-            wholeCost += cost
         
         # Calculate current balances (portfolio value)
         freeCash = self.model.get_cash_available()
+        investedAmount = self.model.get_invested_amount()
         balances = {}
         balances["cash"] = freeCash
         balances["portfolio"] = holdingValue
         balances["total"] = freeCash + holdingValue
-        balances["pl"] = profitLoss
-        if not wholeCost == 0:
-            balances["pl_pc"] = (profitLoss * 100) / wholeCost
+        balances["pl"] = balances["total"] - investedAmount
+        print(balances["pl"])
+        if not investedAmount == 0:
+            balances["pl_pc"] = (balances["pl"] * 100) / investedAmount
         else:
             balances["pl_pc"] = 0
 
