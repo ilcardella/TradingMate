@@ -286,11 +286,6 @@ class View():
         value = self.autoRefresh.get()
         # Disable the Refresh button when AutoRefresh is active
         self.refreshButton.config(state="disabled" if value == 1 else "enabled")
-        # if self.autoRefresh.get() == 1:
-        #     self.refreshButton.config(state="disabled")
-        # else:
-        #     self.refreshButton.config(state="enabled")
-        # Notify the Controller to activate the auto fetch of live data
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](bool(value))
             
     def reset_view(self):

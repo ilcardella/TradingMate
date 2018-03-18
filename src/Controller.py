@@ -85,7 +85,6 @@ class Controller():
         balances["portfolio"] = holdingValue
         balances["total"] = freeCash + holdingValue
         balances["pl"] = balances["total"] - investedAmount
-        print(balances["pl"])
         if not investedAmount == 0:
             balances["pl_pc"] = (balances["pl"] * 100) / investedAmount
         else:

@@ -172,22 +172,24 @@ class Model():
         return self.holdings
 
     def get_holding_open_price(self, symbol):
-        # Return the average price paid to open the current positon of the requested stock
+        """Return the average price paid to open the current positon of the requested stock"""
         sum = 0
         count = 0
-        tot = 0
-        for row in self.log:
+        targetAmount = self.get_holdings()[symbol]
+        for row in self.log[::-1]: # reverse order
             action = row.find("action").text
             sym = row.find("symbol").text
             price = float(row.find("price").text)
             amount = float(row.find("amount").text)
             if sym == symbol:
                 if action == Actions.BUY.name:
-                    tot += amount
-                    sum += price
-                    count += 1
+                    targetAmount -= amount
+                    sum += price * amount
+                    count += amount
                 elif action == Actions.SELL.name:
-                    tot -= amount
+                    targetAmount += amount
+                if targetAmount <= 0:
+                    break
         avg = sum / count
         return round(avg, 4)
 
