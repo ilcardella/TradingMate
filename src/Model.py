@@ -101,6 +101,7 @@ class Model():
             action = row.find("action").text
             amount = int(row.find("amount").text)
             symbol = row.find("symbol").text
+            price = float(row.find("price").text)
 
             if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
                 self.cashAvailable += amount
@@ -111,8 +112,14 @@ class Model():
                     self.holdings[symbol] = amount
                 else:
                     self.holdings[symbol] += amount
+                cost = (price/100) * amount
+                self.cashAvailable -= cost
             elif action == Actions.SELL.name:
                 self.holdings[symbol] -= amount
+                if self.holdings[symbol] < 1:
+                    del self.holdings[symbol]
+                profit = (price/100) * amount
+                self.cashAvailable += profit
     
     def add_entry_to_db(self, logEntry):
         row = ET.SubElement(self.log, "row")
