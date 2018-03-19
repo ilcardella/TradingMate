@@ -101,6 +101,8 @@ class Model():
             amount = int(row.find("amount").text)
             symbol = row.find("symbol").text
             price = float(row.find("price").text)
+            fee = float(row.find("fee").text)
+            sd = float(row.find("stamp_duty").text)
 
             if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
                 self.cashAvailable += amount
@@ -112,12 +114,14 @@ class Model():
                 else:
                     self.holdings[symbol] += amount
                 cost = (price/100) * amount
-                self.cashAvailable -= cost
+                tax = (sd * cost) / 100
+                totalCost = cost + tax + fee
+                self.cashAvailable -= totalCost
             elif action == Actions.SELL.name:
                 self.holdings[symbol] -= amount
                 if self.holdings[symbol] < 1:
                     del self.holdings[symbol]
-                profit = (price/100) * amount
+                profit = ((price/100) * amount) - fee
                 self.cashAvailable += profit
     
     def add_entry_to_db(self, logEntry):

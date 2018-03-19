@@ -35,7 +35,10 @@ class Controller():
                 result["message"] = "Error: Insufficient funding available"
         elif newTrade["action"] == Actions.BUY.name:
             cost = (newTrade["price"] * newTrade["amount"]) / 100 # in £
-            if cost > self.model.get_cash_available():
+            fee = newTrade["fee"]
+            tax = (newTrade["stamp_duty"] * cost) / 100
+            totalCost = cost + fee + tax
+            if totalCost > self.model.get_cash_available():
                 result["success"] = False
                 result["message"] = "Error: Insufficient funding available"
         elif newTrade["action"] == Actions.SELL.name:

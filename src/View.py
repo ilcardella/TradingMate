@@ -162,7 +162,7 @@ class View():
         self.logTreeView.heading("amount", text='Amount', anchor='w')
         self.logTreeView.heading("price", text='Price [p]', anchor='w')
         self.logTreeView.heading("fee", text='Fee [£]', anchor='w')
-        self.logTreeView.heading("stamp_duty", text='Stamp Duty [£]', anchor='w')
+        self.logTreeView.heading("stamp_duty", text='Stamp Duty [%]', anchor='w')
         self.logTreeView.column("#0", width=100)
         self.logTreeView.column("action", width=100)
         self.logTreeView.column("symbol", width=100)
