@@ -173,6 +173,8 @@ class Model():
 
     def get_holding_open_price(self, symbol):
         """Return the average price paid to open the current positon of the requested stock"""
+        # Starting from the end of the history log, find the BUY transaction that led to
+        # to have the current amount, compute then the average price of these transactions
         sum = 0
         count = 0
         targetAmount = self.get_holdings()[symbol]
@@ -181,13 +183,10 @@ class Model():
             sym = row.find("symbol").text
             price = float(row.find("price").text)
             amount = float(row.find("amount").text)
-            if sym == symbol:
-                if action == Actions.BUY.name:
-                    targetAmount -= amount
-                    sum += price * amount
-                    count += amount
-                elif action == Actions.SELL.name:
-                    targetAmount += amount
+            if sym == symbol and action == Actions.BUY.name:
+                targetAmount -= amount
+                sum += price * amount
+                count += amount
                 if targetAmount <= 0:
                     break
         avg = sum / count
