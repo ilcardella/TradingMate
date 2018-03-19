@@ -227,10 +227,9 @@ class View():
         v_sd = self.check_none_value(logEntry["stamp_duty"])
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd))
 
-    def remove_entry_from_log_table(self, position):
-        self.logTreeView.delete(position)
-
     def update_live_price(self, holdingDict):
+        # Clear the table and then insert the new data
+        self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
         for holdingSymbol in holdingDict.keys():
             holdingData = holdingDict[holdingSymbol]
             found = False

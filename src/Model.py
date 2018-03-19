@@ -239,7 +239,7 @@ class Model():
     def update_live_price(self, priceDict):
         # Replace None values with the last valid data
         for symbol in priceDict.keys():
-            if priceDict[symbol] is None:
+            if priceDict[symbol] is None and self.lastLiveData[symbol] is not None:
                 priceDict[symbol] = self.lastLiveData[symbol]
 
         self.lastLiveData = priceDict # Store locally
