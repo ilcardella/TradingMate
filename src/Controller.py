@@ -20,7 +20,7 @@ class Controller():
 
     def start(self):
         self.model.start()
-        for logEntry in self.model.get_log_as_list():
+        for logEntry in self.model.get_log_as_list()[::-1]:
             self.view.add_entry_to_log_table(logEntry)
         
         self.view.start() # This should be the last instruction in this function
