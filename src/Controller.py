@@ -22,6 +22,7 @@ class Controller():
         self.model.start()
         for logEntry in self.model.get_log_as_list():
             self.view.add_entry_to_log_table(logEntry)
+        
         self.view.start() # This should be the last instruction in this function
 
 # Functions
@@ -65,14 +66,20 @@ class Controller():
         # Here we calculate the cost, fees and profits before updating the view
         holdingValue = 0
         holdingsData = {}
-        for symbol in priceDict.keys():
+        for symbol in self.model.get_holdings().keys():
+            lastPrice = 0
+            value = 0
+            pl = 0
+            pl_pc = 0
             amount = self.model.get_holdings()[symbol]
             openPrice = self.model.get_holding_open_price(symbol)
-            lastPrice = priceDict[symbol]
             cost = amount * (openPrice / 100) # in [£]
-            value = amount * (lastPrice / 100) # in [£]
-            pl = value - cost
-            pl_pc = (pl * 100) / cost
+            if symbol in priceDict:
+                lastPrice = priceDict[symbol]
+                value = amount * (lastPrice / 100) # in [£]
+                pl = value - cost
+                pl_pc = (pl * 100) / cost
+                holdingValue += value
             liveData = {}
             liveData["amount"] = amount
             liveData["open"] = openPrice
@@ -82,8 +89,6 @@ class Controller():
             liveData["pl_pc"] = pl_pc
             liveData["pl"] = pl
             holdingsData[symbol] = liveData
-
-            holdingValue += value
         
         # Calculate current balances (portfolio value)
         freeCash = self.model.get_cash_available()

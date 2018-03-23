@@ -123,7 +123,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         newTrade["date"] = self.dateSelected.get()
         newTrade["action"] = self.actionSelected.get()
         newTrade["symbol"] = self.symbolSelected.get()
-        newTrade["amount"] = int(self.amountSelected.get()) if self.amountSelected.get() is not "" else 0
+        newTrade["amount"] = float(self.amountSelected.get()) if self.amountSelected.get() is not "" else 0
         newTrade["price"] = float(self.priceSelected.get()) if self.priceSelected.get() is not "" else 0
         newTrade["fee"] = float(self.feeSelected.get()) if self.feeSelected.get() is not "" else 0
         newTrade["stamp_duty"] = float(self.stampDutySelected.get()) if self.stampDutySelected.get() is not "" else 0
@@ -163,7 +163,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         if str(self.eAmount.cget("state")) == tk.DISABLED:
             return True
         try:
-            value = int(self.amountSelected.get())
+            value = float(self.amountSelected.get())
             if value > 0:
                 return True
             return False
@@ -176,7 +176,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             return True
         try:
             value = float(self.priceSelected.get())
-            if value > 0.0:
+            if value >= 0.0:
                 return True
             return False
         except Exception:
@@ -188,7 +188,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             return True
         try:
             value = float(self.feeSelected.get())
-            if value > 0.0:
+            if value >= 0.0:
                 return True
             return False
         except Exception:
@@ -200,7 +200,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             return True
         try:
             value = float(self.stampDutySelected.get())
-            if value > 0.0:
+            if value >= 0.0:
                 return True
             return False
         except Exception:

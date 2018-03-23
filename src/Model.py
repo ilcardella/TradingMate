@@ -34,8 +34,13 @@ class LivePricesWebThread(TaskThread):
 
     def task(self):
         priceDict = {}
-        for symbol in self.model.get_holdings().keys():
-            priceDict[symbol] = self.fetch_price_data(symbol)
+        symbolList = self.model.get_holdings().keys()
+        for symbol in symbolList:
+            if not self._finished.isSet():
+                value = self.fetch_price_data(symbol)
+                self._timeout.wait(1)
+                if value is not None:
+                    priceDict[symbol] = value
         if not self._finished.isSet():
             self.model.update_live_price(priceDict)
 
@@ -98,7 +103,7 @@ class Model():
         self.holdings.clear()
         for row in self.log:
             action = row.find("action").text
-            amount = int(row.find("amount").text)
+            amount = float(row.find("amount").text)
             symbol = row.find("symbol").text
             price = float(row.find("price").text)
             fee = float(row.find("fee").text)
@@ -164,7 +169,7 @@ class Model():
             d["date"] = row.find('date').text
             d["action"] = row.find('action').text
             d["symbol"] = row.find('symbol').text
-            d["amount"] = int(row.find('amount').text) if row.find('amount').text is not None else 0
+            d["amount"] = float(row.find('amount').text) if row.find('amount').text is not None else 0
             d["price"] = float(row.find('price').text)  if row.find('price').text is not None else 0.0
             d["fee"] = float(row.find('fee').text)  if row.find('fee').text is not None else 0.0
             d["stamp_duty"] = float(row.find('stamp_duty').text) if row.find('stamp_duty').text is not None else 0.0
@@ -243,7 +248,7 @@ class Model():
     def update_live_price(self, priceDict):
         # Replace None values with the last valid data
         for symbol in priceDict.keys():
-            if priceDict[symbol] is None and self.lastLiveData[symbol] is not None:
+            if priceDict[symbol] is None and symbol in self.lastLiveData:
                 priceDict[symbol] = self.lastLiveData[symbol]
 
         self.lastLiveData = priceDict # Store locally
