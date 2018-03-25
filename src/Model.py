@@ -65,7 +65,7 @@ class LivePricesWebThread(TaskThread):
         symbol = "symbol=" + aSymbol
         interval = "interval=" + anInterval
         apiKey = "apikey=" + anApiKey
-        url = self.alphaVantageBaseURL + function + "&" + symbol + "&" + interval + "&" + apiKey
+        url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + interval + "&" + apiKey
         return url
 
     def get_last_data(self):
