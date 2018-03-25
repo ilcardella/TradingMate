@@ -1,5 +1,5 @@
 from .Model import Model
-from .Utils import Callbacks, Actions
+from .Utils import Callbacks, Actions, Messages
 from .View import View
 from .Portfolio import Portfolio
 
@@ -34,7 +34,7 @@ class Controller():
         if newTrade["action"] == Actions.WITHDRAW.name:
             if newTrade["amount"] > portfolio.get_cash_available():
                 result["success"] = False
-                result["message"] = "Error: Insufficient funding available"
+                result["message"] = Messages.INSUF_FUNDING.value
         elif newTrade["action"] == Actions.BUY.name:
             cost = (newTrade["price"] * newTrade["amount"]) / 100 # in £
             fee = newTrade["fee"]
@@ -42,12 +42,12 @@ class Controller():
             totalCost = cost + fee + tax
             if totalCost > portfolio.get_cash_available():
                 result["success"] = False
-                result["message"] = "Error: Insufficient funding available"
+                result["message"] = Messages.INSUF_FUNDING.value
         elif newTrade["action"] == Actions.SELL.name:
             if portfolio.get_holding_amount(newTrade["symbol"]) > 0 \
                 or newTrade["amount"] > portfolio.get_holding_amount(newTrade["symbol"]):
                 result["success"] = False
-                result["message"] = "Error: Insufficient holding available"
+                result["message"] = Messages.INSUF_HOLDINGS.value
 
         return result
     

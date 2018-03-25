@@ -1,5 +1,5 @@
 from .TaskThread import TaskThread
-from .Utils import *
+from .Utils import Messages, Actions, Callbacks
 from .Portfolio import Portfolio
 
 import sys
@@ -179,6 +179,29 @@ class Model():
         self._read_database(self.dbFilePath)
         self._update_portfolio()
 
+    def _write_log_to_file(self, filepath):
+        # write the in memory db to a file
+        self._utils_indent_xml_tree(self.log)
+        newTree = ET.ElementTree(self.log)
+        newTree.write(filepath, xml_declaration=True, encoding='utf-8', method="xml")
+
+    # Source http://effbot.org/zone/element-lib.htm#prettyprint
+    def _utils_indent_xml_tree(self, elem, level=0):
+        """Indent the xml root element with "pretty" format. Can be used before writing xmlTree to a file"""
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self._utils_indent_xml_tree(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+
 # GETTERS
 
     def get_log_as_list(self):
@@ -230,13 +253,7 @@ class Model():
 
     def stop_application(self):
         self.livePricesThread.shutdown()
-        self.write_log_to_file(self.dbFilePath)
-
-    def write_log_to_file(self, filepath):
-        # write the in memory db to a file
-        utils_indent_xml_tree(self.log)
-        newTree = ET.ElementTree(self.log)
-        newTree.write(filepath, xml_declaration=True, encoding='utf-8', method="xml")
+        self._write_log_to_file(self.dbFilePath)
 
     def add_new_trade(self, newTrade):
         result = {"success":True,"message":"ok"}
@@ -246,7 +263,7 @@ class Model():
             self.livePricesThread.set_symbol_list(self.portfolio.get_holding_symbols())
         except Exception:
             result["success"] = False
-            result["message"] = "Error: Invalid operation"
+            result["message"] = Messages.INVALID_OPERATION.value
         return result
 
     def on_new_price_data(self):
@@ -267,10 +284,10 @@ class Model():
     def save_log_file(self, filepath):
         result = {"success":True,"message":"ok"}
         try:
-            self.write_log_to_file(filepath)
+            self._write_log_to_file(filepath)
         except Exception:
             result["success"] = False
-            result["message"] = "Error saving the log. Try again."
+            result["message"] = Messages.ERROR_SAVE_FILE
         return result
     
     def open_log_file(self, filepath):
@@ -279,6 +296,6 @@ class Model():
             self._reset(filepath)
         except Exception:
             result["success"] = False
-            result["message"] = "Error opening the file. Try again."
+            result["message"] = Messages.ERROR_OPEN_FILE
         return result
 

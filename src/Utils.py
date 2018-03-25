@@ -22,20 +22,6 @@ class Messages(Enum):
     INSUF_FUNDING = "ERROR: Insufficient funding available"
     INSUF_HOLDINGS = "ERROR: Insufficient holdings available"
     INVALID_OPERATION = "ERROR: Invalid operation"
-
-# Source http://effbot.org/zone/element-lib.htm#prettyprint
-def utils_indent_xml_tree(elem, level=0):
-    """Indent the xml root element with "pretty" format. Can be used before writing xmlTree to a file"""
-    i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-        for elem in elem:
-            utils_indent_xml_tree(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
-            elem.tail = i
+    ABOUT_MESSAGE = "Creator: Alberto Cardellini\nEmail: albe.carde@gmail.com"
+    ERROR_SAVE_FILE = "Error saving the log. Try again."
+    ERROR_OPEN_FILE = "Error opening the file. Try again."

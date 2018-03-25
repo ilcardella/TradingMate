@@ -1,4 +1,4 @@
-from .Utils import Callbacks
+from .Utils import Callbacks, Messages
 from .WarningWindow import WarningWindow
 from .ShareTradingFrame import ShareTradingFrame
 from .CryptoCurrFrame import CryptoCurrFrame
@@ -94,7 +94,7 @@ class View():
 
     def show_about_popup(self):
         # Show the about panel
-        WarningWindow(self.mainWindow, "About", "Creator: Alberto Cardellini\nEmail: albe.carde@gmail.com")
+        WarningWindow(self.mainWindow, "About", Messages.ABOUT_MESSAGE.value)
 
 # ******* SHARE TRADING FRAME ************
 
