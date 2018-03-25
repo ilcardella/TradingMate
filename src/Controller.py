@@ -80,8 +80,8 @@ class Controller():
     def on_set_auto_refresh(self, enabled):
         self.model.set_auto_refresh(enabled)
 
-    def on_update_live_price(self, priceDict):
-       return 0
+    def on_update_live_price(self):
+       self._update_share_trading_view()
 
     def on_new_trade_event(self, newTrade):
         result = {"success":True,"message":"ok"}
@@ -93,7 +93,7 @@ class Controller():
             if modelResult["success"]:
                 #self.view.add_entry_to_log_table(newTrade) # Update the view
                 self._update_share_trading_view()
-                self.view.refresh_live_data()
+                #self.view.refresh_live_data()
             else:
                 return modelResult
         else:
@@ -105,7 +105,7 @@ class Controller():
         if result["success"]:
             self.view.reset_view()
             self._update_share_trading_view()
-            self.view.refresh_live_data()
+            #self.view.refresh_live_data()
         return result
 
     def on_save_log_file_event(self, filepath):

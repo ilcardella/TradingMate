@@ -14,7 +14,6 @@ import json
 
 # Globals
 CONFIG_FILE_PATH = "data/config_private.xml" # Change this to data/config.xml
-WEB_POLLING_SECONDS = 15 #Seconds
 
 class LivePricesWebThread(TaskThread):
 
@@ -244,6 +243,7 @@ class Model():
         try:
             self._add_entry_to_db(newTrade)
             self._update_portfolio()
+            self.livePricesThread.set_symbol_list(self.portfolio.get_holding_symbols())
         except Exception:
             result["success"] = False
             result["message"] = "Error: Invalid operation"
@@ -253,7 +253,7 @@ class Model():
         priceDict = self.livePricesThread.get_last_data()
         for symbol, price in priceDict.items():
             self.portfolio.update_holding_last_price(symbol, price)
-        self.callbacks[Callbacks.UPDATE_LIVE_PRICES](priceDict) # Call callback
+        self.callbacks[Callbacks.UPDATE_LIVE_PRICES]() # Call callback
     
     def set_auto_refresh(self, enabled):
         self.livePricesThread.enable(enabled)

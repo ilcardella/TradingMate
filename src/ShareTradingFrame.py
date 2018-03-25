@@ -10,23 +10,23 @@ class ShareTradingFrame(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.callbacks = {}
-        self.create_UI()
+        self._create_UI()
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
 
-    def create_UI(self):
+    def _create_UI(self):
          # Create frame containing buttons on the top row of the frame
         buttonsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
-        self.addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self.display_add_trade_panel)
+        self.addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
         self.addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
         self.autoRefresh = tk.IntVar(value=1)
         self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
                                             command=self.set_auto_refresh, onvalue=1, offvalue=0)
         self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
-        self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self.refresh_live_data)
+        self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
 
         # Create frame containing portfolio balances below the buttons
@@ -132,16 +132,16 @@ class ShareTradingFrame(tk.Frame):
         self.logTreeView.configure(yscrollcommand=scrollBar.set)
         # Create popup menu for the trade history log
         self.logPopupMenu = tk.Menu(self.logTreeView, tearoff=0)
-        self.logPopupMenu.add_command(label="Add trade...", command=self.display_add_trade_panel)
-        self.logTreeView.bind("<Button-3>", self.trade_log_popup_menu_event)
+        self.logPopupMenu.add_command(label="Add trade...", command=self._display_add_trade_panel)
+        self.logTreeView.bind("<Button-3>", self._trade_log_popup_menu_event)
 
-    def trade_log_popup_menu_event(self, event):
+    def _trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)
     
-    def display_add_trade_panel(self):
-        AddTradeDialogWindow(self.parent, self.add_new_trade_from_panel)
+    def _display_add_trade_panel(self):
+        AddTradeDialogWindow(self.parent, self._on_add_new_trade_event)
 
-    def add_new_trade_from_panel(self, newTrade):
+    def _on_add_new_trade_event(self, newTrade):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
 
     def set_auto_refresh(self):
@@ -150,21 +150,21 @@ class ShareTradingFrame(tk.Frame):
         self.refreshButton.config(state="disabled" if value == 1 else "enabled")
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](bool(value))
 
-    def refresh_live_data(self):
+    def _refresh_live_data(self):
         # Notify the Controller to request new data
         self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
 
     def add_entry_to_log_table(self, logEntry):
-        v_date = self.check_none_value(logEntry["date"])
-        v_act = self.check_none_value(logEntry["action"])
-        v_sym = self.check_none_value(logEntry["symbol"])
-        v_am = self.check_none_value(logEntry["amount"])
-        v_pri = self.check_none_value(logEntry["price"])
-        v_fee = self.check_none_value(logEntry["fee"])
-        v_sd = self.check_none_value(logEntry["stamp_duty"])
+        v_date = self._check_none_value(logEntry["date"])
+        v_act = self._check_none_value(logEntry["action"])
+        v_sym = self._check_none_value(logEntry["symbol"])
+        v_am = self._check_none_value(logEntry["amount"])
+        v_pri = self._check_none_value(logEntry["price"])
+        v_fee = self._check_none_value(logEntry["fee"])
+        v_sd = self._check_none_value(logEntry["stamp_duty"])
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd))
 
-    def check_none_value(self, var):
+    def _check_none_value(self, var):
         valid_var = var
         if var is None:
             valid_var = " "
