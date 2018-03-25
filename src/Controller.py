@@ -1,6 +1,7 @@
 from .Model import Model
 from .Utils import Callbacks, Actions
 from .View import View
+from .Portfolio import Portfolio
 
 
 class Controller():
@@ -20,8 +21,7 @@ class Controller():
 
     def start(self):
         self.model.start()
-        for logEntry in self.model.get_log_as_list()[::-1]:
-            self.view.add_entry_to_log_table(logEntry)
+        self._update_share_trading_view()
         
         self.view.start() # This should be the last instruction in this function
 
@@ -29,9 +29,10 @@ class Controller():
 
     def _check_new_trade_validity(self, newTrade):
         result = {"success":True,"message":"ok"}
+        portfolio = self.model.get_portfolio()
 
         if newTrade["action"] == Actions.WITHDRAW.name:
-            if newTrade["amount"] > self.model.get_cash_available():
+            if newTrade["amount"] > portfolio.get_cash_available():
                 result["success"] = False
                 result["message"] = "Error: Insufficient funding available"
         elif newTrade["action"] == Actions.BUY.name:
@@ -39,16 +40,34 @@ class Controller():
             fee = newTrade["fee"]
             tax = (newTrade["stamp_duty"] * cost) / 100
             totalCost = cost + fee + tax
-            if totalCost > self.model.get_cash_available():
+            if totalCost > portfolio.get_cash_available():
                 result["success"] = False
                 result["message"] = "Error: Insufficient funding available"
         elif newTrade["action"] == Actions.SELL.name:
-            if newTrade["symbol"] not in self.model.get_holdings() \
-                or newTrade["amount"] > self.model.get_holdings()[newTrade["symbol"]]:
+            if portfolio.get_holding_amount(newTrade["symbol"]) > 0 \
+                or newTrade["amount"] > portfolio.get_holding_amount(newTrade["symbol"]):
                 result["success"] = False
                 result["message"] = "Error: Insufficient holding available"
 
         return result
+    
+    def _update_share_trading_view(self):
+        logAsList = self.model.get_log_as_list()[::-1] # Reverse order
+        # Compute the current holding profits and balances
+        portfolio = self.model.get_portfolio()
+        # get the balances from the portfolio and update the view
+        cash = portfolio.get_cash_available()
+        holdingsValue = portfolio.get_holdings_value()
+        totalValue = portfolio.get_total_value()
+        pl = portfolio.get_portfolio_pl()
+        pl_perc = portfolio.get_portfolio_pl_perc()
+        # Update the view
+        self.view.reset_view()
+        self.view.update_share_trading_history_log(logAsList)
+        for h in portfolio.get_holding_list():
+            self.view.update_share_trading_holding(h.get_symbol(), h.get_amount(), h.get_open_price(),\
+             h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_lost_perc())
+        self.view.update_share_trading_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc)
 
 # EVENTS
 
@@ -62,50 +81,7 @@ class Controller():
         self.model.set_auto_refresh(enabled)
 
     def on_update_live_price(self, priceDict):
-        # priceDict is a dict {symbol: price}
-        # Here we calculate the cost, fees and profits before updating the view
-        holdingValue = 0
-        holdingsData = {}
-        for symbol in self.model.get_holdings().keys():
-            lastPrice = 0
-            value = 0
-            pl = 0
-            pl_pc = 0
-            amount = self.model.get_holdings()[symbol]
-            openPrice = self.model.get_holding_open_price(symbol)
-            cost = amount * (openPrice / 100) # in [£]
-            if symbol in priceDict:
-                lastPrice = priceDict[symbol]
-                value = amount * (lastPrice / 100) # in [£]
-                pl = value - cost
-                pl_pc = (pl * 100) / cost
-                holdingValue += value
-            liveData = {}
-            liveData["amount"] = amount
-            liveData["open"] = openPrice
-            liveData["last"] = lastPrice
-            liveData["cost"] = cost
-            liveData["value"] = value
-            liveData["pl_pc"] = pl_pc
-            liveData["pl"] = pl
-            holdingsData[symbol] = liveData
-        
-        # Calculate current balances (portfolio value)
-        freeCash = self.model.get_cash_available()
-        investedAmount = self.model.get_invested_amount()
-        balances = {}
-        balances["cash"] = freeCash
-        balances["portfolio"] = holdingValue
-        balances["total"] = freeCash + holdingValue
-        balances["pl"] = balances["total"] - investedAmount
-        if not investedAmount == 0:
-            balances["pl_pc"] = (balances["pl"] * 100) / investedAmount
-        else:
-            balances["pl_pc"] = 0
-
-        # Update the view
-        self.view.update_live_price(holdingsData)
-        self.view.update_balances(balances)
+       return 0
 
     def on_new_trade_event(self, newTrade):
         result = {"success":True,"message":"ok"}
@@ -115,7 +91,8 @@ class Controller():
         if valResult["success"]:
             modelResult = self.model.add_new_trade(newTrade) # Update the model
             if modelResult["success"]:
-                self.view.add_entry_to_log_table(newTrade) # Update the view
+                #self.view.add_entry_to_log_table(newTrade) # Update the view
+                self._update_share_trading_view()
                 self.view.refresh_live_data()
             else:
                 return modelResult
@@ -127,9 +104,8 @@ class Controller():
         result = self.model.open_log_file(filepath)
         if result["success"]:
             self.view.reset_view()
-            for logEntry in self.model.get_log_as_list():
-                self.view.add_entry_to_log_table(logEntry)
-            self.on_manual_refresh_event()
+            self._update_share_trading_view()
+            self.view.refresh_live_data()
         return result
 
     def on_save_log_file_event(self, filepath):

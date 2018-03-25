@@ -170,40 +170,36 @@ class ShareTradingFrame(tk.Frame):
             valid_var = " "
         return valid_var
 
-    def update_live_price(self, holdingDict):
-        # Clear the table and then insert the new data
-        self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
-        for holdingSymbol in holdingDict.keys():
-            holdingData = holdingDict[holdingSymbol]
-            found = False
-            for child in self.currentDataTreeView.get_children():
-                item = self.currentDataTreeView.item(child)
-                symbol = item['text']
-                if holdingSymbol == symbol:
-                    found = True
-                    self.currentDataTreeView.item(child, values=(holdingData['amount'],
-                                                            round(holdingData['open'], 3),
-                                                            round(holdingData['last'], 3),
-                                                            round(holdingData['cost'], 3),
-                                                            round(holdingData['value'], 3),
-                                                            round(holdingData['pl'], 2),
-                                                            round(holdingData['pl_pc'], 2)))
-                    break
-            if not found:
-                self.currentDataTreeView.insert('','end',text=holdingSymbol, values=(holdingData['amount'],
-                                                                                    round(holdingData['open'], 3),
-                                                                                    round(holdingData['last'], 3),
-                                                                                    round(holdingData['cost'], 3),
-                                                                                    round(holdingData['value'], 3),
-                                                                                    round(holdingData['pl'], 2),
-                                                                                    round(holdingData['pl_pc'], 2)))
+    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc):
+        found = False
+        for child in self.currentDataTreeView.get_children():
+            item = self.currentDataTreeView.item(child)
+            s = item['text']
+            if symbol == s:
+                found = True
+                self.currentDataTreeView.item(child, values=(amount,
+                                                            round(openPrice, 3),
+                                                            round(lastPrice, 3),
+                                                            round(cost, 3),
+                                                            round(value, 3),
+                                                            round(pl, 2),
+                                                            round(plPc, 2)))
+                break
+        if not found:
+            self.currentDataTreeView.insert('','end',text=symbol, values=(amount,
+                                                                                round(openPrice, 3),
+                                                                                round(lastPrice, 3),
+                                                                                round(cost, 3),
+                                                                                round(value, 3),
+                                                                                round(pl, 2),
+                                                                                round(plPc, 2)))
 
-    def update_balances(self, balances):
-        self.cashStringVar.set(str(round(balances["cash"],2)) + "£")
-        self.portfolioStringVar.set(str(round(balances["portfolio"],2)) + "£")
-        self.totalStringVar.set(str(round(balances["total"],2)) + "£")
-        self.plStringVar.set(str(round(balances["pl"],2)) + "£")
-        self.plpcStringVar.set(str(round(balances["pl_pc"],2)) + "%")
+    def update_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc):
+        self.cashStringVar.set(str(round(cash,2)) + "£")
+        self.portfolioStringVar.set(str(round(holdingsValue,2)) + "£")
+        self.totalStringVar.set(str(round(totalValue,2)) + "£")
+        self.plStringVar.set(str(round(pl,2)) + "£")
+        self.plpcStringVar.set(str(round(pl_perc,2)) + "%")
 
     def reset_view(self):
         self.cashStringVar.set(str(0))

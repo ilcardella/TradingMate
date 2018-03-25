@@ -1,5 +1,6 @@
 from .TaskThread import TaskThread
 from .Utils import *
+from .Portfolio import Portfolio
 
 import sys
 from enum import Enum
@@ -20,33 +21,35 @@ class LivePricesWebThread(TaskThread):
     def __init__(self, model, updatePeriod):
         TaskThread.__init__(self, updatePeriod)
         self.model = model
-        self.read_configuration()
+        self._read_configuration()
+        self.lastData = {}
+        self.symbolList = []
 
-    def read_configuration(self):
+    def _read_configuration(self):
         try:
             self.configValues = ET.parse(CONFIG_FILE_PATH).getroot()
             self.alphaVantageAPIKey = self.configValues.find("ALPHAVANTAGE_API_KEY").text
             self.alphaVantageBaseURL = self.configValues.find("ALPHAVANTAGE_BASE_URL").text
             # add other config parameters
         except Exception as e:
-            print("LivePricesWebThread:read_configuration() {0}".format(e))
+            print("LivePricesWebThread: _read_configuration() {0}".format(e))
             sys.exit(1)
 
     def task(self):
         priceDict = {}
-        symbolList = self.model.get_holdings().keys()
-        for symbol in symbolList:
+        for symbol in self.symbolList:
             if not self._finished.isSet():
-                value = self.fetch_price_data(symbol)
-                self._timeout.wait(1)
+                value = self._fetch_price_data(symbol)
+                self._timeout.wait(1) # Wait 1 sec as suggested by AlphaVantage support
                 if value is not None:
                     priceDict[symbol] = value
         if not self._finished.isSet():
-            self.model.update_live_price(priceDict)
+            self.lastData = priceDict # Store internally
+            self.model.on_new_price_data() # Notify the model
 
-    def fetch_price_data(self, symbol):
+    def _fetch_price_data(self, symbol):
         try:
-            url = self.build_url("TIME_SERIES_INTRADAY", symbol, "1min", self.alphaVantageAPIKey)
+            url = self._build_url("TIME_SERIES_INTRADAY", symbol, "1min", self.alphaVantageAPIKey)
             request = urllib.request.urlopen(url)
             content = request.read()
             data = json.loads(content.decode('utf-8'))
@@ -54,11 +57,11 @@ class LivePricesWebThread(TaskThread):
             last = next(iter(timeSerie.values()))
             value = float(last["4. close"])
         except Exception as e:
-            print("Model: fetch_price_data(): {0}".format(e))
+            print("LivePricesWebThread: _fetch_price_data(): {0}".format(e))
             value = None
         return value
 
-    def build_url(self, aLength, aSymbol, anInterval, anApiKey):
+    def _build_url(self, aLength, aSymbol, anInterval, anApiKey):
         function = "function=" + aLength
         symbol = "symbol=" + aSymbol
         interval = "interval=" + anInterval
@@ -66,21 +69,27 @@ class LivePricesWebThread(TaskThread):
         url = self.alphaVantageBaseURL + function + "&" + symbol + "&" + interval + "&" + apiKey
         return url
 
+    def get_last_data(self):
+        return self.lastData
+
+    def set_symbol_list(self, list):
+        self.symbolList = list
+
 class Model():
 
     def __init__(self):
-        self.read_configuration() # From config.xml file
+        self._read_configuration() # From config.xml file
+        self._read_database(self.dbFilePath)
         self.callbacks = {} # DataStruct containing the callbacks
-        self.holdings = {} # DataStruct containing the current holdings
-        self.cashAvailable = 0 # Available cash in the portfolio [GBP]
-        self.lastLiveData = {} # Buffer to store the latest live data fetched from the web api
         self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
-        self.read_database(self.dbFilePath)
-        self.update_portfolio()
+        self.portfolio = Portfolio("Portfolio1")
 
 # INTERNAL FUNCTIONS
 
-    def read_configuration(self):
+    def set_callback(self, id, callback):
+        self.callbacks[id] = callback
+
+    def _read_configuration(self):
         self.dbFilePath = "data/trading_log.xml"
         self.webPollingPeriod = 15
         try:
@@ -88,9 +97,9 @@ class Model():
             self.dbFilePath = self.configValues.find("TRADING_LOG_PATH").text
             self.webPollingPeriod = int(self.configValues.find("ALPHAVANTAGE_POLLING_PERIOD").text)
         except Exception as e:
-            print("Model: read_configuration(): {0}".format(e))
+            print("Model: _read_configuration(): {0}".format(e))
 
-    def read_database(self, filepath):
+    def _read_database(self, filepath):
         try:
             self.tradingLogXMLTree = ET.parse(filepath)
             self.log = self.tradingLogXMLTree.getroot()
@@ -98,9 +107,11 @@ class Model():
             print("Model: Error reading database! {0}".format(e))
             self.log = ET.Element("log")
 
-    def update_portfolio(self):
-        self.cashAvailable = 0
-        self.holdings.clear()
+    def _update_portfolio(self):
+        """Scan the database and update the Portfolio instance"""
+        cashAvailable = 0.0
+        investedAmount = 0.0
+        holdings = {}
         for row in self.log:
             action = row.find("action").text
             amount = float(row.find("amount").text)
@@ -110,26 +121,38 @@ class Model():
             sd = float(row.find("stamp_duty").text)
 
             if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
-                self.cashAvailable += amount
+                cashAvailable += amount
+                if action == Actions.DEPOSIT.name:
+                    investedAmount += amount
             elif action == Actions.WITHDRAW.name:
-                self.cashAvailable -= amount
+                cashAvailable -= amount
+                investedAmount -= amount
             elif action == Actions.BUY.name:
-                if symbol not in self.holdings:
-                    self.holdings[symbol] = amount
+                if symbol not in holdings:
+                    holdings[symbol] = amount
                 else:
-                    self.holdings[symbol] += amount
+                    holdings[symbol] += amount
                 cost = (price/100) * amount
                 tax = (sd * cost) / 100
                 totalCost = cost + tax + fee
-                self.cashAvailable -= totalCost
+                cashAvailable -= totalCost
             elif action == Actions.SELL.name:
-                self.holdings[symbol] -= amount
-                if self.holdings[symbol] < 1:
-                    del self.holdings[symbol]
+                holdings[symbol] -= amount
+                if holdings[symbol] < 1:
+                    del holdings[symbol]
                 profit = ((price/100) * amount) - fee
-                self.cashAvailable += profit
+                cashAvailable += profit
+
+        self.portfolio.clear()
+        for symbol, amount in holdings.items():
+            self.portfolio.update_holding_amount(symbol, amount)
+            self.portfolio.update_holding_open_price(symbol, self.get_holding_open_price(symbol))
+        self.portfolio.set_invested_amount(investedAmount)
+        self.portfolio.set_cash_available(cashAvailable)
+        for symbol, price in self.livePricesThread.get_last_data().items():
+            self.portfolio.update_holding_last_price(symbol, price)
     
-    def add_entry_to_db(self, logEntry):
+    def _add_entry_to_db(self, logEntry):
         row = ET.SubElement(self.log, "row")
         date = ET.SubElement(row, "date")
         date.text = str(logEntry["date"]).strip()
@@ -146,18 +169,16 @@ class Model():
         sd = ET.SubElement(row, "stamp_duty")
         sd.text = str(logEntry["stamp_duty"]).strip()
     
-    def remove_entry_from_db(self, logEntry):
+    def _remove_entry_from_db(self, logEntry):
+        # TODO
         self.log.remove(logEntry)
 
-    def reset(self, filepath=None):
-        self.read_configuration() # From config.xml file
-        self.holdings.clear() # DataStruct containing the current holdings
-        self.cashAvailable = 0 # Available cash in the portfolio [GBP]
-        self.lastLiveData.clear() # Buffer to store the latest live data fetched from the web api
+    def _reset(self, filepath=None):
+        self._read_configuration() # From config.xml file
         if filepath is not None:
             self.dbFilePath = filepath
-        self.read_database(self.dbFilePath)
-        self.update_portfolio()
+        self._read_database(self.dbFilePath)
+        self._update_portfolio()
 
 # GETTERS
 
@@ -175,10 +196,6 @@ class Model():
             d["stamp_duty"] = float(row.find('stamp_duty').text) if row.find('stamp_duty').text is not None else 0.0
             listOfEntries.append(d)
         return listOfEntries
-                             
-    def get_holdings(self):
-        # Returns a dict {symbol: amount} for each current holding  
-        return self.holdings
 
     def get_holding_open_price(self, symbol):
         """Return the average price paid to open the current positon of the requested stock"""
@@ -186,7 +203,7 @@ class Model():
         # to have the current amount, compute then the average price of these transactions
         sum = 0
         count = 0
-        targetAmount = self.get_holdings()[symbol]
+        targetAmount = self.portfolio.get_holding_amount(symbol)
         for row in self.log[::-1]: # reverse order
             action = row.find("action").text
             sym = row.find("symbol").text
@@ -200,25 +217,16 @@ class Model():
                     break
         avg = sum / count
         return round(avg, 4)
-
-    def get_cash_available(self):
-        return self.cashAvailable
-
-    def get_invested_amount(self):
-        """Return the total invested amount in the portfolio"""
-        amount = 0.0
-        for row in self.log:
-            action = row.find("action").text
-            if action == Actions.DEPOSIT.name:
-                amount += float(row.find("amount").text)
-            elif action == Actions.WITHDRAW.name:
-                amount -= float(row.find("amount").text)
-        return amount
             
-    
+    def get_portfolio(self):
+        """Return the portfolio as instance of Portfolio class"""
+        return self.portfolio
+
 # INTERFACES
 
     def start(self):
+        self._update_portfolio()
+        self.livePricesThread.set_symbol_list(self.portfolio.get_holding_symbols())
         self.livePricesThread.start()
 
     def stop_application(self):
@@ -231,27 +239,20 @@ class Model():
         newTree = ET.ElementTree(self.log)
         newTree.write(filepath, xml_declaration=True, encoding='utf-8', method="xml")
 
-    def set_callback(self, id, callback):
-        self.callbacks[id] = callback
-
     def add_new_trade(self, newTrade):
         result = {"success":True,"message":"ok"}
         try:
-            self.add_entry_to_db(newTrade)
-            self.update_portfolio()
+            self._add_entry_to_db(newTrade)
+            self._update_portfolio()
         except Exception:
             result["success"] = False
             result["message"] = "Error: Invalid operation"
-        
         return result
 
-    def update_live_price(self, priceDict):
-        # Replace None values with the last valid data
-        for symbol in priceDict.keys():
-            if priceDict[symbol] is None and symbol in self.lastLiveData:
-                priceDict[symbol] = self.lastLiveData[symbol]
-
-        self.lastLiveData = priceDict # Store locally
+    def on_new_price_data(self):
+        priceDict = self.livePricesThread.get_last_data()
+        for symbol, price in priceDict.items():
+            self.portfolio.update_holding_last_price(symbol, price)
         self.callbacks[Callbacks.UPDATE_LIVE_PRICES](priceDict) # Call callback
     
     def set_auto_refresh(self, enabled):
@@ -275,7 +276,7 @@ class Model():
     def open_log_file(self, filepath):
         result = {"success":True,"message":"ok"}
         try:
-            self.reset(filepath)
+            self._reset(filepath)
         except Exception:
             result["success"] = False
             result["message"] = "Error opening the file. Try again."
