@@ -253,6 +253,7 @@ class Model():
 
     def stop_application(self):
         self.livePricesThread.shutdown()
+        self.livePricesThread.join()
         self._write_log_to_file(self.dbFilePath)
 
     def add_new_trade(self, newTrade):

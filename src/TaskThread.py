@@ -8,11 +8,12 @@ class TaskThread(threading.Thread):
     
     def __init__(self, updatePeriod):
         threading.Thread.__init__(self)
+        self.setDaemon(True)
         self._timeout = threading.Event()
         self._finished = threading.Event()
-        self._interval = updatePeriod
         self._enabled = threading.Event()
         self._enabled.set()
+        self._interval = updatePeriod
         self._singleRun = False
     
     def setInterval(self, interval):
@@ -21,8 +22,8 @@ class TaskThread(threading.Thread):
     
     def shutdown(self):
         """Stop this thread"""
-        self.cancel_timeout()
-        self.enable(True)
+        self._timeout.set()
+        self._enabled.set()
         self._finished.set()
 
     def enable(self, enabled):
@@ -45,6 +46,7 @@ class TaskThread(threading.Thread):
         while 1:
             # reset timeout
             self._timeout.clear()
+            # Check if it was a single run
             if self._singleRun:
                 self.enable(False)
             self._singleRun = False
