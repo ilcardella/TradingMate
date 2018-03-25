@@ -105,8 +105,8 @@ class View():
         # Notify the Controller to request new data
         self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
             
-    def reset_view(self):
-        self.shareTradingFrame.reset_view()
+    def reset_view(self, resetHistory=False):
+        self.shareTradingFrame.reset_view(resetHistory)
 
     def update_share_trading_history_log(self, logList):
         for entry in logList:

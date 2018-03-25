@@ -201,11 +201,12 @@ class ShareTradingFrame(tk.Frame):
         self.plStringVar.set(str(round(pl,2)) + "£")
         self.plpcStringVar.set(str(round(pl_perc,2)) + "%")
 
-    def reset_view(self):
+    def reset_view(self, resetHistory=False):
         self.cashStringVar.set(str(0))
         self.portfolioStringVar.set(str(0))
         self.totalStringVar.set(str(0))
         self.plStringVar.set(str(0))
         self.plpcStringVar.set(str(0))
         self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
-        self.logTreeView.delete(*self.logTreeView.get_children())
+        if resetHistory:
+            self.logTreeView.delete(*self.logTreeView.get_children())

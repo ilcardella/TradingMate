@@ -48,8 +48,8 @@ class LivePricesWebThread(TaskThread):
 
     def _fetch_price_data(self, symbol):
         try:
-            url = self._build_url("TIME_SERIES_INTRADAY", symbol, "1min", self.alphaVantageAPIKey)
-            request = urllib.request.urlopen(url)
+            url = self._build_url("TIME_SERIES_DAILY", symbol, "5min", self.alphaVantageAPIKey)
+            request = urllib.request.urlopen(url, timeout=10)
             content = request.read()
             data = json.loads(content.decode('utf-8'))
             timeSerie = data["Time Series (1min)"]

@@ -21,7 +21,7 @@ class Controller():
 
     def start(self):
         self.model.start()
-        self._update_share_trading_view()
+        self._update_share_trading_view(updateHistory=True)
         
         self.view.start() # This should be the last instruction in this function
 
@@ -51,8 +51,10 @@ class Controller():
 
         return result
     
-    def _update_share_trading_view(self):
-        logAsList = self.model.get_log_as_list()[::-1] # Reverse order
+    def _update_share_trading_view(self, updateHistory=False):
+        if updateHistory:
+            logAsList = self.model.get_log_as_list()[::-1] # Reverse order
+            self.view.update_share_trading_history_log(logAsList)
         # Compute the current holding profits and balances
         portfolio = self.model.get_portfolio()
         # get the balances from the portfolio and update the view
@@ -63,7 +65,6 @@ class Controller():
         pl_perc = portfolio.get_portfolio_pl_perc()
         # Update the view
         self.view.reset_view()
-        self.view.update_share_trading_history_log(logAsList)
         for h in portfolio.get_holding_list():
             self.view.update_share_trading_holding(h.get_symbol(), h.get_amount(), h.get_open_price(),\
              h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_lost_perc())
