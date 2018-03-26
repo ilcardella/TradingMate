@@ -152,13 +152,13 @@ class ShareTradingFrame(tk.Frame):
 
     def _check_string_value(self, var):
         valid_var = var
-        if var is None:
-            valid_var = " "
+        if var is None or len(var) < 1:
+            valid_var = INVALID_STRING
         return valid_var
 
-    def _check_float_value(self, var):
+    def _check_float_value(self, var, canBeNegative=False):
         valid_var = var
-        if var is None or var < 0:
+        if var is None or (not canBeNegative and var < 0):
             valid_var = INVALID_STRING
         else:
             valid_var = round(var, 3)
@@ -187,8 +187,8 @@ class ShareTradingFrame(tk.Frame):
         v_lastPrice=self._check_float_value(lastPrice)
         v_cost=self._check_float_value(cost)
         v_value=self._check_float_value(value)
-        v_pl=self._check_float_value(pl)
-        v_plPc=self._check_float_value(plPc)
+        v_pl=self._check_float_value(pl, True)
+        v_plPc=self._check_float_value(plPc, True)
 
         found = False
         for child in self.currentDataTreeView.get_children():
@@ -220,7 +220,7 @@ class ShareTradingFrame(tk.Frame):
             v_pl = INVALID_STRING
             v_plPerc = INVALID_STRING
         else:
-            v_tot = round(pl,2)
+            v_tot = round(totalValue,2)
             v_pl = round(pl,2)
             v_plPerc = round(plPerc,2)
         self.cashStringVar.set(str(round(cash,2)) + "£")

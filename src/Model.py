@@ -52,20 +52,20 @@ class LivePricesWebThread(TaskThread):
             request = urllib.request.urlopen(url, timeout=10)
             content = request.read()
             data = json.loads(content.decode('utf-8'))
-            timeSerie = data["Time Series (1min)"]
+            timeSerie = data["Time Series (Daily)"]
             last = next(iter(timeSerie.values()))
             value = float(last["4. close"])
-        except Exception as e:
-            print("LivePricesWebThread: _fetch_price_data(): {0}".format(e))
+        except Exception:
+            print("LivePricesWebThread: _fetch_price_data(): {0}".format(url))
             value = None
         return value
 
     def _build_url(self, aLength, aSymbol, anInterval, anApiKey):
         function = "function=" + aLength
-        symbol = "symbol=" + aSymbol
+        symbol = "symbol=LON:" + aSymbol
         interval = "interval=" + anInterval
         apiKey = "apikey=" + anApiKey
-        url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + interval + "&" + apiKey
+        url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + apiKey
         return url
 
     def get_last_data(self):
