@@ -30,12 +30,15 @@ class ShareTradingFrame(tk.Frame):
         self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
-
-        # Create frame containing portfolio balances below the buttons
-        balancesFrame = ttk.Frame(self, relief="groove", borderwidth=1)
+        
+        balancesFrame = ttk.Frame(self)
         balancesFrame.pack(fill="none", expand=True, anchor="n", pady=5)
+        
+        # Create frame containing portfolio balances below the buttons
+        fundBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
+        fundBalFrame.pack(side="left", fill="y", expand=True, anchor="n", pady=5)
         # Create four different frames for cash, portfolio, total and profit/loss
-        cashFrame = ttk.Frame(balancesFrame)
+        cashFrame = ttk.Frame(fundBalFrame)
         cashFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
         cashLabel = ttk.Label(cashFrame, text="Cash:")
         cashLabel.pack(side="top")
@@ -43,7 +46,7 @@ class ShareTradingFrame(tk.Frame):
         cashValueLabel = ttk.Label(cashFrame, textvariable=self.cashStringVar)
         cashValueLabel.pack(side="bottom")
         # Portfolio balance frame
-        portfolioFrame = ttk.Frame(balancesFrame)
+        portfolioFrame = ttk.Frame(fundBalFrame)
         portfolioFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
         portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio:")
         portfolioLabel.pack(side="top")
@@ -51,7 +54,7 @@ class ShareTradingFrame(tk.Frame):
         portfolioValueLabel = ttk.Label(portfolioFrame, textvariable=self.portfolioStringVar)
         portfolioValueLabel.pack(side="bottom")
         # Total value balance frame
-        totalFrame = ttk.Frame(balancesFrame)
+        totalFrame = ttk.Frame(fundBalFrame)
         totalFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
         totalLabel = ttk.Label(totalFrame, text="Total:")
         totalLabel.pack(side="top")
@@ -59,20 +62,41 @@ class ShareTradingFrame(tk.Frame):
         totalValueLabel = ttk.Label(totalFrame, textvariable=self.totalStringVar)
         totalValueLabel.pack(side="bottom")
         # profits balance frames
-        plFrame = ttk.Frame(balancesFrame)
+        plFrame = ttk.Frame(fundBalFrame)
         plFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
         plLabel = ttk.Label(plFrame, text="P/L:")
         plLabel.pack(side="top")
         self.plStringVar = tk.StringVar()
         plValueLabel = ttk.Label(plFrame, textvariable=self.plStringVar)
         plValueLabel.pack(side="bottom")
-        plpcFrame = ttk.Frame(balancesFrame)
+        plpcFrame = ttk.Frame(fundBalFrame)
         plpcFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
         plpcLabel = ttk.Label(plpcFrame, text="P/L %:")
         plpcLabel.pack(side="top")
         self.plpcStringVar = tk.StringVar()
         plpcValueLabel = ttk.Label(plpcFrame, textvariable=self.plpcStringVar)
         plpcValueLabel.pack(side="bottom")
+
+        # Create frame containing open positions P/L
+        holdBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
+        holdBalFrame.pack(side="left", fill="y", expand=True, anchor="n", pady=5)
+        # Create four different frames for cash, portfolio, total and profit/loss
+        # TODO change vars names
+        cashFrame = ttk.Frame(holdBalFrame)
+        cashFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        cashLabel = ttk.Label(cashFrame, text="Cash:")
+        cashLabel.pack(side="top")
+        #self.cashStringVar = tk.StringVar()
+        cashValueLabel = ttk.Label(cashFrame, textvariable=self.cashStringVar)
+        cashValueLabel.pack(side="bottom")
+        # Portfolio balance frame
+        portfolioFrame = ttk.Frame(holdBalFrame)
+        portfolioFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio:")
+        portfolioLabel.pack(side="top")
+        #self.portfolioStringVar = tk.StringVar()
+        portfolioValueLabel = ttk.Label(portfolioFrame, textvariable=self.portfolioStringVar)
+        portfolioValueLabel.pack(side="bottom")
 
         # Frame containing the holdings table
         holdingsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
