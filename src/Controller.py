@@ -63,12 +63,14 @@ class Controller():
         totalValue = portfolio.get_total_value()
         pl = portfolio.get_portfolio_pl()
         pl_perc = portfolio.get_portfolio_pl_perc()
+        holdingPL = portfolio.get_open_positions_pl()
+        holdingPLPC = portfolio.get_open_positions_pl_perc()
         # Update the view
         self.view.reset_view()
         for h in portfolio.get_holding_list():
             self.view.update_share_trading_holding(h.get_symbol(), h.get_amount(), h.get_open_price(),\
-             h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_lost_perc())
-        self.view.update_share_trading_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc)
+             h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_loss_perc())
+        self.view.update_share_trading_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC)
 
 # EVENTS
 

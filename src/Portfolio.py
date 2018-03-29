@@ -61,11 +61,25 @@ class Portfolio():
 
     def get_portfolio_pl(self):
         """Return the profit/loss in £ of the portfolio over the invested amount"""
-        return (self._holdingsValue + self._cashAvailable) - self._investedAmount
+        return self.get_total_value() - self.get_invested_amount()
 
     def get_portfolio_pl_perc(self):
         """Return the profit/loss in % of the portfolio over the invested amount"""
-        return (self.get_portfolio_pl() * 100) / self._investedAmount
+        return (self.get_portfolio_pl() * 100) / self.get_invested_amount()
+
+    def get_open_positions_pl(self):
+        """Return the sum profit/loss in £ of the current open positions"""
+        sum = 0
+        for holding in self._holdings.values():
+            sum += holding.get_profit_loss()
+        return sum
+
+    def get_open_positions_pl_perc(self):
+        """Return the sum profit/loss in % of the current open positions"""
+        sum = 0
+        for holding in self._holdings.values():
+            sum += holding.get_profit_loss_perc()
+        return sum
 
 # SETTERS
 
@@ -144,5 +158,5 @@ class Holding():
     def get_profit_loss(self):
         return (self.get_value() - self.get_cost())
     
-    def get_profit_lost_perc(self):
+    def get_profit_loss_perc(self):
         return (self.get_profit_loss() * 100) / self.get_cost()

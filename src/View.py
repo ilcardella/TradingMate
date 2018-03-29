@@ -112,9 +112,9 @@ class View():
         for entry in logList:
             self.shareTradingFrame.add_entry_to_log_table(entry)
     
-    def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc):
-        self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc)
-
+    def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC):
+        self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC)
+        
     def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc):
         self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc)
 

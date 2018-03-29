@@ -31,16 +31,17 @@ class ShareTradingFrame(tk.Frame):
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
         
+        # This frame is a container for smaller frames displaying balances
         balancesFrame = ttk.Frame(self)
         balancesFrame.pack(fill="none", expand=True, anchor="n", pady=5)
         
-        # Create frame containing portfolio balances below the buttons
+        # Create frame containing fund balances
         fundBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
         fundBalFrame.pack(side="left", fill="y", expand=True, anchor="n", pady=5)
         # Create four different frames for cash, portfolio, total and profit/loss
         cashFrame = ttk.Frame(fundBalFrame)
         cashFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
-        cashLabel = ttk.Label(cashFrame, text="Cash:")
+        cashLabel = ttk.Label(cashFrame, text="Cash")
         cashLabel.pack(side="top")
         self.cashStringVar = tk.StringVar()
         cashValueLabel = ttk.Label(cashFrame, textvariable=self.cashStringVar)
@@ -48,7 +49,7 @@ class ShareTradingFrame(tk.Frame):
         # Portfolio balance frame
         portfolioFrame = ttk.Frame(fundBalFrame)
         portfolioFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
-        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio:")
+        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio")
         portfolioLabel.pack(side="top")
         self.portfolioStringVar = tk.StringVar()
         portfolioValueLabel = ttk.Label(portfolioFrame, textvariable=self.portfolioStringVar)
@@ -56,7 +57,7 @@ class ShareTradingFrame(tk.Frame):
         # Total value balance frame
         totalFrame = ttk.Frame(fundBalFrame)
         totalFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
-        totalLabel = ttk.Label(totalFrame, text="Total:")
+        totalLabel = ttk.Label(totalFrame, text="Total")
         totalLabel.pack(side="top")
         self.totalStringVar = tk.StringVar()
         totalValueLabel = ttk.Label(totalFrame, textvariable=self.totalStringVar)
@@ -64,14 +65,14 @@ class ShareTradingFrame(tk.Frame):
         # profits balance frames
         plFrame = ttk.Frame(fundBalFrame)
         plFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
-        plLabel = ttk.Label(plFrame, text="P/L:")
+        plLabel = ttk.Label(plFrame, text="P/L")
         plLabel.pack(side="top")
         self.plStringVar = tk.StringVar()
         plValueLabel = ttk.Label(plFrame, textvariable=self.plStringVar)
         plValueLabel.pack(side="bottom")
         plpcFrame = ttk.Frame(fundBalFrame)
         plpcFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
-        plpcLabel = ttk.Label(plpcFrame, text="P/L %:")
+        plpcLabel = ttk.Label(plpcFrame, text="P/L %")
         plpcLabel.pack(side="top")
         self.plpcStringVar = tk.StringVar()
         plpcValueLabel = ttk.Label(plpcFrame, textvariable=self.plpcStringVar)
@@ -79,24 +80,22 @@ class ShareTradingFrame(tk.Frame):
 
         # Create frame containing open positions P/L
         holdBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
-        holdBalFrame.pack(side="left", fill="y", expand=True, anchor="n", pady=5)
-        # Create four different frames for cash, portfolio, total and profit/loss
-        # TODO change vars names
-        cashFrame = ttk.Frame(holdBalFrame)
-        cashFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
-        cashLabel = ttk.Label(cashFrame, text="Cash:")
-        cashLabel.pack(side="top")
-        #self.cashStringVar = tk.StringVar()
-        cashValueLabel = ttk.Label(cashFrame, textvariable=self.cashStringVar)
-        cashValueLabel.pack(side="bottom")
-        # Portfolio balance frame
-        portfolioFrame = ttk.Frame(holdBalFrame)
-        portfolioFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
-        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio:")
-        portfolioLabel.pack(side="top")
-        #self.portfolioStringVar = tk.StringVar()
-        portfolioValueLabel = ttk.Label(portfolioFrame, textvariable=self.portfolioStringVar)
-        portfolioValueLabel.pack(side="bottom")
+        holdBalFrame.pack(side="left", fill="y", expand=True, anchor="n", padx=20, pady=5)
+        # holding P/L of current positions
+        holdPlFrame = ttk.Frame(holdBalFrame)
+        holdPlFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        holdPlLabel = ttk.Label(holdPlFrame, text="Holding P/L")
+        holdPlLabel.pack(side="top")
+        self.holdPLStringVar = tk.StringVar()
+        holdPLValueLabel = ttk.Label(holdPlFrame, textvariable=self.holdPLStringVar)
+        holdPLValueLabel.pack(side="bottom")
+        holdPlPcFrame = ttk.Frame(holdBalFrame)
+        holdPlPcFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        holdPlPcLabel = ttk.Label(holdPlPcFrame, text="Holding P/L %")
+        holdPlPcLabel.pack(side="top")
+        self.holdPlPcStringVar = tk.StringVar()
+        holdPlPcValueLabel = ttk.Label(holdPlPcFrame, textvariable=self.holdPlPcStringVar)
+        holdPlPcValueLabel.pack(side="bottom")
 
         # Frame containing the holdings table
         holdingsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
@@ -237,28 +236,36 @@ class ShareTradingFrame(tk.Frame):
                                                                                 v_pl,
                                                                                 v_plPc))
 
-    def update_portfolio_balances(self, cash, holdingsValue, totalValue, pl, plPerc):
+    def update_portfolio_balances(self, cash, holdingsValue, totalValue, pl, plPerc, holdingPL, holdingPLPC):
         v_holdVal = self._check_float_value(holdingsValue)
         if v_holdVal==INVALID_STRING:
             v_tot = INVALID_STRING
             v_pl = INVALID_STRING
             v_plPerc = INVALID_STRING
+            v_holdPl = INVALID_STRING
+            v_holdPlPc = INVALID_STRING
         else:
             v_tot = round(totalValue,2)
             v_pl = round(pl,2)
             v_plPerc = round(plPerc,2)
+            v_holdPl = round(holdingPL,2)
+            v_holdPlPc = round(holdingPLPC,2)
         self.cashStringVar.set(str(round(cash,2)) + "£")
         self.portfolioStringVar.set(str(v_holdVal) + "£")
         self.totalStringVar.set(str(v_tot) + "£")
         self.plStringVar.set(str(v_pl) + "£")
         self.plpcStringVar.set(str(v_plPerc) + "%")
+        self.holdPLStringVar.set(str(v_holdPl) + "£")
+        self.holdPlPcStringVar.set(str(v_holdPlPc) + "%")
 
     def reset_view(self, resetHistory=False):
-        self.cashStringVar.set(str(0))
-        self.portfolioStringVar.set(str(0))
-        self.totalStringVar.set(str(0))
-        self.plStringVar.set(str(0))
-        self.plpcStringVar.set(str(0))
+        self.cashStringVar.set(str(INVALID_STRING))
+        self.portfolioStringVar.set(str(INVALID_STRING))
+        self.totalStringVar.set(str(INVALID_STRING))
+        self.plStringVar.set(str(INVALID_STRING))
+        self.plpcStringVar.set(str(INVALID_STRING))
+        self.holdPLStringVar.set(str(INVALID_STRING))
+        self.holdPlPcStringVar.set(str(INVALID_STRING))
         self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
         if resetHistory:
             self.logTreeView.delete(*self.logTreeView.get_children())
