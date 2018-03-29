@@ -81,9 +81,10 @@ class View():
     def open_log(self):
         # Open a saved log
         filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
-        result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
-        if result["success"] == False:
-            WarningWindow(self.mainWindow, "Warning", result["message"])
+        if filename is not None and len(filename) > 0:
+            result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+            if result["success"] == False:
+                WarningWindow(self.mainWindow, "Warning", result["message"])
 
     def save_log(self):
         # Save the current log
@@ -114,9 +115,12 @@ class View():
     
     def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC):
         self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC)
-        
+
     def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc):
         self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc)
+
+    def set_db_filepath(self, filepath):
+        self.shareTradingFrame.set_db_filepath(filepath)
 
 # ******* CRYPTO CURRENCIES FRAME ************
 

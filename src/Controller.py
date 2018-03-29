@@ -52,6 +52,10 @@ class Controller():
         return result
     
     def _update_share_trading_view(self, updateHistory=False):
+        # Update the database filepath shown in the share trading frame
+        filepath = self.model.get_db_filepath()
+        self.view.set_db_filepath(filepath)
+        # Update history table if required
         if updateHistory:
             logAsList = self.model.get_log_as_list()[::-1] # Reverse order
             self.view.update_share_trading_history_log(logAsList)

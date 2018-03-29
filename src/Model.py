@@ -63,7 +63,6 @@ class LivePricesWebThread(TaskThread):
     def _build_url(self, aLength, aSymbol, anInterval, anApiKey):
         function = "function=" + aLength
         symbol = "symbol=LON:" + aSymbol
-        interval = "interval=" + anInterval
         apiKey = "apikey=" + anApiKey
         url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + apiKey
         return url
@@ -243,6 +242,9 @@ class Model():
     def get_portfolio(self):
         """Return the portfolio as instance of Portfolio class"""
         return self.portfolio
+
+    def get_db_filepath(self):
+        return self.dbFilePath
 
 # INTERFACES
 

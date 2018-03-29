@@ -31,16 +31,20 @@ class ShareTradingFrame(tk.Frame):
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
         
+        self.dbFilepathStringVar = tk.StringVar()
+        dbLabel = ttk.Label(self, textvariable=self.dbFilepathStringVar)
+        dbLabel.pack(anchor="w")
+
         # This frame is a container for smaller frames displaying balances
         balancesFrame = ttk.Frame(self)
         balancesFrame.pack(fill="none", expand=True, anchor="n", pady=5)
-        
+
         # Create frame containing fund balances
         fundBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
-        fundBalFrame.pack(side="left", fill="y", expand=True, anchor="n", pady=5)
+        fundBalFrame.pack(side="left", fill="y", anchor="n", pady=5)
         # Create four different frames for cash, portfolio, total and profit/loss
         cashFrame = ttk.Frame(fundBalFrame)
-        cashFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        cashFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
         cashLabel = ttk.Label(cashFrame, text="Cash")
         cashLabel.pack(side="top")
         self.cashStringVar = tk.StringVar()
@@ -48,7 +52,7 @@ class ShareTradingFrame(tk.Frame):
         cashValueLabel.pack(side="bottom")
         # Portfolio balance frame
         portfolioFrame = ttk.Frame(fundBalFrame)
-        portfolioFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        portfolioFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
         portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio")
         portfolioLabel.pack(side="top")
         self.portfolioStringVar = tk.StringVar()
@@ -56,7 +60,7 @@ class ShareTradingFrame(tk.Frame):
         portfolioValueLabel.pack(side="bottom")
         # Total value balance frame
         totalFrame = ttk.Frame(fundBalFrame)
-        totalFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
+        totalFrame.pack(side="left", fill="both", anchor="n", padx=10, pady=5)
         totalLabel = ttk.Label(totalFrame, text="Total")
         totalLabel.pack(side="top")
         self.totalStringVar = tk.StringVar()
@@ -64,14 +68,14 @@ class ShareTradingFrame(tk.Frame):
         totalValueLabel.pack(side="bottom")
         # profits balance frames
         plFrame = ttk.Frame(fundBalFrame)
-        plFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
+        plFrame.pack(side="left", fill="both", anchor="n", padx=10, pady=5)
         plLabel = ttk.Label(plFrame, text="P/L")
         plLabel.pack(side="top")
         self.plStringVar = tk.StringVar()
         plValueLabel = ttk.Label(plFrame, textvariable=self.plStringVar)
         plValueLabel.pack(side="bottom")
         plpcFrame = ttk.Frame(fundBalFrame)
-        plpcFrame.pack(side="left", fill="both", anchor="n", padx=20, pady=5)
+        plpcFrame.pack(side="left", fill="both", anchor="n", padx=10, pady=5)
         plpcLabel = ttk.Label(plpcFrame, text="P/L %")
         plpcLabel.pack(side="top")
         self.plpcStringVar = tk.StringVar()
@@ -80,17 +84,17 @@ class ShareTradingFrame(tk.Frame):
 
         # Create frame containing open positions P/L
         holdBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
-        holdBalFrame.pack(side="left", fill="y", expand=True, anchor="n", padx=20, pady=5)
+        holdBalFrame.pack(side="left", fill="y", anchor="n", padx=5, pady=5)
         # holding P/L of current positions
         holdPlFrame = ttk.Frame(holdBalFrame)
-        holdPlFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        holdPlFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
         holdPlLabel = ttk.Label(holdPlFrame, text="Holding P/L")
         holdPlLabel.pack(side="top")
         self.holdPLStringVar = tk.StringVar()
         holdPLValueLabel = ttk.Label(holdPlFrame, textvariable=self.holdPLStringVar)
         holdPLValueLabel.pack(side="bottom")
         holdPlPcFrame = ttk.Frame(holdBalFrame)
-        holdPlPcFrame.pack(side="left", fill="y", anchor="n", padx=20, pady=5)
+        holdPlPcFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
         holdPlPcLabel = ttk.Label(holdPlPcFrame, text="Holding P/L %")
         holdPlPcLabel.pack(side="top")
         self.holdPlPcStringVar = tk.StringVar()
@@ -269,3 +273,6 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
         if resetHistory:
             self.logTreeView.delete(*self.logTreeView.get_children())
+
+    def set_db_filepath(self, filepath):
+        self.dbFilepathStringVar.set("DB: " + filepath)
