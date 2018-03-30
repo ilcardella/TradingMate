@@ -127,6 +127,9 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.column("value", width=100)
         self.currentDataTreeView.column("pl", width=100)
         self.currentDataTreeView.column("pl_pc", width=100)
+        # Treeview colour layout
+        self.currentDataTreeView.tag_configure('oddrow', background='white')
+        self.currentDataTreeView.tag_configure('evenrow', background='lightblue')
 
         # Frame containing the trading history
         logFrame = ttk.Frame(self, relief="groove", borderwidth=1)
@@ -155,6 +158,9 @@ class ShareTradingFrame(tk.Frame):
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
         self.logTreeView.column("stamp_duty", width=100)
+        # Treeview colour layout
+        self.logTreeView.tag_configure('oddrow', background='white')
+        self.logTreeView.tag_configure('evenrow', background='lightblue')
         # Create a scrollbar for the history log
         scrollBar = tk.Scrollbar(tableFrame, orient="vertical", command=self.logTreeView.yview)
         scrollBar.pack(side='right', fill='y')
@@ -205,7 +211,8 @@ class ShareTradingFrame(tk.Frame):
         v_pri = self._check_float_value(logEntry["price"])
         v_fee = self._check_float_value(logEntry["fee"])
         v_sd = self._check_float_value(logEntry["stamp_duty"])
-        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd))
+        tag = "evenrow" if len(self.logTreeView.get_children()) % 2 == 0 else "oddrow"
+        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd), tags=(tag,))
 
     def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc):
         v_symbol=self._check_string_value(symbol)
@@ -232,13 +239,14 @@ class ShareTradingFrame(tk.Frame):
                                                             v_plPc))
                 break
         if not found:
+            tag = "evenrow" if len(self.currentDataTreeView.get_children()) % 2 == 0 else "oddrow"
             self.currentDataTreeView.insert('','end',text=symbol, values=(v_amount,
                                                                                 v_openPrice,
                                                                                 v_lastPrice,
                                                                                 v_cost,
                                                                                 v_value,
                                                                                 v_pl,
-                                                                                v_plPc))
+                                                                                v_plPc), tags=(tag,))
 
     def update_portfolio_balances(self, cash, holdingsValue, totalValue, pl, plPerc, holdingPL, holdingPLPC):
         v_holdVal = self._check_float_value(holdingsValue)
