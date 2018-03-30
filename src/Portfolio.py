@@ -29,12 +29,12 @@ class Portfolio():
         return self._investedAmount
 
     def get_holding_list(self):
-        """Return a list of Holding instances held in the portfolio"""
-        return list(self._holdings.values())
+        """Return a list of Holding instances held in the portfolio sorted alphabetically"""
+        return [self._holdings[k] for k in sorted(self._holdings)]
 
     def get_holding_symbols(self):
-        """Return a list containing the holding symbols as [string]"""
-        return list(self._holdings.keys())
+        """Return a list containing the holding symbols as [string] sorted alphabetically"""
+        return list(sorted(self._holdings.keys()))
 
     def get_holding_amount(self, symbol):
         """Return the amount held for the given symbol"""
