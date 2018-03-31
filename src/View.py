@@ -89,9 +89,10 @@ class View():
     def save_log(self):
         # Save the current log
         filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
-        result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
-        if result["success"] == False:
-            WarningWindow(self.mainWindow, "Warning", result["message"])
+        if filename is not None and len(filename) > 0:
+            result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+            if result["success"] == False:
+                WarningWindow(self.mainWindow, "Warning", result["message"])
 
     def show_about_popup(self):
         # Show the about panel

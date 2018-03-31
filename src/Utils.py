@@ -25,3 +25,6 @@ class Messages(Enum):
     ABOUT_MESSAGE = "Creator: Alberto Cardellini\nEmail: albe.carde@gmail.com"
     ERROR_SAVE_FILE = "Error saving the log. Try again."
     ERROR_OPEN_FILE = "Error opening the file. Try again."
+
+class Markets(Enum):
+    LSE = "LON:"

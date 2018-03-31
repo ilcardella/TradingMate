@@ -62,7 +62,7 @@ class LivePricesWebThread(TaskThread):
 
     def _build_url(self, aLength, aSymbol, anInterval, anApiKey):
         function = "function=" + aLength
-        symbol = "symbol=LON:" + aSymbol
+        symbol = "symbol=" + aSymbol
         apiKey = "apikey=" + anApiKey
         url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + apiKey
         return url
