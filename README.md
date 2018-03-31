@@ -20,6 +20,11 @@ Main features include:
 # Dependencies:
 Python 3.6
 tkinter
+AlphaVantage: https://www.alphavantage.co/
+
+# Setup
+Visit https://www.alphavantage.co/ and request a free API key.
+Copy the personal key in the "data/config.xml" file replacing the placeholder
 
 # Run:
 Run the main.py script with your python interpreter.
