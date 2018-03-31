@@ -45,7 +45,7 @@ class ShareTradingFrame(tk.Frame):
         # Create four different frames for cash, portfolio, total and profit/loss
         cashFrame = ttk.Frame(fundBalFrame)
         cashFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
-        cashLabel = ttk.Label(cashFrame, text="Cash")
+        cashLabel = ttk.Label(cashFrame, text="Cash [£]")
         cashLabel.pack(side="top")
         self.cashStringVar = tk.StringVar()
         cashValueLabel = ttk.Label(cashFrame, textvariable=self.cashStringVar)
@@ -53,7 +53,7 @@ class ShareTradingFrame(tk.Frame):
         # Portfolio balance frame
         portfolioFrame = ttk.Frame(fundBalFrame)
         portfolioFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
-        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio")
+        portfolioLabel = ttk.Label(portfolioFrame, text="Portfolio [£]")
         portfolioLabel.pack(side="top")
         self.portfolioStringVar = tk.StringVar()
         portfolioValueLabel = ttk.Label(portfolioFrame, textvariable=self.portfolioStringVar)
@@ -61,7 +61,7 @@ class ShareTradingFrame(tk.Frame):
         # Total value balance frame
         totalFrame = ttk.Frame(fundBalFrame)
         totalFrame.pack(side="left", fill="both", anchor="n", padx=10, pady=5)
-        totalLabel = ttk.Label(totalFrame, text="Total")
+        totalLabel = ttk.Label(totalFrame, text="Total [£]")
         totalLabel.pack(side="top")
         self.totalStringVar = tk.StringVar()
         totalValueLabel = ttk.Label(totalFrame, textvariable=self.totalStringVar)
@@ -69,18 +69,20 @@ class ShareTradingFrame(tk.Frame):
         # profits balance frames
         plFrame = ttk.Frame(fundBalFrame)
         plFrame.pack(side="left", fill="both", anchor="n", padx=10, pady=5)
-        plLabel = ttk.Label(plFrame, text="P/L")
+        plLabel = ttk.Label(plFrame, text="P/L [£]")
         plLabel.pack(side="top")
         self.plStringVar = tk.StringVar()
-        plValueLabel = ttk.Label(plFrame, textvariable=self.plStringVar)
-        plValueLabel.pack(side="bottom")
+        self.plStringVar.trace_add('write', self._update_pl_label_background)
+        self.plValueLabel = ttk.Label(plFrame, textvariable=self.plStringVar)
+        self.plValueLabel.pack(side="bottom")
         plpcFrame = ttk.Frame(fundBalFrame)
         plpcFrame.pack(side="left", fill="both", anchor="n", padx=10, pady=5)
-        plpcLabel = ttk.Label(plpcFrame, text="P/L %")
+        plpcLabel = ttk.Label(plpcFrame, text="P/L [%]")
         plpcLabel.pack(side="top")
         self.plpcStringVar = tk.StringVar()
-        plpcValueLabel = ttk.Label(plpcFrame, textvariable=self.plpcStringVar)
-        plpcValueLabel.pack(side="bottom")
+        self.plpcStringVar.trace_add('write', self._update_pl_label_background)
+        self.plpcValueLabel = ttk.Label(plpcFrame, textvariable=self.plpcStringVar)
+        self.plpcValueLabel.pack(side="bottom")
 
         # Create frame containing open positions P/L
         holdBalFrame = ttk.Frame(balancesFrame, relief="groove", borderwidth=1)
@@ -88,18 +90,20 @@ class ShareTradingFrame(tk.Frame):
         # holding P/L of current positions
         holdPlFrame = ttk.Frame(holdBalFrame)
         holdPlFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
-        holdPlLabel = ttk.Label(holdPlFrame, text="Holding P/L")
+        holdPlLabel = ttk.Label(holdPlFrame, text="Holding P/L [£]")
         holdPlLabel.pack(side="top")
         self.holdPLStringVar = tk.StringVar()
-        holdPLValueLabel = ttk.Label(holdPlFrame, textvariable=self.holdPLStringVar)
-        holdPLValueLabel.pack(side="bottom")
+        self.holdPLStringVar.trace_add('write', self._update_pl_label_background)
+        self.holdPLValueLabel = ttk.Label(holdPlFrame, textvariable=self.holdPLStringVar)
+        self.holdPLValueLabel.pack(side="bottom")
         holdPlPcFrame = ttk.Frame(holdBalFrame)
         holdPlPcFrame.pack(side="left", fill="y", anchor="n", padx=10, pady=5)
-        holdPlPcLabel = ttk.Label(holdPlPcFrame, text="Holding P/L %")
+        holdPlPcLabel = ttk.Label(holdPlPcFrame, text="Holding P/L [%]")
         holdPlPcLabel.pack(side="top")
         self.holdPlPcStringVar = tk.StringVar()
-        holdPlPcValueLabel = ttk.Label(holdPlPcFrame, textvariable=self.holdPlPcStringVar)
-        holdPlPcValueLabel.pack(side="bottom")
+        self.holdPlPcStringVar.trace_add('write', self._update_pl_label_background)
+        self.holdPlPcValueLabel = ttk.Label(holdPlPcFrame, textvariable=self.holdPlPcStringVar)
+        self.holdPlPcValueLabel.pack(side="bottom")
 
         # Frame containing the holdings table
         holdingsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
@@ -197,6 +201,28 @@ class ShareTradingFrame(tk.Frame):
             valid_var = round(var, 3)
         return valid_var
 
+    def _update_pl_label_background(self, *args):
+        try:
+            value = float(self.plStringVar.get())
+            self.plValueLabel.config(foreground  = "green" if value >= 0.0 else "red")
+        except:
+            pass
+        try:
+            value = float(self.plpcStringVar.get())
+            self.plpcValueLabel.config(foreground  = "green" if value >= 0.0 else "red")
+        except:
+            pass
+        try:
+            value = float(self.holdPLStringVar.get())
+            self.holdPLValueLabel.config(foreground  = "green" if value >= 0.0 else "red")
+        except:
+            pass
+        try:
+            value = float(self.holdPlPcStringVar.get())
+            self.holdPlPcValueLabel.config(foreground  = "green" if value >= 0.0 else "red")
+        except:
+            pass
+
     def set_auto_refresh(self):
         value = self.autoRefresh.get()
         # Disable the Refresh button when AutoRefresh is active
@@ -262,13 +288,13 @@ class ShareTradingFrame(tk.Frame):
             v_plPerc = round(plPerc,2)
             v_holdPl = round(holdingPL,2)
             v_holdPlPc = round(holdingPLPC,2)
-        self.cashStringVar.set(str(round(cash,2)) + "£")
-        self.portfolioStringVar.set(str(v_holdVal) + "£")
-        self.totalStringVar.set(str(v_tot) + "£")
-        self.plStringVar.set(str(v_pl) + "£")
-        self.plpcStringVar.set(str(v_plPerc) + "%")
-        self.holdPLStringVar.set(str(v_holdPl) + "£")
-        self.holdPlPcStringVar.set(str(v_holdPlPc) + "%")
+        self.cashStringVar.set(str(round(cash,2)))
+        self.portfolioStringVar.set(str(v_holdVal))
+        self.totalStringVar.set(str(v_tot))
+        self.plStringVar.set(str(v_pl))
+        self.plpcStringVar.set(str(v_plPerc))
+        self.holdPLStringVar.set(str(v_holdPl))
+        self.holdPlPcStringVar.set(str(v_holdPlPc))
 
     def reset_view(self, resetHistory=False):
         self.cashStringVar.set(str(INVALID_STRING))
