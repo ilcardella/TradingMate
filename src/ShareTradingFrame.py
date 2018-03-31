@@ -1,8 +1,10 @@
-import tkinter as tk
-from tkinter import ttk
-
 from .AddTradeDialogWindow import AddTradeDialogWindow
 from .Utils import Callbacks
+from .WarningWindow import WarningWindow
+
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
 
 INVALID_STRING = "-"
 
@@ -22,12 +24,16 @@ class ShareTradingFrame(tk.Frame):
         buttonsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
-        self.addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
-        self.addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
+        openButton = ttk.Button(buttonsFrame, text="Open Portfolio...", command=self._open_portfolio)
+        openButton.pack(side="left", anchor="n", padx=5, pady=5)
+        saveButton = ttk.Button(buttonsFrame, text="Save Portfolio...", command=self._save_portfolio)
+        saveButton.pack(side="left", anchor="n", padx=5, pady=5)
+        addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
+        addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
         self.autoRefresh = tk.IntVar(value=1)
-        self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
+        autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
                                             command=self.set_auto_refresh, onvalue=1, offvalue=0)
-        self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
+        autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
         
@@ -193,9 +199,9 @@ class ShareTradingFrame(tk.Frame):
             valid_var = INVALID_STRING
         return valid_var
 
-    def _check_float_value(self, var, canBeNegative=False):
+    def _check_float_value(self, var, valid=True, canBeNegative=False):
         valid_var = var
-        if var is None or (not canBeNegative and var < 0):
+        if var is None or (not canBeNegative and var < 0) or not valid:
             valid_var = INVALID_STRING
         else:
             valid_var = round(var, 3)
@@ -223,6 +229,22 @@ class ShareTradingFrame(tk.Frame):
         except:
             pass
 
+    def _open_portfolio(self):
+        # Open a saved portfolio
+        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
+        if filename is not None and len(filename) > 0:
+            result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+            if result["success"] == False:
+                WarningWindow(self.parent, "Warning", result["message"])
+    
+    def _save_portfolio(self):
+        # Save the current log
+        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
+        if filename is not None and len(filename) > 0:
+            result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+            if result["success"] == False:
+                WarningWindow(self.parent, "Warning", result["message"])
+
     def set_auto_refresh(self):
         value = self.autoRefresh.get()
         # Disable the Refresh button when AutoRefresh is active
@@ -240,15 +262,15 @@ class ShareTradingFrame(tk.Frame):
         tag = "evenrow" if len(self.logTreeView.get_children()) % 2 == 0 else "oddrow"
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd), tags=(tag,))
 
-    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc):
+    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
         v_symbol=self._check_string_value(symbol)
         v_amount=self._check_float_value(amount)
         v_openPrice=self._check_float_value(openPrice)
-        v_lastPrice=self._check_float_value(lastPrice)
+        v_lastPrice=self._check_float_value(lastPrice, valid=validity)
         v_cost=self._check_float_value(cost)
-        v_value=self._check_float_value(value)
-        v_pl=self._check_float_value(pl, True)
-        v_plPc=self._check_float_value(plPc, True)
+        v_value=self._check_float_value(value, valid=validity)
+        v_pl=self._check_float_value(pl, valid=validity, canBeNegative=True)
+        v_plPc=self._check_float_value(plPc, valid=validity, canBeNegative=True)
 
         found = False
         for child in self.currentDataTreeView.get_children():

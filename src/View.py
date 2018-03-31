@@ -6,7 +6,6 @@ from .CryptoCurrFrame import CryptoCurrFrame
 import tkinter as tk
 from tkinter import ttk
 from tkinter import StringVar
-from tkinter import filedialog
 
 APP_NAME = "TradingMate"
 
@@ -39,9 +38,6 @@ class View():
         self.menubar = tk.Menu(self.mainWindow)
         # Menu File
         filemenu = tk.Menu(self.menubar, tearoff=0)
-        filemenu.add_command(label="Open...", command=self.open_log)
-        filemenu.add_command(label="Save...", command=self.save_log)
-        filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.on_close_event)
         self.menubar.add_cascade(label="File", menu=filemenu)
         # Menu About
@@ -56,6 +52,11 @@ class View():
         self.shareTradingFrame = ShareTradingFrame(self.noteBook)
         self.shareTradingFrame.pack(expand=True)
         self.noteBook.add(self.shareTradingFrame, text="Shares Trading")
+        self.shareTradingFrame.set_callback(Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
+        self.shareTradingFrame.set_callback(Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
+        self.shareTradingFrame.set_callback(Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.set_auto_refresh_event)
+        self.shareTradingFrame.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
+        self.shareTradingFrame.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
 
     def create_crypto_tab(self):
         self.cryptocurrFrame = CryptoCurrFrame(self.noteBook)
@@ -69,7 +70,6 @@ class View():
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
-        self.shareTradingFrame.set_callback(id, callback)
 
 # ******* MAIN WINDOW ***********
 
@@ -78,32 +78,16 @@ class View():
         self.callbacks[Callbacks.ON_CLOSE_VIEW_EVENT]()
         self.mainWindow.destroy()
 
-    def open_log(self):
-        # Open a saved log
-        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
-        if filename is not None and len(filename) > 0:
-            result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
-            if result["success"] == False:
-                WarningWindow(self.mainWindow, "Warning", result["message"])
-
-    def save_log(self):
-        # Save the current log
-        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
-        if filename is not None and len(filename) > 0:
-            result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
-            if result["success"] == False:
-                WarningWindow(self.mainWindow, "Warning", result["message"])
-
     def show_about_popup(self):
         # Show the about panel
         WarningWindow(self.mainWindow, "About", Messages.ABOUT_MESSAGE.value)
 
 # ******* SHARE TRADING FRAME ************
 
-    def add_new_trade_from_panel(self, newTrade):
+    def on_new_trade_event(self, newTrade):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
 
-    def refresh_live_data(self):
+    def on_manual_refresh_event(self):
         # Notify the Controller to request new data
         self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
             
@@ -117,11 +101,20 @@ class View():
     def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC):
         self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC)
 
-    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc):
-        self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc)
+    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
+        self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity)
 
     def set_db_filepath(self, filepath):
         self.shareTradingFrame.set_db_filepath(filepath)
+
+    def set_auto_refresh_event(self, value):
+        self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](value)
+
+    def on_open_portfolio_event(self, filename):
+        return self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+
+    def on_save_portfolio_event(self, filename):
+        return self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
 
 # ******* CRYPTO CURRENCIES FRAME ************
 

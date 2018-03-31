@@ -127,15 +127,20 @@ class Holding():
         self._lastPrice = lastPrice # in pence
         self._openPrice = openPrice # in pence
         self._amount = amount
+        self._lastPriceValid = False
 
     def set_last_price(self, price):
         self._lastPrice = price
+        self._lastPriceValid = True
 
     def set_open_price(self, price):
         self._openPrice = price
 
     def set_amount(self, value):
         self._amount = value
+
+    def set_last_price_invalid(self):
+        self._lastPriceValid = False
 
     def get_symbol(self):
         return self._symbol
@@ -160,3 +165,6 @@ class Holding():
     
     def get_profit_loss_perc(self):
         return (self.get_profit_loss() * 100) / self.get_cost()
+
+    def get_last_price_valid(self):
+        return self._lastPriceValid
