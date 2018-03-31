@@ -31,9 +31,9 @@ class ShareTradingFrame(tk.Frame):
         addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
         addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
         self.autoRefresh = tk.IntVar(value=1)
-        autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
+        self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
                                             command=self.set_auto_refresh, onvalue=1, offvalue=0)
-        autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
+        self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
         
@@ -194,6 +194,9 @@ class ShareTradingFrame(tk.Frame):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
 
     def _refresh_live_data(self):
+        # Disable the refresh inputs temporarily
+        self.refreshButton.config(state="disabled")
+        self.autoRefreshCheckBox.config(state="disabled")
         # Notify the Controller to request new data
         self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
 
@@ -249,10 +252,15 @@ class ShareTradingFrame(tk.Frame):
             if result["success"] == False:
                 WarningWindow(self.parent, "Warning", result["message"])
 
-    def set_auto_refresh(self):
-        value = self.autoRefresh.get()
+    def _update_refresh_button_state(self):
         # Disable the Refresh button when AutoRefresh is active
+        self.autoRefreshCheckBox.config(state="enabled") # reset status of checkbox
+        value = self.autoRefresh.get()
         self.refreshButton.config(state="disabled" if value == 1 else "enabled")
+
+    def set_auto_refresh(self):
+        self._update_refresh_button_state()
+        value = self.autoRefresh.get()
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](bool(value))
 
     def add_entry_to_log_table(self, logEntry):
@@ -318,6 +326,7 @@ class ShareTradingFrame(tk.Frame):
         self.holdPlPcStringVar.set(str(v_holdPlPc))
 
     def reset_view(self, resetHistory=False):
+        self._update_refresh_button_state()
         self.cashStringVar.set(str(INVALID_STRING))
         self.portfolioStringVar.set(str(INVALID_STRING))
         self.totalStringVar.set(str(INVALID_STRING))

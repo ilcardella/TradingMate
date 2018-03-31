@@ -46,19 +46,21 @@ class TaskThread(threading.Thread):
         while 1:
             # reset timeout
             self._timeout.clear()
-            # Check if it was a single run
-            if self._singleRun:
-                self.enable(False)
-            self._singleRun = False
             # check shutdown flag
             if self._finished.isSet():
                 return
             # sleep until enabled or return immediatly
             self._enabled.wait()
+            print("enabled")
             # perform task
             self.task()
+            # Check if it was a single run
+            if self._singleRun:
+                self.enable(False)
+            self._singleRun = False
             # sleep for interval or until shutdown
             self._timeout.wait(self._interval)
+            print("timeout")
     
     def task(self):
         """The task done by this thread - override in subclasses"""
