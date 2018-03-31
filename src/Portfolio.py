@@ -105,8 +105,7 @@ class Portfolio():
             else:
                 self._holdings[symbol].set_amount(amount)
         else:
-            new = Holding(symbol, amount)
-            self._holdings[symbol] = new
+            self._holdings[symbol] = Holding(symbol, amount)
         self._update_holdings_value()
 
     def update_holding_last_price(self, symbol, price):

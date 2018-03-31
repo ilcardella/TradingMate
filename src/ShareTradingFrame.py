@@ -178,6 +178,7 @@ class ShareTradingFrame(tk.Frame):
         # Create popup menu for the trade history log
         self.logPopupMenu = tk.Menu(self.logTreeView, tearoff=0)
         self.logPopupMenu.add_command(label="Add trade...", command=self._display_add_trade_panel)
+        self.logPopupMenu.add_command(label="Delete last trade", command=self._delete_last_trade)
         self.logTreeView.bind("<Button-3>", self._trade_log_popup_menu_event)
 
     def _trade_log_popup_menu_event(self, event):
@@ -185,6 +186,9 @@ class ShareTradingFrame(tk.Frame):
     
     def _display_add_trade_panel(self):
         AddTradeDialogWindow(self.parent, self._on_add_new_trade_event)
+
+    def _delete_last_trade(self):
+        self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
 
     def _on_add_new_trade_event(self, newTrade):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
@@ -296,21 +300,16 @@ class ShareTradingFrame(tk.Frame):
                                                                                 v_pl,
                                                                                 v_plPc), tags=(tag,))
 
-    def update_portfolio_balances(self, cash, holdingsValue, totalValue, pl, plPerc, holdingPL, holdingPLPC):
-        v_holdVal = self._check_float_value(holdingsValue)
-        if v_holdVal==INVALID_STRING:
-            v_tot = INVALID_STRING
-            v_pl = INVALID_STRING
-            v_plPerc = INVALID_STRING
-            v_holdPl = INVALID_STRING
-            v_holdPlPc = INVALID_STRING
-        else:
-            v_tot = round(totalValue,2)
-            v_pl = round(pl,2)
-            v_plPerc = round(plPerc,2)
-            v_holdPl = round(holdingPL,2)
-            v_holdPlPc = round(holdingPLPC,2)
-        self.cashStringVar.set(str(round(cash,2)))
+    def update_portfolio_balances(self, cash, holdingsValue, totalValue, pl, plPerc, holdingPL, holdingPLPC, valid):
+        v_cash = self._check_float_value(cash)
+        v_holdVal = self._check_float_value(holdingsValue, valid=valid)
+        v_tot = self._check_float_value(totalValue, valid=valid)
+        v_pl = self._check_float_value(pl, valid=valid, canBeNegative=True)
+        v_plPerc = self._check_float_value(plPerc, valid=valid, canBeNegative=True)
+        v_holdPl = self._check_float_value(holdingPL, valid=valid, canBeNegative=True)
+        v_holdPlPc = self._check_float_value(holdingPLPC, valid=valid, canBeNegative=True)
+
+        self.cashStringVar.set(str(v_cash))
         self.portfolioStringVar.set(str(v_holdVal))
         self.totalStringVar.set(str(v_tot))
         self.plStringVar.set(str(v_pl))

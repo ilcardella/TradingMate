@@ -10,6 +10,7 @@ class Callbacks(Enum):
     ON_SET_AUTO_REFRESH_EVENT = 5
     ON_OPEN_LOG_FILE_EVENT = 6
     ON_SAVE_LOG_FILE_EVENT = 7
+    ON_DELETE_LAST_TRADE_EVENT = 8
 
 class Actions(Enum):
     BUY = 1
@@ -27,4 +28,4 @@ class Messages(Enum):
     ERROR_OPEN_FILE = "Error opening the file. Try again."
 
 class Markets(Enum):
-    LSE = "LON:"
+    LSE = "LON"

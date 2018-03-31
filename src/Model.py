@@ -167,9 +167,9 @@ class Model():
         sd = ET.SubElement(row, "stamp_duty")
         sd.text = str(logEntry["stamp_duty"]).strip()
     
-    def _remove_entry_from_db(self, logEntry):
-        # TODO
-        self.log.remove(logEntry)
+    def _remove_last_log_entry(self):
+        elem = self.log.getchildren()[-1]
+        self.log.remove(elem)
 
     def _reset(self, filepath=None):
         self._read_configuration() # From config.xml file
@@ -302,3 +302,13 @@ class Model():
             result["message"] = Messages.ERROR_OPEN_FILE
         return result
 
+    def delete_last_trade(self):
+        result = {"success":True,"message":"ok"}
+        try:
+            self._remove_last_log_entry()
+        except Exception:
+            result["success"] = False
+            result["message"] = Messages.INVALID_OPERATION
+        self._update_portfolio()
+        self.livePricesThread.set_symbol_list(self.portfolio.get_holding_symbols())
+        return result

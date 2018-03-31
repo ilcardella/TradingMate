@@ -18,6 +18,7 @@ class Controller():
         self.view.set_callback(Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.on_set_auto_refresh)
         self.view.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
         self.view.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
+        self.view.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
 
     def start(self):
         self.model.start()
@@ -52,6 +53,7 @@ class Controller():
         return result
     
     def _update_share_trading_view(self, updateHistory=False):
+        self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
         filepath = self.model.get_db_filepath()
         self.view.set_db_filepath(filepath)
@@ -70,11 +72,12 @@ class Controller():
         holdingPL = portfolio.get_open_positions_pl()
         holdingPLPC = portfolio.get_open_positions_pl_perc()
         # Update the view
-        self.view.reset_view()
+        validity = True
         for h in portfolio.get_holding_list():
             self.view.update_share_trading_holding(h.get_symbol(), h.get_amount(), h.get_open_price(),\
              h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_loss_perc(), h.get_last_price_valid())
-        self.view.update_share_trading_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC)
+            validity = validity and h.get_last_price_valid()
+        self.view.update_share_trading_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity)
 
 # EVENTS
 
@@ -98,9 +101,7 @@ class Controller():
         if valResult["success"]:
             modelResult = self.model.add_new_trade(newTrade) # Update the model
             if modelResult["success"]:
-                #self.view.add_entry_to_log_table(newTrade) # Update the view
-                self._update_share_trading_view()
-                #self.view.refresh_live_data()
+                self._update_share_trading_view(updateHistory=True)
             else:
                 return modelResult
         else:
@@ -110,10 +111,17 @@ class Controller():
     def on_open_log_file_event(self, filepath):
         result = self.model.open_log_file(filepath)
         if result["success"]:
-            self.view.reset_view()
-            self._update_share_trading_view()
-            #self.view.refresh_live_data()
+            self.view.reset_view(resetHistory=True)
+            self._update_share_trading_view(updateHistory=True)
         return result
 
     def on_save_log_file_event(self, filepath):
         return self.model.save_log_file(filepath)
+
+    def on_delete_last_trade_event(self):
+        result = {"success":True,"message":"ok"}
+        result = self.model.delete_last_trade()
+        if result["success"]:
+            self._update_share_trading_view(updateHistory=True)
+        else:
+            return result

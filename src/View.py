@@ -57,6 +57,7 @@ class View():
         self.shareTradingFrame.set_callback(Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.set_auto_refresh_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
+        self.shareTradingFrame.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
 
     def create_crypto_tab(self):
         self.cryptocurrFrame = CryptoCurrFrame(self.noteBook)
@@ -98,8 +99,8 @@ class View():
         for entry in logList:
             self.shareTradingFrame.add_entry_to_log_table(entry)
     
-    def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC):
-        self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC)
+    def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity):
+        self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity)
 
     def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
         self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity)
@@ -115,6 +116,9 @@ class View():
 
     def on_save_portfolio_event(self, filename):
         return self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+
+    def on_delete_last_trade_event(self):
+        self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
 
 # ******* CRYPTO CURRENCIES FRAME ************
 

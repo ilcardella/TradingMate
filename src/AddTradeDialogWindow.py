@@ -137,8 +137,8 @@ class AddTradeDialogWindow(tk.Toplevel):
         newTrade = {}
         newTrade["date"] = self.dateSelected.get()
         newTrade["action"] = self.actionSelected.get()
-        market = self.marketSelected.get()
-        newTrade["symbol"] = market + self.symbolSelected.get()
+        market = Markets[self.marketSelected.get()]
+        newTrade["symbol"] = market.value + ":" + self.symbolSelected.get()
         newTrade["amount"] = float(self.amountSelected.get()) if self.amountSelected.get() is not "" else 0
         newTrade["price"] = float(self.priceSelected.get()) if self.priceSelected.get() is not "" else 0
         newTrade["fee"] = float(self.feeSelected.get()) if self.feeSelected.get() is not "" else 0
