@@ -138,8 +138,8 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.column("pl", width=100)
         self.currentDataTreeView.column("pl_pc", width=100)
         # Treeview colour layout
-        self.currentDataTreeView.tag_configure('oddrow', background='white')
-        self.currentDataTreeView.tag_configure('evenrow', background='lightblue')
+        self.currentDataTreeView.tag_configure('profit', background='lightgreen')
+        self.currentDataTreeView.tag_configure('loss', background='LightPink1')
 
         # Frame containing the trading history
         logFrame = ttk.Frame(self, relief="groove", borderwidth=1)
@@ -283,7 +283,7 @@ class ShareTradingFrame(tk.Frame):
         v_value=self._check_float_value(value, valid=validity)
         v_pl=self._check_float_value(pl, valid=validity, canBeNegative=True)
         v_plPc=self._check_float_value(plPc, valid=validity, canBeNegative=True)
-
+        tag = "profit" if plPc >= 0 and validity else "loss"
         found = False
         for child in self.currentDataTreeView.get_children():
             item = self.currentDataTreeView.item(child)
@@ -296,10 +296,10 @@ class ShareTradingFrame(tk.Frame):
                                                             v_cost,
                                                             v_value,
                                                             v_pl,
-                                                            v_plPc))
+                                                            v_plPc), tags=(tag,))
                 break
         if not found:
-            tag = "evenrow" if len(self.currentDataTreeView.get_children()) % 2 == 0 else "oddrow"
+            #tag = "evenrow" if len(self.currentDataTreeView.get_children()) % 2 == 0 else "oddrow"
             self.currentDataTreeView.insert('','end',text=symbol, values=(v_amount,
                                                                                 v_openPrice,
                                                                                 v_lastPrice,
