@@ -45,8 +45,7 @@ class Controller():
                 result["success"] = False
                 result["message"] = Messages.INSUF_FUNDING.value
         elif newTrade["action"] == Actions.SELL.name:
-            if portfolio.get_holding_amount(newTrade["symbol"]) > 0 \
-                or newTrade["amount"] > portfolio.get_holding_amount(newTrade["symbol"]):
+            if newTrade["amount"] > portfolio.get_holding_amount(newTrade["symbol"]):
                 result["success"] = False
                 result["message"] = Messages.INSUF_HOLDINGS.value
 
