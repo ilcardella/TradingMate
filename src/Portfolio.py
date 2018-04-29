@@ -76,10 +76,12 @@ class Portfolio():
 
     def get_open_positions_pl_perc(self):
         """Return the sum profit/loss in % of the current open positions"""
-        sum = 0
+        costSum = 0
+        valueSum = 0
         for holding in self._holdings.values():
-            sum += holding.get_profit_loss_perc()
-        return sum
+            costSum += holding.get_cost()
+            valueSum += holding.get_value() 
+        return ((valueSum - costSum) / costSum) * 100
 
 # SETTERS
 
