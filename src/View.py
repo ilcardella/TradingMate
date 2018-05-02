@@ -2,6 +2,8 @@ from .Utils import Callbacks, Messages
 from .WarningWindow import WarningWindow
 from .ShareTradingFrame import ShareTradingFrame
 from .CryptoCurrFrame import CryptoCurrFrame
+from .SpreadBettingFrame import SpreadBettingFrame
+from .StrategyBackTestFrame import StrategyBackTestFrame
 
 import tkinter as tk
 from tkinter import ttk
@@ -31,6 +33,10 @@ class View():
         self.noteBook.pack(expand=1, fill="both")
         # Create Share trading Tab
         self.create_share_trading_tab()
+        # Create Share trading Tab
+        self.create_spread_betting_tab()
+        # Create Share trading Tab
+        self.create_strategy_backtest_tab()
         # Create Cryptocurencies Tab
         self.create_crypto_tab()
 
@@ -58,6 +64,16 @@ class View():
         self.shareTradingFrame.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+
+    def create_spread_betting_tab(self):
+        self.spreadBettingFrame = SpreadBettingFrame(self.noteBook)
+        self.spreadBettingFrame.pack(expand=True)
+        self.noteBook.add(self.spreadBettingFrame, text="Spread Betting")
+
+    def create_strategy_backtest_tab(self):
+        self.strategyBackTestFrame = StrategyBackTestFrame(self.noteBook)
+        self.strategyBackTestFrame.pack(expand=True)
+        self.noteBook.add(self.strategyBackTestFrame, text="Strategy Back Test")
 
     def create_crypto_tab(self):
         self.cryptocurrFrame = CryptoCurrFrame(self.noteBook)
