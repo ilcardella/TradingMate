@@ -8,7 +8,6 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import threading
 import time
-import sys
 import urllib.request
 import json
 
@@ -70,8 +69,8 @@ class LivePricesWebThread(TaskThread):
     def get_last_data(self):
         return self.lastData
 
-    def set_symbol_list(self, list):
-        self.symbolList = list
+    def set_symbol_list(self, aList):
+        self.symbolList = aList
 
 class Model():
 

@@ -22,6 +22,9 @@ class Controller():
 
     def start(self):
         self.model.start()
+
+        # TODO add check of configuration settings
+
         self._update_share_trading_view(updateHistory=True)
         
         self.view.start() # This should be the last instruction in this function

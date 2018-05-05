@@ -140,6 +140,7 @@ class ShareTradingFrame(tk.Frame):
         # Treeview colour layout
         self.currentDataTreeView.tag_configure('profit', background='lightgreen')
         self.currentDataTreeView.tag_configure('loss', background='LightPink1')
+        self.currentDataTreeView.tag_configure('invalid', background='yellow')
 
         # Frame containing the trading history
         logFrame = ttk.Frame(self, relief="groove", borderwidth=1)
@@ -283,7 +284,9 @@ class ShareTradingFrame(tk.Frame):
         v_value=self._check_float_value(value, valid=validity)
         v_pl=self._check_float_value(pl, valid=validity, canBeNegative=True)
         v_plPc=self._check_float_value(plPc, valid=validity, canBeNegative=True)
-        tag = "profit" if plPc >= 0 and validity else "loss"
+        tag = "invalid"
+        if validity:
+            tag = "profit" if plPc >= 0 else "loss"
         found = False
         for child in self.currentDataTreeView.get_children():
             item = self.currentDataTreeView.item(child)
