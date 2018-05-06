@@ -11,24 +11,20 @@ import time
 import urllib.request
 import json
 
-# Globals
-CONFIG_FILE_PATH = "data/config_private.xml" # Change this to data/config.xml
-
 class LivePricesWebThread(TaskThread):
 
-    def __init__(self, model, updatePeriod):
+    def __init__(self, configurationManager, onNewPriceDataCallback, updatePeriod):
         TaskThread.__init__(self, updatePeriod)
-        self.model = model
+        self.onNewPriceDataCallback = onNewPriceDataCallback
+        self.configurationManager = configurationManager
         self._read_configuration()
         self.lastData = {}
         self.symbolList = []
 
     def _read_configuration(self):
         try:
-            self.configValues = ET.parse(CONFIG_FILE_PATH).getroot()
-            self.alphaVantageAPIKey = self.configValues.find("ALPHAVANTAGE_API_KEY").text
-            self.alphaVantageBaseURL = self.configValues.find("ALPHAVANTAGE_BASE_URL").text
-            # add other config parameters
+            self.alphaVantageAPIKey = self.configurationManager.get_alpha_vantage_api_key()
+            self.alphaVantageBaseURL = self.configurationManager.get_alpha_vantage_base_url()
         except Exception as e:
             print("LivePricesWebThread: _read_configuration() {0}".format(e))
             sys.exit(1)
@@ -43,7 +39,7 @@ class LivePricesWebThread(TaskThread):
                     priceDict[symbol] = value
         if not self._finished.isSet():
             self.lastData = priceDict # Store internally
-            self.model.on_new_price_data() # Notify the model
+            self.onNewPriceDataCallback() # Notify the model
 
     def _fetch_price_data(self, symbol):
         try:
@@ -74,11 +70,12 @@ class LivePricesWebThread(TaskThread):
 
 class Model():
 
-    def __init__(self):
-        self._read_configuration() # From config.xml file
+    def __init__(self, configurationManager):
+        self.configurationManager = configurationManager
+        self._read_configuration()
         self._read_database(self.dbFilePath)
         self.callbacks = {} # DataStruct containing the callbacks
-        self.livePricesThread = LivePricesWebThread(self, self.webPollingPeriod)
+        self.livePricesThread = LivePricesWebThread(self.configurationManager, self.on_new_price_data, self.webPollingPeriod)
         self.portfolio = Portfolio("Portfolio1")
 
 # INTERNAL FUNCTIONS
@@ -87,14 +84,8 @@ class Model():
         self.callbacks[id] = callback
 
     def _read_configuration(self):
-        self.dbFilePath = "data/trading_log.xml"
-        self.webPollingPeriod = 15
-        try:
-            self.configValues = ET.parse(CONFIG_FILE_PATH).getroot()
-            self.dbFilePath = self.configValues.find("TRADING_LOG_PATH").text
-            self.webPollingPeriod = int(self.configValues.find("ALPHAVANTAGE_POLLING_PERIOD").text)
-        except Exception as e:
-            print("Model: _read_configuration(): {0}".format(e))
+        self.dbFilePath = self.configurationManager.get_trading_database_path()
+        self.webPollingPeriod = self.configurationManager.get_alpha_vantage_polling_period()
 
     def _read_database(self, filepath):
         try:
@@ -171,7 +162,7 @@ class Model():
         self.log.remove(elem)
 
     def _reset(self, filepath=None):
-        self._read_configuration() # From config.xml file
+        self._read_configuration()
         if filepath is not None:
             self.dbFilePath = filepath
         self._read_database(self.dbFilePath)

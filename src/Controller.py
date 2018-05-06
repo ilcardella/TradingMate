@@ -2,13 +2,15 @@ from .Model import Model
 from .Utils import Callbacks, Actions, Messages
 from .View import View
 from .Portfolio import Portfolio
+from .ConfigurationManager import ConfigurationManager
 
 
 class Controller():
 
     def __init__(self):
+        self.configurationManager = ConfigurationManager()
         # Init the model
-        self.model = Model()
+        self.model = Model(self.configurationManager)
         self.model.set_callback(Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
         self.view = View()
