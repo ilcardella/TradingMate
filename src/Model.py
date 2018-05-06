@@ -89,8 +89,8 @@ class Model():
 
     def _read_database(self, filepath):
         try:
-            self.tradingLogXMLTree = ET.parse(filepath)
-            self.log = self.tradingLogXMLTree.getroot()
+            tradingLogXMLTree = ET.parse(filepath)
+            self.log = tradingLogXMLTree.getroot()
         except Exception as e:
             print("Model: Error reading database! {0}".format(e))
             self.log = ET.Element("log")
