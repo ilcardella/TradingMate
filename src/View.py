@@ -34,11 +34,11 @@ class View():
         # Create Share trading Tab
         self.create_share_trading_tab()
         # Create Share trading Tab
-        self.create_spread_betting_tab()
+        #self.create_spread_betting_tab()
         # Create Share trading Tab
-        self.create_strategy_backtest_tab()
+        #self.create_strategy_backtest_tab()
         # Create Cryptocurencies Tab
-        self.create_crypto_tab()
+        #self.create_crypto_tab()
 
     def create_menu(self):
         self.menubar = tk.Menu(self.mainWindow)
