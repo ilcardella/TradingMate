@@ -25,7 +25,7 @@ class Controller():
         self.view.set_callback(Callbacks.ON_START_AUTOTRADING, self.on_start_autotrading)
         self.view.set_callback(Callbacks.ON_STOP_AUTOTRADING, self.on_stop_autotrading)
         # Init the AutoTradingModule
-        self.autoTradingModule = AutoTradingModule()
+        self.autoTradingModule = AutoTradingModule(self.configurationManager)
 
     def start(self):
         self.model.start()

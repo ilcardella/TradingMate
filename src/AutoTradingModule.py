@@ -1,9 +1,12 @@
 import threading
 from .TaskThread import TaskThread
+from .IG_Interface import IG
 
 class AutoTradingThread(TaskThread):
-    def __init__(self, updatePeriod):
+    def __init__(self, updatePeriod, brokerData):
         TaskThread.__init__(self, updatePeriod)
+        self.ig = IG(True, brokerData)
+        self.ig.authenticate()
 
     def task(self):
         print("I am alive!")
@@ -22,10 +25,18 @@ class AutoTradingThread(TaskThread):
 
 class AutoTradingModule():
     
-    def __init__(self):
+    def __init__(self, configurationManager):
+        self.configurationManager = configurationManager
+        brokerData = {
+            'broker': self.configurationManager.get_autotrading_broker(),
+            'username': self.configurationManager.get_autotrading_username(),
+            'password': self.configurationManager.get_autotrading_password(),
+            'apiKey': self.configurationManager.get_autotrading_apikey(),
+            'accountId': self.configurationManager.get_autotrading_account()
+        }
+        self.autoTradingThread = AutoTradingThread(5, brokerData)
         self._enabled = False
-        self.autoTradingThread = AutoTradingThread(5)
-        self.autoTradingThread.enable(_enabled) # Disable by default
+        self.autoTradingThread.enable(self._enabled) # Disable by default
         self.autoTradingThread.start()
     
     def enable(self, enable):
