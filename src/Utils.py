@@ -11,6 +11,8 @@ class Callbacks(Enum):
     ON_OPEN_LOG_FILE_EVENT = 6
     ON_SAVE_LOG_FILE_EVENT = 7
     ON_DELETE_LAST_TRADE_EVENT = 8
+    ON_START_AUTOTRADING = 9
+    ON_STOP_AUTOTRADING = 10
 
 class Actions(Enum):
     BUY = 1

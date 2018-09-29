@@ -3,6 +3,7 @@ from .Utils import Callbacks, Actions, Messages
 from .View import View
 from .Portfolio import Portfolio
 from .ConfigurationManager import ConfigurationManager
+from .AutoTradingModule import AutoTradingModule
 
 
 class Controller():
@@ -21,6 +22,10 @@ class Controller():
         self.view.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
         self.view.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
         self.view.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+        self.view.set_callback(Callbacks.ON_START_AUTOTRADING, self.on_start_autotrading)
+        self.view.set_callback(Callbacks.ON_STOP_AUTOTRADING, self.on_stop_autotrading)
+        # Init the AutoTradingModule
+        self.autoTradingModule = AutoTradingModule()
 
     def start(self):
         self.model.start()
@@ -83,6 +88,7 @@ class Controller():
 
     def on_close_view_event(self):
         self.model.stop_application()
+        self.autoTradingModule.shutdown()
 
     def on_manual_refresh_event(self):
         self.model.on_manual_refresh_live_data()
@@ -125,3 +131,9 @@ class Controller():
             self._update_share_trading_view(updateHistory=True)
         else:
             return result
+
+    def on_start_autotrading(self):
+        self.autoTradingModule.enable(True)
+
+    def on_stop_autotrading(self):
+        self.autoTradingModule.enable(False)

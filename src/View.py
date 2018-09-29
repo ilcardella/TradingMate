@@ -1,9 +1,7 @@
 from .Utils import Callbacks, Messages
 from .WarningWindow import WarningWindow
 from .ShareTradingFrame import ShareTradingFrame
-from .CryptoCurrFrame import CryptoCurrFrame
-from .SpreadBettingFrame import SpreadBettingFrame
-from .StrategyBackTestFrame import StrategyBackTestFrame
+from .AutoTradingFrame import AutoTradingFrame
 
 import tkinter as tk
 from tkinter import ttk
@@ -34,7 +32,7 @@ class View():
         # Create Share trading Tab
         self.create_share_trading_tab()
         # Create Share trading Tab
-        #self.create_spread_betting_tab()
+        self.create_auto_trading_tab()
         # Create Share trading Tab
         #self.create_strategy_backtest_tab()
         # Create Cryptocurencies Tab
@@ -65,20 +63,13 @@ class View():
         self.shareTradingFrame.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
 
-    def create_spread_betting_tab(self):
-        self.spreadBettingFrame = SpreadBettingFrame(self.noteBook)
-        self.spreadBettingFrame.pack(expand=True)
-        self.noteBook.add(self.spreadBettingFrame, text="Spread Betting")
+    def create_auto_trading_tab(self):
+        self.autoTradingFrame = AutoTradingFrame(self.noteBook)
+        self.autoTradingFrame.pack(expand=True)
+        self.noteBook.add(self.autoTradingFrame, text="Auto Trading")
+        self.autoTradingFrame.set_callback(Callbacks.ON_START_AUTOTRADING, self.on_start_autotrading)
+        self.autoTradingFrame.set_callback(Callbacks.ON_STOP_AUTOTRADING, self.on_stop_autotrading)
 
-    def create_strategy_backtest_tab(self):
-        self.strategyBackTestFrame = StrategyBackTestFrame(self.noteBook)
-        self.strategyBackTestFrame.pack(expand=True)
-        self.noteBook.add(self.strategyBackTestFrame, text="Strategy Back Test")
-
-    def create_crypto_tab(self):
-        self.cryptocurrFrame = CryptoCurrFrame(self.noteBook)
-        self.cryptocurrFrame.pack(expand=True)
-        self.noteBook.add(self.cryptocurrFrame, text="Cryptocurrencies")
 
     def start(self):
         self.shareTradingFrame.set_auto_refresh()
@@ -138,4 +129,8 @@ class View():
 
 # ******* CRYPTO CURRENCIES FRAME ************
 
- # TODO
+    def on_start_autotrading(self):
+        self.callbacks[Callbacks.ON_START_AUTOTRADING]()
+    
+    def on_stop_autotrading(self):
+        self.callbacks[Callbacks.ON_STOP_AUTOTRADING]()
