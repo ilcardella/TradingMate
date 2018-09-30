@@ -31,3 +31,10 @@ class Messages(Enum):
 
 class Markets(Enum):
     LSE = "LON"
+
+class AutoTradeActions(Enum):
+    NONE = 'NONE'
+    BUY = 'BUY'
+    SELL = 'SELL'
+    EXIT_BUY = 'EXIT_BUY'
+    EXIT_SELL = 'EXIT_SELL'

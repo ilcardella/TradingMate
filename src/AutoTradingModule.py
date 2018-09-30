@@ -1,32 +1,50 @@
 import threading
 from .TaskThread import TaskThread
 from .IG_Interface import IG
+from enum import Enum
+from .Utils import AutoTradeActions
 
 class AutoTradingThread(TaskThread):
     def __init__(self, updatePeriod, brokerData):
         TaskThread.__init__(self, updatePeriod)
-        self.ig = IG(True, brokerData)
-        self.ig.authenticate()
+        self.epic = 'KA.D.IQE.DAILY.IP' # TODO this should be a list
+        self.broker = IG(True, brokerData)
+        self.initialised = False
 
     def task(self):
+        if not self.initialised:
+            self.broker.authenticate()
+            self.initialised = True
         print("I am alive!")
+        if self.broker.can_trade():
+            # Get price history
+            history = self.broker.get_price_history(self.epic, 5)
+            # Get current market prices
+            prices = self.broker.get_market_prices(self.epic)
+            # Evaluate market direction
+            marketAction = self.evaluate_market_action(prices, history)
+            if marketAction != AutoTradeActions.NONE:
+                # Perform trade
+                self.broker.trade(marketAction, self.epic)
+
+        # Update the UI with new data
+        self.update_UI()
+
+    def evaluate_market_action(self, prices, history):
+        # Evaluate what to do: buy, sell, etc.
         # TODO
-        # Fetch price
-        # Evaluate buy condition
-        # Evaluate sell condition
-        # Evaluate exit buy condition
-        # Evaluate exit sell condition
-        # Check if position is already open
-        # Close position if required
-        # or
-        # Check margin limits
-        # Check enough funds
-        # Open position
+        print("MArket evaluated: action NONE selected")
+        return AutoTradeActions.NONE
+
+    def update_UI(self):
+        print("UI Updated")
+        pass # TODO call a callback sending all values to update the UI
 
 class AutoTradingModule():
     
     def __init__(self, configurationManager):
         self.configurationManager = configurationManager
+        self.callbacks = {}
         brokerData = {
             'broker': self.configurationManager.get_autotrading_broker(),
             'username': self.configurationManager.get_autotrading_username(),
@@ -34,9 +52,9 @@ class AutoTradingModule():
             'apiKey': self.configurationManager.get_autotrading_apikey(),
             'accountId': self.configurationManager.get_autotrading_account()
         }
-        self.autoTradingThread = AutoTradingThread(5, brokerData)
         self._enabled = False
-        self.autoTradingThread.enable(self._enabled) # Disable by default
+        self.autoTradingThread = AutoTradingThread(5, brokerData)
+        self.autoTradingThread.enable(self._enabled)
         self.autoTradingThread.start()
     
     def enable(self, enable):
