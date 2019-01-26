@@ -12,7 +12,6 @@ sys.path.insert(0,parentdir)
 from Utils.Utils import Callbacks, Messages
 from .WarningWindow import WarningWindow
 from .ShareTradingFrame import ShareTradingFrame
-from .AutoTradingFrame import AutoTradingFrame
 
 APP_NAME = "TradingMate"
 

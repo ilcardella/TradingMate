@@ -1,20 +1,21 @@
-.. TradingMate documentation master file, created by
-   sphinx-quickstart on Sat Jan 26 18:08:05 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+TradingMate's documentation
+===========================
 
-Welcome to TradingMate's documentation!
-=======================================
+Introduction
+^^^^^^^^^^^^
+
+TradingMate is an autonomous trading system that uses customised strategies to
+trade in the London Stock Exchange market.
+This documentation provides an overview of the system, explaining how to create
+new trading strategies and how to integrate them with TradingMate.
+Explore the next sections for a detailed documentation of each module too.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :numbered:
 
+   source/system.rst
+   source/modules.rst
+   source/changelog.rst
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. mdinclude:: ../README.md
