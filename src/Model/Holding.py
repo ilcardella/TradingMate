@@ -8,11 +8,11 @@ sys.path.insert(0,parentdir)
 
 class Holding():
 
-    def __init__(self, symbol, amount=0.0, openPrice=-1.0, lastPrice=-1.0):
+    def __init__(self, symbol, amount, open_price=None):
         self._symbol = symbol
-        self._lastPrice = lastPrice # in pence
-        self._openPrice = openPrice # in pence
         self._amount = amount
+        self._openPrice = open_price
+        self._lastPrice = None
         self._lastPriceValid = False
 
     def set_last_price(self, price):
