@@ -1,4 +1,5 @@
 # TradingMate
+[![Build Status](https://travis-ci.com/ilcardella/TradingMate.svg?branch=master)](https://travis-ci.com/ilcardella/TradingMate)
 
 TradingMate is a portfolio manager for stocks traders. It lets you record all
 your trades with a simple and basic interface, showing the current status of
