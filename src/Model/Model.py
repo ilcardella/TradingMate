@@ -1,15 +1,20 @@
-from .TaskThread import TaskThread
-from .Utils import Messages, Actions, Callbacks
-from .Portfolio import Portfolio
-
+import os
 import sys
-from enum import Enum
+import inspect
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import threading
 import time
 import urllib.request
 import json
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from Utils.TaskThread import TaskThread
+from Utils.Utils import Messages, Actions, Callbacks
+from .Portfolio import Portfolio
 
 class LivePricesWebThread(TaskThread):
 
@@ -139,7 +144,7 @@ class Model():
         self.portfolio.set_cash_available(cashAvailable)
         for symbol, price in self.livePricesThread.get_last_data().items():
             self.portfolio.update_holding_last_price(symbol, price)
-    
+
     def _add_entry_to_db(self, logEntry):
         row = ET.SubElement(self.log, "row")
         date = ET.SubElement(row, "date")
@@ -156,7 +161,7 @@ class Model():
         fee.text = str(logEntry["fee"]).strip()
         sd = ET.SubElement(row, "stamp_duty")
         sd.text = str(logEntry["stamp_duty"]).strip()
-    
+
     def _remove_last_log_entry(self):
         elem = self.log.getchildren()[-1]
         self.log.remove(elem)
@@ -228,7 +233,7 @@ class Model():
                     break
         avg = sum / count
         return round(avg, 4)
-            
+
     def get_portfolio(self):
         """Return the portfolio as instance of Portfolio class"""
         return self.portfolio
@@ -264,7 +269,7 @@ class Model():
         for symbol, price in priceDict.items():
             self.portfolio.update_holding_last_price(symbol, price)
         self.callbacks[Callbacks.UPDATE_LIVE_PRICES]() # Call callback
-    
+
     def set_auto_refresh(self, enabled):
         self.livePricesThread.enable(enabled)
 
@@ -282,7 +287,7 @@ class Model():
             result["success"] = False
             result["message"] = Messages.ERROR_SAVE_FILE
         return result
-    
+
     def open_log_file(self, filepath):
         result = {"success":True,"message":"ok"}
         try:

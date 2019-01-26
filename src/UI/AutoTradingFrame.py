@@ -1,7 +1,14 @@
+import os
+import sys
+import inspect
 import tkinter as tk
 from tkinter import ttk
 
-from .Utils import Callbacks
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from Utils.Utils import Callbacks
 
 class AutoTradingFrame(tk.Frame):
 
@@ -25,6 +32,6 @@ class AutoTradingFrame(tk.Frame):
 
     def start_auto_trading(self):
         self.callbacks[Callbacks.ON_START_AUTOTRADING]()
-    
+
     def stop_auto_trading(self):
         self.callbacks[Callbacks.ON_STOP_AUTOTRADING]()

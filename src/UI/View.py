@@ -1,11 +1,18 @@
-from .Utils import Callbacks, Messages
-from .WarningWindow import WarningWindow
-from .ShareTradingFrame import ShareTradingFrame
-from .AutoTradingFrame import AutoTradingFrame
-
+import os
+import sys
+import inspect
 import tkinter as tk
 from tkinter import ttk
 from tkinter import StringVar
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from Utils.Utils import Callbacks, Messages
+from .WarningWindow import WarningWindow
+from .ShareTradingFrame import ShareTradingFrame
+from .AutoTradingFrame import AutoTradingFrame
 
 APP_NAME = "TradingMate"
 
@@ -98,14 +105,14 @@ class View():
     def on_manual_refresh_event(self):
         # Notify the Controller to request new data
         self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
-            
+
     def reset_view(self, resetHistory=False):
         self.shareTradingFrame.reset_view(resetHistory)
 
     def update_share_trading_history_log(self, logList):
         for entry in logList:
             self.shareTradingFrame.add_entry_to_log_table(entry)
-    
+
     def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity):
         self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity)
 
@@ -131,6 +138,6 @@ class View():
 
     def on_start_autotrading(self):
         self.callbacks[Callbacks.ON_START_AUTOTRADING]()
-    
+
     def on_stop_autotrading(self):
         self.callbacks[Callbacks.ON_STOP_AUTOTRADING]()

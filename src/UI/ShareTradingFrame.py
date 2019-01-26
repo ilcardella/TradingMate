@@ -1,10 +1,17 @@
-from .AddTradeDialogWindow import AddTradeDialogWindow
-from .Utils import Callbacks
-from .WarningWindow import WarningWindow
-
+import os
+import sys
+import inspect
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from Utils.Utils import Callbacks
+from .AddTradeDialogWindow import AddTradeDialogWindow
+from .WarningWindow import WarningWindow
 
 INVALID_STRING = "-"
 
@@ -36,7 +43,7 @@ class ShareTradingFrame(tk.Frame):
         self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
-        
+
         self.dbFilepathStringVar = tk.StringVar()
         dbLabel = ttk.Label(self, textvariable=self.dbFilepathStringVar)
         dbLabel.pack(anchor="w")
@@ -184,7 +191,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _trade_log_popup_menu_event(self, event):
         self.logPopupMenu.post(event.x_root, event.y_root)
-    
+
     def _display_add_trade_panel(self):
         AddTradeDialogWindow(self.parent, self._on_add_new_trade_event)
 
@@ -244,7 +251,7 @@ class ShareTradingFrame(tk.Frame):
             result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
             if result["success"] == False:
                 WarningWindow(self.parent, "Warning", result["message"])
-    
+
     def _save_portfolio(self):
         # Save the current log
         filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))

@@ -1,9 +1,17 @@
 import xml.etree.ElementTree as ET
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
 class ConfigurationManager():
 
     def __init__(self):
-        self.configFilePath = "data/config.xml"
+        self.configFilePath = "../data/config.xml"
         try:
             self.configValues = ET.parse(self.configFilePath).getroot()
             self.alphaVantageApiKey = self.configValues.find("ALPHAVANTAGE_API_KEY").text
@@ -15,7 +23,7 @@ class ConfigurationManager():
             self.autotradingPassword = self.configValues.find("AUTOTRADING_PASSWORD").text
             self.autoTradingApiKey = self.configValues.find("AUTOTRADING_APIKEY").text
             self.autotradingAccountId = self.configValues.find("AUTOTRADING_ACCOUNT_ID").text
-        except Exception:       
+        except Exception:
             pass
 
     def get_trading_database_path(self):

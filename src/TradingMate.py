@@ -1,12 +1,19 @@
-from .Model import Model
-from .Utils import Callbacks, Actions, Messages
-from .View import View
-from .Portfolio import Portfolio
-from .ConfigurationManager import ConfigurationManager
-from .AutoTradingModule import AutoTradingModule
+import os
+import sys
+import inspect
 
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
-class Controller():
+from Model.Model import Model
+from Utils.Utils import Callbacks, Actions, Messages
+from UI.View import View
+from Model.Portfolio import Portfolio
+from Utils.ConfigurationManager import ConfigurationManager
+
+class TradingMate():
 
     def __init__(self):
         self.configurationManager = ConfigurationManager()
@@ -22,10 +29,6 @@ class Controller():
         self.view.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
         self.view.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
         self.view.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
-        self.view.set_callback(Callbacks.ON_START_AUTOTRADING, self.on_start_autotrading)
-        self.view.set_callback(Callbacks.ON_STOP_AUTOTRADING, self.on_stop_autotrading)
-        # Init the AutoTradingModule
-        self.autoTradingModule = AutoTradingModule(self.configurationManager)
 
     def start(self):
         self.model.start()
@@ -56,7 +59,7 @@ class Controller():
                 result["message"] = Messages.INSUF_HOLDINGS.value
 
         return result
-    
+
     def _update_share_trading_view(self, updateHistory=False):
         self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
@@ -88,7 +91,6 @@ class Controller():
 
     def on_close_view_event(self):
         self.model.stop_application()
-        self.autoTradingModule.shutdown()
 
     def on_manual_refresh_event(self):
         self.model.on_manual_refresh_live_data()
@@ -131,9 +133,3 @@ class Controller():
             self._update_share_trading_view(updateHistory=True)
         else:
             return result
-
-    def on_start_autotrading(self):
-        self.autoTradingModule.enable(True)
-
-    def on_stop_autotrading(self):
-        self.autoTradingModule.enable(False)

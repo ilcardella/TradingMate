@@ -1,3 +1,13 @@
+import os
+import inspect
+import sys
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from .Holding import Holding
+
 class Portfolio():
     def __init__(self, name):
         self._name = name
@@ -80,7 +90,7 @@ class Portfolio():
         valueSum = 0
         for holding in self._holdings.values():
             costSum += holding.get_cost()
-            valueSum += holding.get_value() 
+            valueSum += holding.get_value()
         return ((valueSum - costSum) / costSum) * 100
 
 # SETTERS
@@ -114,58 +124,9 @@ class Portfolio():
         if symbol in self._holdings:
             self._holdings[symbol].set_last_price(price)
             self._update_holdings_value()
-            
+
     def update_holding_open_price(self, symbol, price):
         if symbol in self._holdings:
             self._holdings[symbol].set_open_price(price)
 
-# END CLASS        
-
-class Holding():
-    
-    def __init__(self, symbol, amount=0.0, openPrice=-1.0, lastPrice=-1.0):
-        self._symbol = symbol
-        self._lastPrice = lastPrice # in pence
-        self._openPrice = openPrice # in pence
-        self._amount = amount
-        self._lastPriceValid = False
-
-    def set_last_price(self, price):
-        self._lastPrice = price
-        self._lastPriceValid = True
-
-    def set_open_price(self, price):
-        self._openPrice = price
-
-    def set_amount(self, value):
-        self._amount = value
-
-    def set_last_price_invalid(self):
-        self._lastPriceValid = False
-
-    def get_symbol(self):
-        return self._symbol
-
-    def get_last_price(self):
-        return self._lastPrice
-
-    def get_open_price(self):
-        return self._openPrice
-
-    def get_amount(self):
-        return self._amount
-
-    def get_cost(self):
-        return self._amount * (self._openPrice/100) # £
-
-    def get_value(self):
-        return self._amount * (self._lastPrice/100) # £
-
-    def get_profit_loss(self):
-        return (self.get_value() - self.get_cost())
-    
-    def get_profit_loss_perc(self):
-        return (self.get_profit_loss() * 100) / self.get_cost()
-
-    def get_last_price_valid(self):
-        return self._lastPriceValid
+# END CLASS

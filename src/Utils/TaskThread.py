@@ -1,11 +1,18 @@
 # Source: http://code.activestate.com/recipes/65222-run-a-task-every-few-seconds/
 
 import threading
+import os
+import sys
+import inspect
 
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
-    
+
     def __init__(self, updatePeriod):
         threading.Thread.__init__(self)
         self.setDaemon(True)
@@ -15,11 +22,11 @@ class TaskThread(threading.Thread):
         self._enabled.set()
         self._interval = updatePeriod
         self._singleRun = False
-    
+
     def setInterval(self, interval):
         """Set the number of seconds we sleep between executing our task"""
         self._interval = interval
-    
+
     def shutdown(self):
         """Stop this thread"""
         self._timeout.set()
@@ -41,7 +48,7 @@ class TaskThread(threading.Thread):
         self._singleRun = True
         self.enable(True)
         self.cancel_timeout()
-    
+
     def run(self):
         while 1:
             # reset timeout
@@ -59,7 +66,7 @@ class TaskThread(threading.Thread):
             self._singleRun = False
             # sleep for interval or until shutdown
             self._timeout.wait(self._interval)
-    
+
     def task(self):
         """The task done by this thread - override in subclasses"""
         raise Exception("TaskThread: task function not overridden by children class!")

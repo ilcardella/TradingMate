@@ -1,5 +1,12 @@
+import os
+import sys
+import inspect
 import tkinter as tk
 from tkinter import ttk
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
 
 class DatePicker(tk.Frame):
 
@@ -40,12 +47,12 @@ class DatePicker(tk.Frame):
 
     def on_day_change_event(self, *args):
         value = self.day.get()
-        if len(value) > 2: 
+        if len(value) > 2:
             self.day.set(value[:2])
         elif len(value) == 2:
             self.eMonth.focus_set()
         self.set_date()
-    
+
     def on_month_change_event(self, *args):
         value = self.month.get()
         if len(value) > 2:
@@ -56,12 +63,10 @@ class DatePicker(tk.Frame):
 
     def on_year_change_event(self, *args):
         value = self.year.get()
-        if len(value) > 4: 
+        if len(value) > 4:
             self.year.set(value[:4])
         self.set_date()
 
     def focus_set(self):
         tk.Frame.focus_set(self)
         self.eDay.focus_set()
-
-    
