@@ -1,0 +1,60 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+
+start()
+{
+  echo Starting TradingMate...
+  cd $SCRIPT_DIR/src
+  python3 main.py & echo $! > pid.txt
+}
+
+stop()
+{
+  echo Stopping TradingMate...
+  cd $SCRIPT_DIR/src
+  cat pid.txt | xargs kill
+  rm pid.txt
+  echo TradingMate stopped
+}
+
+install_deps()
+{
+  echo Installing TradingMate dependencies...
+  pip install -r $SCRIPT_DIR/requirements.txt
+  echo Installation complete
+}
+
+test()
+{
+  echo Running unit test with pytest...
+  install_deps
+  docs
+  cd $SCRIPT_DIR
+  pytest
+}
+
+docs()
+{
+    echo Building Sphinx documentation...
+    cd $SCRIPT_DIR
+    sphinx-build -nWT -b dummy doc doc/_build/html
+    echo Documentation built
+}
+
+test_docker()
+{
+  echo Running unit test with pytest in a Docker container...
+  echo Testing against Python 3.4...
+  docker run -it --rm -v $(pwd):/app python:3.4 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  echo Testing against Python 3.5...
+  docker run -it --rm -v $(pwd):/app python:3.5 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  echo Testing against Python 3.6...
+  docker run -it --rm -v $(pwd):/app python:3.6 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  echo Testing against Python 3 latest...
+  docker run -it --rm -v $(pwd):/app python:3 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+}
+
+case $1 in
+  start|stop|install_deps|test|test_docker|docs) "$1" ;;
+esac

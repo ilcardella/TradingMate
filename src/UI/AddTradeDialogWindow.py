@@ -1,10 +1,17 @@
-from .Utils import Actions, Markets
-from .WarningWindow import WarningWindow
-from .Widgets import DatePicker
-
+import os
+import sys
+import inspect
 import tkinter as tk
 from tkinter import ttk
 import datetime
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from Utils.Utils import Actions, Markets
+from .WarningWindow import WarningWindow
+from .Widgets import DatePicker
 
 class AddTradeDialogWindow(tk.Toplevel):
 
@@ -44,7 +51,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         menuList = [a.name for a in Actions]
         eAction = ttk.OptionMenu(self, self.actionSelected, menuList[0], *menuList, command=self.on_action_selected)
         eAction.grid(row=1, column=1, sticky="w", padx=5, pady=5)
-       
+
         # Define an option menu for the market exchange
         self.marketSelected = tk.StringVar()
         marketList = [a.name for a in Markets]

@@ -1,5 +1,5 @@
 {
     "general": {
-        "trading_log_path": "data/trading_log.json"
+        "trading_log_path": "/home/alberto/Dropbox/Documents/Trading/trading_log.json"
     }
 }

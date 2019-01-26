@@ -7,6 +7,7 @@ your assets and the overall profit (or loss!)
 # Dependencies
 
 Python 3.4+
+Tkinter: https://docs.python.org/3/library/tk.html
 AlphaVantage: https://www.alphavantage.co/
 
 View file `requirements.txt` for the full list of python dependencies.
@@ -67,6 +68,8 @@ The script provides commands to perform different actions:
 
 ### Stop TradingMate
 
+Closing the main window will stop the whole application.
+You can also use the command:
 ```
 ./trading_mate_ctrl stop
 ```

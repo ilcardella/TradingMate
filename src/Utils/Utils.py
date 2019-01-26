@@ -1,4 +1,12 @@
 from enum import Enum
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(
+    inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
 # Enumerations
 
@@ -31,10 +39,3 @@ class Messages(Enum):
 
 class Markets(Enum):
     LSE = "LON"
-
-class AutoTradeActions(Enum):
-    NONE = 'NONE'
-    BUY = 'BUY'
-    SELL = 'SELL'
-    EXIT_BUY = 'EXIT_BUY'
-    EXIT_SELL = 'EXIT_SELL'
