@@ -34,6 +34,9 @@ def test_init_fail():
         h = Holding('mock', 1, -1)
 
 def test_get_cost():
+    h = Holding('mock', 100)
+    assert h.get_cost() is None
+
     h = Holding('mock', 100, 100)
     assert h.get_cost() == 100 # £
 
@@ -43,10 +46,10 @@ def test_get_cost():
     h.set_open_price(0)
     assert h.get_cost() == 0 # £
 
-    with pytest.raises(ValueError) as e:
-        h.set_open_price(-1)
-
 def test_get_value():
+    h = Holding('mock', 100)
+    assert h.get_value() is None
+
     h = Holding('mock', 100, 100)
     h.set_last_price(50)
     assert h.get_value() == 50 # £
@@ -59,6 +62,8 @@ def test_get_value():
 
 def test_get_profit_loss():
     h = Holding('mock', 1, 100)
+    assert h.get_profit_loss() is None
+
     h.set_last_price(500)
     assert h.get_profit_loss() == 4 # £
 
@@ -67,6 +72,8 @@ def test_get_profit_loss():
 
 def test_get_profit_loss_perc():
     h = Holding('mock', 1, 100)
+    assert h.get_profit_loss_perc() is None
+
     h.set_last_price(500)
     assert h.get_profit_loss_perc() == 400
 

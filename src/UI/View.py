@@ -37,12 +37,6 @@ class View():
         self.noteBook.pack(expand=1, fill="both")
         # Create Share trading Tab
         self.create_share_trading_tab()
-        # Create Share trading Tab
-        self.create_auto_trading_tab()
-        # Create Share trading Tab
-        #self.create_strategy_backtest_tab()
-        # Create Cryptocurencies Tab
-        #self.create_crypto_tab()
 
     def create_menu(self):
         self.menubar = tk.Menu(self.mainWindow)
@@ -68,14 +62,6 @@ class View():
         self.shareTradingFrame.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.shareTradingFrame.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
-
-    def create_auto_trading_tab(self):
-        self.autoTradingFrame = AutoTradingFrame(self.noteBook)
-        self.autoTradingFrame.pack(expand=True)
-        self.noteBook.add(self.autoTradingFrame, text="Auto Trading")
-        self.autoTradingFrame.set_callback(Callbacks.ON_START_AUTOTRADING, self.on_start_autotrading)
-        self.autoTradingFrame.set_callback(Callbacks.ON_STOP_AUTOTRADING, self.on_stop_autotrading)
-
 
     def start(self):
         self.shareTradingFrame.set_auto_refresh()

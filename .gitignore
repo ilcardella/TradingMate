@@ -103,3 +103,4 @@ ENV/
 .credentials
 .pytest_cache
 _builds
+pid.txt
