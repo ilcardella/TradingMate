@@ -1,0 +1,5 @@
+{
+    "general": {
+        "trading_log_path": "data/trading_log.json"
+    }
+}
