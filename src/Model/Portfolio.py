@@ -13,16 +13,7 @@ class Portfolio():
         self._name = name
         self._cashAvailable = 0
         self._investedAmount = 0
-        self._holdingsValue = 0
         self._holdings = {} # Dict {"symbol": Holding}
-
-# PRIVATE FUNCTIONS
-
-    def _update_holdings_value(self):
-        """Compute the portfolio profit and loss"""
-        self._holdingsValue = 0
-        for holding in self._holdings.values():
-            self._holdingsValue += holding.get_value()
 
 # GETTERS
 
@@ -63,11 +54,21 @@ class Portfolio():
 
     def get_total_value(self):
         """Return the value of the whole portfolio as cash + holdings"""
-        return self._cashAvailable + self._holdingsValue
+        value = self.get_holdings_value()
+        if value is not None:
+            return self._cashAvailable + value
+        else:
+            return None
 
     def get_holdings_value(self):
         """Return the value of the holdings held in the portfolio"""
-        return self._holdingsValue
+        holdingsValue = 0
+        for holding in self._holdings.values():
+            if holding.get_value() is not None:
+                holdingsValue += holding.get_value()
+            else:
+                return None
+        return holdingsValue
 
     def get_portfolio_pl(self):
         """Return the profit/loss in £ of the portfolio over the invested amount"""
@@ -107,7 +108,6 @@ class Portfolio():
         """Clear all data in the portfolio to default values"""
         self._cashAvailable = 0
         self._investedAmount = 0
-        self._holdingsValue = 0
         self._holdings.clear()
 
     def update_holding_amount(self, symbol, amount):
@@ -118,12 +118,10 @@ class Portfolio():
                 self._holdings[symbol].set_amount(amount)
         else:
             self._holdings[symbol] = Holding(symbol, amount)
-        self._update_holdings_value()
 
     def update_holding_last_price(self, symbol, price):
         if symbol in self._holdings:
             self._holdings[symbol].set_last_price(price)
-            self._update_holdings_value()
 
     def update_holding_open_price(self, symbol, price):
         if symbol in self._holdings:

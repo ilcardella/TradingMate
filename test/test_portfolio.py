@@ -104,3 +104,103 @@ def test_get_holding_symbols(portfolio):
     assert len(portfolio.get_holding_symbols()) == 2
     assert portfolio.get_holding_symbols()[0] == 'mock1'
     assert portfolio.get_holding_symbols()[1] == 'mock2'
+
+# TODO not testing the "holding" related functions as plan to change this
+
+def test_get_total_value(portfolio):
+    assert portfolio.get_total_value() == 0
+    portfolio.set_cash_available(1000)
+    portfolio.update_holding_amount('mock1', 100)
+    assert portfolio.get_total_value() is None
+    portfolio.update_holding_last_price('mock1', 1000)
+    assert portfolio.get_total_value() == 2000
+
+def test_get_holdings_value(portfolio):
+    assert portfolio.get_holdings_value() == 0
+    portfolio.update_holding_amount('mock1', 100)
+    assert portfolio.get_holdings_value() is None
+    portfolio.update_holding_last_price('mock1', 500)
+    assert portfolio.get_holdings_value() == 500
+    portfolio.update_holding_amount('mock2', 1000)
+    assert portfolio.get_holdings_value() is None
+    portfolio.update_holding_last_price('mock2', 1)
+    assert portfolio.get_holdings_value() == 510
+
+def test_get_portfolio_pl(portfolio):
+    assert portfolio.get_portfolio_pl() is None
+    portfolio.update_holding_amount('mock1', 1000)
+    assert portfolio.get_portfolio_pl() is None
+    portfolio.update_holding_open_price('mock1', 100)
+    assert portfolio.get_portfolio_pl() is None
+    portfolio.update_holding_last_price('mock1', 200)
+    assert portfolio.get_portfolio_pl() is None
+    portfolio.set_invested_amount(1)
+    assert portfolio.get_portfolio_pl() == 999
+    portfolio.update_holding_amount('mock2', 100)
+    assert portfolio.get_portfolio_pl() is None
+    portfolio.update_holding_open_price('mock2', 100)
+    assert portfolio.get_portfolio_pl() is None
+    portfolio.update_holding_last_price('mock2', 1)
+    assert portfolio.get_portfolio_pl() == 901
+    portfolio.set_cash_available(1000)
+    assert portfolio.get_portfolio_pl() == 1901
+    portfolio.set_invested_amount(1900)
+    assert portfolio.get_portfolio_pl() == 1
+
+def test_get_portfolio_pl_perc(portfolio):
+    assert portfolio.get_portfolio_pl_perc() is None
+    portfolio.update_holding_amount('mock1', 1000)
+    assert portfolio.get_portfolio_pl_perc() is None
+    portfolio.update_holding_open_price('mock1', 100)
+    assert portfolio.get_portfolio_pl_perc() is None
+    portfolio.update_holding_last_price('mock1', 200)
+    assert portfolio.get_portfolio_pl_perc() is None
+    portfolio.set_invested_amount(1)
+    expected = float((1999 / 1) * 100)
+    assert portfolio.get_portfolio_pl_perc() == expected
+    portfolio.update_holding_amount('mock2', 100)
+    assert portfolio.get_portfolio_pl_perc() is None
+    portfolio.update_holding_open_price('mock2', 100)
+    assert portfolio.get_portfolio_pl_perc() is None
+    portfolio.update_holding_last_price('mock2', 1)
+    expected = float((2000 / 1) * 100)
+    assert portfolio.get_portfolio_pl_perc() == expected
+    portfolio.set_cash_available(1000)
+    expected = float((3000 / 1) * 100)
+    assert portfolio.get_portfolio_pl_perc() == expected
+    portfolio.set_invested_amount(1900)
+    expected = float((3000 / 1900) * 100)
+    assert portfolio.get_portfolio_pl_perc() == expected
+
+def test_get_open_positions_pl(portfolio):
+    assert portfolio.get_open_positions_pl() is None
+    portfolio.update_holding_amount('mock1', 1000)
+    assert portfolio.get_open_positions_pl() is None
+    portfolio.update_holding_open_price('mock1', 100)
+    assert portfolio.get_open_positions_pl() is None
+    portfolio.update_holding_last_price('mock1', 200)
+    assert portfolio.get_open_positions_pl() == 1000
+
+    portfolio.update_holding_amount('mock2', 100)
+    assert portfolio.get_open_positions_pl() is None
+    portfolio.update_holding_open_price('mock2', 100)
+    assert portfolio.get_open_positions_pl() is None
+    portfolio.update_holding_last_price('mock2', 1)
+    assert portfolio.get_open_positions_pl() == 901
+
+def test_get_open_positions_pl_perc(portfolio):
+    assert portfolio.get_open_positions_pl_perc() is None
+    portfolio.update_holding_amount('mock1', 1000)
+    assert portfolio.get_open_positions_pl_perc() is None
+    portfolio.update_holding_open_price('mock1', 100)
+    assert portfolio.get_open_positions_pl_perc() is None
+    portfolio.update_holding_last_price('mock1', 200)
+    assert portfolio.get_open_positions_pl_perc() == 100
+
+    portfolio.update_holding_amount('mock2', 100)
+    assert portfolio.get_open_positions_pl_perc() is None
+    portfolio.update_holding_open_price('mock2', 100)
+    assert portfolio.get_open_positions_pl_perc() is None
+    portfolio.update_holding_last_price('mock2', 1)
+    expected = float(((201 - 200) / 200) * 100) # value - cost / cost * 100
+    assert portfolio.get_open_positions_pl_perc() == expected
