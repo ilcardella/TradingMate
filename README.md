@@ -7,9 +7,9 @@ your assets and the overall profit (or loss!)
 
 # Dependencies
 
-Python 3.4+
-Tkinter: https://docs.python.org/3/library/tk.html
-AlphaVantage: https://www.alphavantage.co/
+- Python 3.4+
+- Tkinter: https://docs.python.org/3/library/tk.html
+- AlphaVantage: https://www.alphavantage.co/
 
 View file `requirements.txt` for the full list of python dependencies.
 
@@ -62,7 +62,6 @@ TradingMate can be controlled by the `trading_mate_ctrl` shell script.
 The script provides commands to perform different actions:
 
 ### Start TradingMate
-:
 ```
 ./trading_mate_ctrl start
 ```
