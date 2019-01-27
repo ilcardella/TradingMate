@@ -46,10 +46,14 @@ class Portfolio():
 
     def get_holding_last_price(self, symbol):
         """Return the last price for the given symbol"""
+        if symbol not in self._holdings:
+            raise ValueError('Invalid symbol')
         return self._holdings[symbol].get_last_price()
 
     def get_holding_open_price(self, symbol):
         """Return the last price for the given symbol"""
+        if symbol not in self._holdings:
+            raise ValueError('Invalid symbol')
         return self._holdings[symbol].get_open_price()
 
     def get_total_value(self):
@@ -72,17 +76,28 @@ class Portfolio():
 
     def get_portfolio_pl(self):
         """Return the profit/loss in £ of the portfolio over the invested amount"""
-        return self.get_total_value() - self.get_invested_amount()
+        value = self.get_total_value()
+        invested = self.get_invested_amount()
+        if value is None or invested is None:
+            return None
+        return value - invested
 
     def get_portfolio_pl_perc(self):
         """Return the profit/loss in % of the portfolio over the invested amount"""
-        return (self.get_portfolio_pl() * 100) / self.get_invested_amount()
+        pl = self.get_portfolio_pl()
+        invested = self.get_invested_amount()
+        if pl is None or invested is None or invested < 1:
+            return None
+        return (pl / invested) * 100
 
     def get_open_positions_pl(self):
         """Return the sum profit/loss in £ of the current open positions"""
         sum = 0
         for holding in self._holdings.values():
-            sum += holding.get_profit_loss()
+            pl = holding.get_profit_loss()
+            if pl is None:
+                return None
+            sum += pl
         return sum
 
     def get_open_positions_pl_perc(self):
@@ -90,16 +105,26 @@ class Portfolio():
         costSum = 0
         valueSum = 0
         for holding in self._holdings.values():
-            costSum += holding.get_cost()
-            valueSum += holding.get_value()
+            cost = holding.get_cost()
+            value = holding.get_value()
+            if cost is None or value is None:
+                return None
+            costSum += cost
+            valueSum += value
+        if costSum < 1:
+            return None
         return ((valueSum - costSum) / costSum) * 100
 
 # SETTERS
 
     def set_cash_available(self, value):
+        if value is None or value < 0:
+            raise ValueError('Invalid value for cash_available')
         self._cashAvailable = value
 
     def set_invested_amount(self, value):
+        if value is None or value < 0:
+            raise ValueError('Invalid value for investedAmount')
         self._investedAmount = value
 
 # FUNCTIONS
@@ -122,9 +147,13 @@ class Portfolio():
     def update_holding_last_price(self, symbol, price):
         if symbol in self._holdings:
             self._holdings[symbol].set_last_price(price)
+        else:
+            raise ValueError('Invalid symbol')
 
     def update_holding_open_price(self, symbol, price):
         if symbol in self._holdings:
             self._holdings[symbol].set_open_price(price)
+        else:
+            raise ValueError('Invalid symbol')
 
 # END CLASS

@@ -31,15 +31,16 @@ def test_update_holding_amount(portfolio):
     portfolio.update_holding_amount('mock', 100)
     assert portfolio.get_holding_amount('mock') == 100
     portfolio.update_holding_amount('mock', 100)
-    assert portfolio.get_holding_amount('mock') == 200
+    assert portfolio.get_holding_amount('mock') == 100
     portfolio.update_holding_amount('mock', 0)
     assert portfolio.get_holding_amount('mock') == 0
     with pytest.raises(ValueError) as e:
         portfolio.update_holding_amount('mock', -1)
 
 def test_update_holding_last_price(portfolio):
-    assert portfolio.get_holding_last_price('mock') is None
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(ValueError) as e:
+        portfolio.get_holding_last_price('mock')
+    with pytest.raises(ValueError) as e:
         portfolio.update_holding_last_price('mock', 100)
     portfolio.update_holding_amount('mock', 100)
     with pytest.raises(ValueError) as e:
@@ -48,8 +49,9 @@ def test_update_holding_last_price(portfolio):
     assert portfolio.get_holding_last_price('mock') == 1000
 
 def test_update_holding_open_price(portfolio):
-    assert portfolio.get_holding_open_price('mock') is None
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(ValueError) as e:
+        portfolio.get_holding_open_price('mock')
+    with pytest.raises(ValueError) as e:
         portfolio.update_holding_open_price('mock', 100)
     portfolio.update_holding_amount('mock', 100)
     with pytest.raises(ValueError) as e:
@@ -60,7 +62,7 @@ def test_update_holding_open_price(portfolio):
 def test_clear(portfolio):
     portfolio.set_cash_available(1000)
     portfolio.set_invested_amount(1000)
-    portfolio.update_holding_amount('mock', 100, 100)
+    portfolio.update_holding_amount('mock', 100)
     portfolio.update_holding_last_price('mock', 1000)
     assert portfolio.get_cash_available() == 1000
     assert portfolio.get_invested_amount() == 1000
@@ -127,25 +129,25 @@ def test_get_holdings_value(portfolio):
     assert portfolio.get_holdings_value() == 510
 
 def test_get_portfolio_pl(portfolio):
-    assert portfolio.get_portfolio_pl() is None
+    assert portfolio.get_portfolio_pl() == 0
     portfolio.update_holding_amount('mock1', 1000)
     assert portfolio.get_portfolio_pl() is None
     portfolio.update_holding_open_price('mock1', 100)
     assert portfolio.get_portfolio_pl() is None
     portfolio.update_holding_last_price('mock1', 200)
-    assert portfolio.get_portfolio_pl() is None
+    assert portfolio.get_portfolio_pl() == 2000
     portfolio.set_invested_amount(1)
-    assert portfolio.get_portfolio_pl() == 999
+    assert portfolio.get_portfolio_pl() == 1999
     portfolio.update_holding_amount('mock2', 100)
     assert portfolio.get_portfolio_pl() is None
     portfolio.update_holding_open_price('mock2', 100)
     assert portfolio.get_portfolio_pl() is None
     portfolio.update_holding_last_price('mock2', 1)
-    assert portfolio.get_portfolio_pl() == 901
+    assert portfolio.get_portfolio_pl() == 2000
     portfolio.set_cash_available(1000)
-    assert portfolio.get_portfolio_pl() == 1901
-    portfolio.set_invested_amount(1900)
-    assert portfolio.get_portfolio_pl() == 1
+    assert portfolio.get_portfolio_pl() == 3000
+    portfolio.set_invested_amount(1000)
+    assert portfolio.get_portfolio_pl() == 2001
 
 def test_get_portfolio_pl_perc(portfolio):
     assert portfolio.get_portfolio_pl_perc() is None
@@ -156,24 +158,25 @@ def test_get_portfolio_pl_perc(portfolio):
     portfolio.update_holding_last_price('mock1', 200)
     assert portfolio.get_portfolio_pl_perc() is None
     portfolio.set_invested_amount(1)
-    expected = float((1999 / 1) * 100)
+    expected = float(((2000 - 1) / 1) * 100)
     assert portfolio.get_portfolio_pl_perc() == expected
+
     portfolio.update_holding_amount('mock2', 100)
     assert portfolio.get_portfolio_pl_perc() is None
     portfolio.update_holding_open_price('mock2', 100)
     assert portfolio.get_portfolio_pl_perc() is None
     portfolio.update_holding_last_price('mock2', 1)
-    expected = float((2000 / 1) * 100)
+    expected = float(((2001 - 1) / 1) * 100)
     assert portfolio.get_portfolio_pl_perc() == expected
     portfolio.set_cash_available(1000)
-    expected = float((3000 / 1) * 100)
+    expected = float(((3001 - 1) / 1) * 100)
     assert portfolio.get_portfolio_pl_perc() == expected
     portfolio.set_invested_amount(1900)
-    expected = float((3000 / 1900) * 100)
+    expected = float(((3001 - 1900) / 1900) * 100)
     assert portfolio.get_portfolio_pl_perc() == expected
 
 def test_get_open_positions_pl(portfolio):
-    assert portfolio.get_open_positions_pl() is None
+    assert portfolio.get_open_positions_pl() == 0
     portfolio.update_holding_amount('mock1', 1000)
     assert portfolio.get_open_positions_pl() is None
     portfolio.update_holding_open_price('mock1', 100)
@@ -202,5 +205,5 @@ def test_get_open_positions_pl_perc(portfolio):
     portfolio.update_holding_open_price('mock2', 100)
     assert portfolio.get_open_positions_pl_perc() is None
     portfolio.update_holding_last_price('mock2', 1)
-    expected = float(((201 - 200) / 200) * 100) # value - cost / cost * 100
+    expected = float(((2001 - 1100) / 1100) * 100) # value - cost / cost * 100
     assert portfolio.get_open_positions_pl_perc() == expected
