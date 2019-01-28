@@ -3,31 +3,29 @@ import sys
 import inspect
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-import threading
-import time
-import urllib.request
 import json
+import logging
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from .StockPriceGetter import StockPriceGetter
-from .Portfolio import Portfolio
-from Utils.Utils import Messages, Actions, Callbacks
+from Utils.ConfigurationManager import ConfigurationManager
 from Utils.TaskThread import TaskThread
+from Utils.Utils import Messages, Actions, Callbacks
+from .Portfolio import Portfolio
+from .StockPriceGetter import StockPriceGetter
 
 
 class Model():
 
-    def __init__(self, configurationManager):
-        self.configurationManager = configurationManager
-        self._read_configuration()
+    def __init__(self, config):
+        self._read_configuration(config)
         self._read_database(self.dbFilePath)
         self.callbacks = {}  # DataStruct containing the callbacks
-        self.livePricesThread = StockPriceGetter(
-            self.configurationManager, self.on_new_price_data, self.webPollingPeriod)
+        self.livePricesThread = StockPriceGetter(config,
+            self.on_new_price_data, self.webPollingPeriod)
         self.portfolio = Portfolio("Portfolio1")
 
 # INTERNAL FUNCTIONS
@@ -35,16 +33,16 @@ class Model():
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
 
-    def _read_configuration(self):
-        self.dbFilePath = self.configurationManager.get_trading_database_path()
-        self.webPollingPeriod = self.configurationManager.get_alpha_vantage_polling_period()
+    def _read_configuration(self, config):
+        self.dbFilePath = config.get_trading_database_path()
+        self.webPollingPeriod = config.get_alpha_vantage_polling_period()
 
     def _read_database(self, filepath):
         try:
             tradingLogXMLTree = ET.parse(filepath)
             self.log = tradingLogXMLTree.getroot()
         except Exception as e:
-            print("Model: Error reading database! {0}".format(e))
+            logging.error("Model: Error reading database: {}".format(e))
             self.log = ET.Element("log")
 
     def _update_portfolio(self):

@@ -1,5 +1,13 @@
 {
     "general": {
-        "trading_log_path": "/home/alberto/Dropbox/Documents/Trading/trading_log.json"
+        "debug_log": false,
+        "enable_file_log": false,
+        "log_filepath": "{home}/.TradingMate/log/trading_mate_{timestamp}.log",
+        "trading_log_path": "/home/alberto/Dropbox/Documents/Trading/trading_log.json",
+        "credentials_filepath": "../data/.credentials"
+    },
+    "alpha_vantage": {
+        "api_base_uri": "https://www.alphavantage.co/query",
+        "polling_period_sec": 30
     }
 }
