@@ -1,4 +1,3 @@
-from Utils.TaskThread import TaskThread
 import os
 import sys
 import inspect
@@ -10,24 +9,22 @@ currentdir = os.path.dirname(os.path.abspath(
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
+from Utils.TaskThread import TaskThread
+from Utils.ConfigurationManager import ConfigurationManager
+
 
 class StockPriceGetter(TaskThread):
 
-    def __init__(self, configurationManager, onNewPriceDataCallback, updatePeriod):
+    def __init__(self, config, onNewPriceDataCallback, updatePeriod):
         TaskThread.__init__(self, updatePeriod)
         self.onNewPriceDataCallback = onNewPriceDataCallback
-        self.configurationManager = configurationManager
-        self._read_configuration()
+        self._read_configuration(config)
         self.lastData = {}
         self.symbolList = []
 
-    def _read_configuration(self):
-        try:
-            self.alphaVantageAPIKey = self.configurationManager.get_alpha_vantage_api_key()
-            self.alphaVantageBaseURL = self.configurationManager.get_alpha_vantage_base_url()
-        except Exception as e:
-            print("LivePricesWebThread: _read_configuration() {0}".format(e))
-            sys.exit(1)
+    def _read_configuration(self, config):
+        self.alphaVantageAPIKey = config.get_alpha_vantage_api_key()
+        self.alphaVantageBaseURL = config.get_alpha_vantage_base_url()
 
     def task(self):
         priceDict = {}

@@ -53,8 +53,14 @@ sudo chmod 600 .credentials
 The `config.json` file is in the `config` folder and it contains several configurable parameter to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
-- **trading_log_path**: The absolute path of the trading log where the history
+- **general/trading_log_path**: The absolute path of the trading log where the history
 of your trades are saved
+- **general/debug_log**: Activate the debug logging level
+- **general/enable_file_log**: Activate logging on a file
+- **general/log_filepath**: File path of the logging file (if active)
+- **general/credentials_filepath**: File path of the .credentials file
+- **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
+- **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
 
 # Run
 

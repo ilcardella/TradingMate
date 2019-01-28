@@ -1,7 +1,8 @@
-import xml.etree.ElementTree as ET
 import os
 import sys
 import inspect
+import json
+import logging
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -9,46 +10,70 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 class ConfigurationManager():
+    """
+    Class that loads the configuration and credentials json files exposing
+    static methods to provide the configurable parameters
+    """
+    CONFIG_FILEPATH = '../config/config.json'
 
     def __init__(self):
-        self.configFilePath = "../data/config.xml"
+        # Load configuration file
+        self.config = self.load_json_file(self.CONFIG_FILEPATH)
+        # Load credentials file
+        self.credentials = self.load_json_file(self.config['general']['credentials_filepath'])
+
+    def load_json_file(self, filepath):
+        """
+        Load a JSON formatted file from the given filepath
+
+            - **filepath** The filepath including filename and extension
+            - Return a dictionary of the loaded json
+        """
         try:
-            self.configValues = ET.parse(self.configFilePath).getroot()
-            self.alphaVantageApiKey = self.configValues.find("ALPHAVANTAGE_API_KEY").text
-            self.alphaVantageBaseURL = self.configValues.find("ALPHAVANTAGE_BASE_URL").text
-            self.tradingDatabasePath = self.configValues.find("TRADING_LOG_PATH").text
-            self.alphaVantagePollingPeriod = int(self.configValues.find("ALPHAVANTAGE_POLLING_PERIOD").text)
-            self.autotradingBroker = self.configValues.find("AUTOTRADING_BROKER").text
-            self.autotradingUsername = self.configValues.find("AUTOTRADING_USERNAME").text
-            self.autotradingPassword = self.configValues.find("AUTOTRADING_PASSWORD").text
-            self.autoTradingApiKey = self.configValues.find("AUTOTRADING_APIKEY").text
-            self.autotradingAccountId = self.configValues.find("AUTOTRADING_ACCOUNT_ID").text
-        except Exception:
-            pass
+            with open(filepath, 'r') as file:
+                return json.load(file)
+        except IOError:
+            logging.error("File not found ({})".format(filepath))
+            exit()
 
     def get_trading_database_path(self):
-        return self.tradingDatabasePath
+        """
+        Get the filepath of the trading log file
+        """
+        return self.config['general']['trading_log_path']
 
     def get_alpha_vantage_api_key(self):
-        return self.alphaVantageApiKey
+        """
+        Get the alphavantage api key
+        """
+        return self.credentials['av_api_key']
 
     def get_alpha_vantage_base_url(self):
-        return self.alphaVantageBaseURL
+        """
+        Get the alphavantage API base URI
+        """
+        return self.config['alpha_vantage']['api_base_uri']
 
     def get_alpha_vantage_polling_period(self):
-        return self.alphaVantagePollingPeriod
+        """
+        Get the alphavantage configured polling period
+        """
+        return self.config['alpha_vantage']['polling_period_sec']
 
-    def get_autotrading_broker(self):
-        return self.autotradingBroker
+    def get_debug_log_active(self):
+        """
+        Get the logging level
+        """
+        return self.config['general']['debug_log']
 
-    def get_autotrading_username(self):
-        return self.autotradingUsername
+    def get_enable_file_log(self):
+        """
+        Enable logging on file status
+        """
+        return self.config['general']['enable_file_log']
 
-    def get_autotrading_password(self):
-        return self.autotradingPassword
-
-    def get_autotrading_apikey(self):
-        return self.autoTradingApiKey
-
-    def get_autotrading_account(self):
-        return self.autotradingAccountId
+    def get_log_filepath(self):
+        """
+        Get the log filepath
+        """
+        return self.config['general']['log_filepath']
