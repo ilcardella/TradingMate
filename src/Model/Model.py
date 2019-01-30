@@ -1,8 +1,6 @@
 import os
 import sys
 import inspect
-import xml.etree.ElementTree as ET
-from xml.dom import minidom
 import json
 import logging
 
@@ -13,7 +11,7 @@ sys.path.insert(0, parentdir)
 
 from Utils.ConfigurationManager import ConfigurationManager
 from Utils.TaskThread import TaskThread
-from Utils.Utils import Messages, Actions, Callbacks
+from Utils.Utils import Messages, Actions, Callbacks, Utils
 from .Portfolio import Portfolio
 from .StockPriceGetter import StockPriceGetter
 
@@ -38,25 +36,20 @@ class Model():
         self.webPollingPeriod = config.get_alpha_vantage_polling_period()
 
     def _read_database(self, filepath):
-        try:
-            tradingLogXMLTree = ET.parse(filepath)
-            self.log = tradingLogXMLTree.getroot()
-        except Exception as e:
-            logging.error("Model: Error reading database: {}".format(e))
-            self.log = ET.Element("log")
+        self.log = Utils.load_json_file(self.dbFilePath)
 
     def _update_portfolio(self):
         """Scan the database and update the Portfolio instance"""
         cashAvailable = 0.0
         investedAmount = 0.0
         holdings = {}
-        for row in self.log:
-            action = row.find("action").text
-            amount = float(row.find("amount").text)
-            symbol = row.find("symbol").text
-            price = float(row.find("price").text)
-            fee = float(row.find("fee").text)
-            sd = float(row.find("stamp_duty").text)
+        for trade in self.log['trades']:
+            action = trade['action']
+            amount = float(trade['amount'])
+            symbol = trade['symbol'] if 'symbol' in trade else None
+            price = float(trade['price'])
+            fee = float(trade['fee'])
+            sd = float(trade['stamp_duty'])
 
             if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
                 cashAvailable += amount
@@ -92,25 +85,14 @@ class Model():
             self.portfolio.update_holding_last_price(symbol, price)
 
     def _add_entry_to_db(self, logEntry):
-        row = ET.SubElement(self.log, "row")
-        date = ET.SubElement(row, "date")
-        date.text = str(logEntry["date"]).strip()
-        action = ET.SubElement(row, "action")
-        action.text = str(logEntry["action"]).strip()
-        symbol = ET.SubElement(row, "symbol")
-        symbol.text = str(logEntry["symbol"]).strip()
-        amount = ET.SubElement(row, "amount")
-        amount.text = str(logEntry["amount"]).strip()
-        price = ET.SubElement(row, "price")
-        price.text = str(logEntry["price"]).strip()
-        fee = ET.SubElement(row, "fee")
-        fee.text = str(logEntry["fee"]).strip()
-        sd = ET.SubElement(row, "stamp_duty")
-        sd.text = str(logEntry["stamp_duty"]).strip()
+        if 'trades' in self.log:
+            self.log['trades'].append(logEntry)
+        else:
+            self.log['trades'] = []
+            self.log['trades'].append(logEntry)
 
     def _remove_last_log_entry(self):
-        elem = self.log.getchildren()[-1]
-        self.log.remove(elem)
+        del self.log['trades'][-1]
 
     def _reset(self, filepath=None):
         self._read_configuration()
@@ -121,10 +103,7 @@ class Model():
 
     def _write_log_to_file(self, filepath):
         # write the in memory db to a file
-        self._utils_indent_xml_tree(self.log)
-        newTree = ET.ElementTree(self.log)
-        newTree.write(filepath, xml_declaration=True,
-                      encoding='utf-8', method="xml")
+        Utils.write_json_file(self.dbFilePath, self.log)
 
     # Source http://effbot.org/zone/element-lib.htm#prettyprint
     def _utils_indent_xml_tree(self, elem, level=0):
@@ -146,36 +125,22 @@ class Model():
 # GETTERS
 
     def get_log_as_list(self):
-        # return a list of Dict with the log data
-        listOfEntries = []
-        for row in self.log:
-            d = {}
-            d["date"] = row.find('date').text
-            d["action"] = row.find('action').text
-            d["symbol"] = row.find('symbol').text
-            d["amount"] = float(row.find('amount').text) if row.find(
-                'amount').text is not None else 0
-            d["price"] = float(row.find('price').text) if row.find(
-                'price').text is not None else 0.0
-            d["fee"] = float(row.find('fee').text) if row.find(
-                'fee').text is not None else 0.0
-            d["stamp_duty"] = float(row.find('stamp_duty').text) if row.find(
-                'stamp_duty').text is not None else 0.0
-            listOfEntries.append(d)
-        return listOfEntries
+        return self.log['trades']
 
     def get_holding_open_price(self, symbol):
-        """Return the average price paid to open the current positon of the requested stock"""
-        # Starting from the end of the history log, find the BUY transaction that led to
-        # to have the current amount, compute then the average price of these transactions
+        """
+        Return the average price paid to open the current positon of the requested stock.
+        Starting from the end of the history log, find the BUY transaction that led to
+        to have the current amount, compute then the average price of these transactions
+        """
         sum = 0
         count = 0
         targetAmount = self.portfolio.get_holding_amount(symbol)
-        for row in self.log[::-1]:  # reverse order
-            action = row.find("action").text
-            sym = row.find("symbol").text
-            price = float(row.find("price").text)
-            amount = float(row.find("amount").text)
+        for trade in self.log['trades'][::-1]:  # reverse order
+            action = trade['action']
+            sym = trade['symbol'] if 'symbol' in trade else None
+            price = float(trade['price'])
+            amount = float(trade['amount'])
             if sym == symbol and action == Actions.BUY.name:
                 targetAmount -= amount
                 sum += price * amount
@@ -186,7 +151,9 @@ class Model():
         return round(avg, 4)
 
     def get_portfolio(self):
-        """Return the portfolio as instance of Portfolio class"""
+        """
+        Return the portfolio as instance of Portfolio class
+        """
         return self.portfolio
 
     def get_db_filepath(self):
