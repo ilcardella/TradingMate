@@ -9,6 +9,8 @@ currentdir = os.path.dirname(os.path.abspath(
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
+from Utils.Utils import Utils
+
 class ConfigurationManager():
     """
     Class that loads the configuration and credentials json files exposing
@@ -18,23 +20,9 @@ class ConfigurationManager():
 
     def __init__(self):
         # Load configuration file
-        self.config = self.load_json_file(self.CONFIG_FILEPATH)
+        self.config = Utils.load_json_file(self.CONFIG_FILEPATH)
         # Load credentials file
-        self.credentials = self.load_json_file(self.config['general']['credentials_filepath'])
-
-    def load_json_file(self, filepath):
-        """
-        Load a JSON formatted file from the given filepath
-
-            - **filepath** The filepath including filename and extension
-            - Return a dictionary of the loaded json
-        """
-        try:
-            with open(filepath, 'r') as file:
-                return json.load(file)
-        except IOError:
-            logging.error("File not found ({})".format(filepath))
-            exit()
+        self.credentials = Utils.load_json_file(self.config['general']['credentials_filepath'])
 
     def get_trading_database_path(self):
         """

@@ -2,6 +2,8 @@ from enum import Enum
 import os
 import sys
 import inspect
+import json
+import logging
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -39,3 +41,42 @@ class Messages(Enum):
 
 class Markets(Enum):
     LSE = "LON"
+
+class Utils():
+    """
+    Class that provides utility functions
+    """
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def load_json_file(filepath):
+        """
+        Load a JSON formatted file from the given filepath
+
+            - **filepath** The filepath including filename and extension
+            - Return a dictionary of the loaded json
+        """
+        try:
+            with open(filepath, 'r') as file:
+                return json.load(file)
+        except Exception as e:
+            logging.error("Unable to load JSON file {}".format(e))
+        return {}
+
+    @staticmethod
+    def write_json_file(filepath, data):
+        """
+        Write a python dict object into a file with json formatting
+
+            -**filepath** The filepath
+            -**data** The python dict to write
+            - Return True if succed, False otherwise
+        """
+        try:
+            with open(filepath, 'w') as file:
+                json.dump(data, file, indent=4, separators=(',', ': '))
+                return True
+        except Exception as e:
+            logging.error("Unable to write JSON file: ".format(e))
+        return False
