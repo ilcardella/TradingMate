@@ -105,23 +105,6 @@ class Model():
         # write the in memory db to a file
         Utils.write_json_file(self.dbFilePath, self.log)
 
-    # Source http://effbot.org/zone/element-lib.htm#prettyprint
-    def _utils_indent_xml_tree(self, elem, level=0):
-        """Indent the xml root element with "pretty" format. Can be used before writing xmlTree to a file"""
-        i = "\n" + level*"  "
-        if len(elem):
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-            for elem in elem:
-                self._utils_indent_xml_tree(elem, level+1)
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-        else:
-            if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
-
 # GETTERS
 
     def get_log_as_list(self):

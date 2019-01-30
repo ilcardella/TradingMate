@@ -246,7 +246,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _open_portfolio(self):
         # Open a saved portfolio
-        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
+        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
         if filename is not None and len(filename) > 0:
             result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
             if result["success"] == False:
@@ -254,7 +254,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _save_portfolio(self):
         # Save the current log
-        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("xml files","*.xml"),("all files","*.*")))
+        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
         if filename is not None and len(filename) > 0:
             result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
             if result["success"] == False:
