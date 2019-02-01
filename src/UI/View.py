@@ -28,6 +28,8 @@ class View():
         # Create main window
         self.mainWindow = tk.Tk()
         self.mainWindow.title(APP_NAME)
+        img = tk.Image("photo", file=currentdir + '/assets/icon.png')
+        self.mainWindow.tk.call('wm','iconphoto',self.mainWindow._w,img)
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
         self.mainWindow.geometry("1024x600")
         # Define the app menu
