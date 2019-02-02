@@ -156,4 +156,10 @@ class Portfolio():
         else:
             raise ValueError('Invalid symbol')
 
+    def add_trade(self, trade):
+        # TODO
+        # Add logic of function PortfolioManager::_update_portfolio() here
+        # Integrate with functions update_xxx() above and remove if necessary
+        raise NotImplementedError()
+
 # END CLASS

@@ -16,7 +16,7 @@ from .Portfolio import Portfolio
 from .StockPriceGetter import StockPriceGetter
 
 
-class Model():
+class PortfolioManager():
 
     def __init__(self, config):
         self._read_configuration(config)
