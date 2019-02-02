@@ -15,16 +15,18 @@ from Utils.ConfigurationManager import ConfigurationManager
 
 class StockPriceGetter(TaskThread):
 
-    def __init__(self, config, onNewPriceDataCallback, updatePeriod):
-        TaskThread.__init__(self, updatePeriod)
-        self.onNewPriceDataCallback = onNewPriceDataCallback
+    def __init__(self, config, onNewPriceDataCallback):
+        TaskThread.__init__(self)
         self._read_configuration(config)
+        self.onNewPriceDataCallback = onNewPriceDataCallback
         self.lastData = {}
         self.symbolList = []
 
     def _read_configuration(self, config):
         self.alphaVantageAPIKey = config.get_alpha_vantage_api_key()
         self.alphaVantageBaseURL = config.get_alpha_vantage_base_url()
+        # Override the parent class default value
+        self._interval = config.get_alpha_vantage_polling_period()
 
     def task(self):
         priceDict = {}

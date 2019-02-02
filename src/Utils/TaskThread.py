@@ -13,14 +13,14 @@ sys.path.insert(0, parentdir)
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
 
-    def __init__(self, updatePeriod):
+    def __init__(self):
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self._timeout = threading.Event()
         self._finished = threading.Event()
         self._enabled = threading.Event()
         self._enabled.set()
-        self._interval = updatePeriod
+        self._interval = 1 # default value
         self._singleRun = False
 
     def setInterval(self, interval):

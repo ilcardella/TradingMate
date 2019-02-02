@@ -14,16 +14,20 @@ from Utils.TaskThread import TaskThread
 from Utils.Utils import Messages, Actions, Callbacks, Utils
 from .Portfolio import Portfolio
 from .StockPriceGetter import StockPriceGetter
+from .DatabaseHandler import DatabaseHandler
 
 
 class PortfolioManager():
 
     def __init__(self, config):
         self._read_configuration(config)
-        self._read_database(self.dbFilePath)
-        self.callbacks = {}  # DataStruct containing the callbacks
-        self.livePricesThread = StockPriceGetter(config,
-            self.on_new_price_data, self.webPollingPeriod)
+        # DataStruct containing the callbacks
+        self.callbacks = {}
+        # Class to collect stocks live prices
+        self.livePricesThread = StockPriceGetter(config, self.on_new_price_data)
+        # Database handler
+        self.db_handler = DatabaseHandler(config)
+        # Portfolio instance
         self.portfolio = Portfolio("Portfolio1")
 
 # INTERNAL FUNCTIONS
@@ -32,14 +36,12 @@ class PortfolioManager():
         self.callbacks[id] = callback
 
     def _read_configuration(self, config):
-        self.dbFilePath = config.get_trading_database_path()
-        self.webPollingPeriod = config.get_alpha_vantage_polling_period()
-
-    def _read_database(self, filepath):
-        self.log = Utils.load_json_file(self.dbFilePath)
+        pass
 
     def _update_portfolio(self):
-        """Scan the database and update the Portfolio instance"""
+        """
+        Scan the database and update the Portfolio instance
+        """
         cashAvailable = 0.0
         investedAmount = 0.0
         holdings = {}
@@ -96,14 +98,8 @@ class PortfolioManager():
 
     def _reset(self, filepath=None):
         self._read_configuration()
-        if filepath is not None:
-            self.dbFilePath = filepath
-        self._read_database(self.dbFilePath)
+        self.db_handler.read_data(filepath)
         self._update_portfolio()
-
-    def _write_log_to_file(self, filepath):
-        # write the in memory db to a file
-        Utils.write_json_file(self.dbFilePath, self.log)
 
 # GETTERS
 
@@ -140,11 +136,12 @@ class PortfolioManager():
         return self.portfolio
 
     def get_db_filepath(self):
-        return self.dbFilePath
+        return self.db_handler.get_db_filepath()
 
 # INTERFACES
 
     def start(self):
+        self.log = self.db_handler.read_data()
         self._update_portfolio()
         self.livePricesThread.set_symbol_list(
             self.portfolio.get_holding_symbols())
@@ -153,7 +150,7 @@ class PortfolioManager():
     def stop_application(self):
         self.livePricesThread.shutdown()
         self.livePricesThread.join()
-        self._write_log_to_file(self.dbFilePath)
+        self.db_handler.write_data(self.log)
 
     def add_new_trade(self, newTrade):
         result = {"success": True, "message": "ok"}
@@ -185,7 +182,7 @@ class PortfolioManager():
     def save_log_file(self, filepath):
         result = {"success": True, "message": "ok"}
         try:
-            self._write_log_to_file(filepath)
+            self.db_handler.write_data(self.log, filepath=filepath)
         except Exception:
             result["success"] = False
             result["message"] = Messages.ERROR_SAVE_FILE

@@ -43,6 +43,14 @@ Portfolio
 .. autoclass:: Portfolio
     :members:
 
+DatabaseHandler
+"""""""""""""""
+
+.. automodule:: Model.DatabaseHandler
+
+.. autoclass:: DatabaseHandler
+    :members:
+
 UI
 ^^^
 
