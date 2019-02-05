@@ -19,13 +19,6 @@ Model
 The ``Model`` module contains the business logic and the data management of
 TradingMate.
 
-PortfolioManager
-""""""""""""""""
-
-.. automodule:: Model.PortfolioManager
-
-.. autoclass:: PortfolioManager
-    :members:
 
 Holding
 """""""
