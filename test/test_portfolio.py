@@ -10,9 +10,35 @@ sys.path.insert(0, '{}/src'.format(parentdir))
 
 from Model.Portfolio import Portfolio
 
+class MockConfigurationManager():
+    def __init__(self):
+        pass
+
+    def get_trading_database_path(self):
+        return ""
+
+    def get_alpha_vantage_api_key(self):
+        return ""
+
+    def get_alpha_vantage_base_url(self):
+        return ""
+
+    def get_alpha_vantage_polling_period(self):
+        return 1
+
+    def get_debug_log_active(self):
+        return False
+
+    def get_enable_file_log(self):
+        return False
+
+    def get_log_filepath(self):
+        return ""
+
 @pytest.fixture
 def portfolio():
-    p = Portfolio('mock')
+    config = MockConfigurationManager()
+    p = Portfolio('mock',config)
     return p
 
 def test_set_cash_available(portfolio):

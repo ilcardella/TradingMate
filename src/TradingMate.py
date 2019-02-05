@@ -13,7 +13,6 @@ from Utils.ConfigurationManager import ConfigurationManager
 from Model.Portfolio import Portfolio
 from UI.View import View
 from Utils.Utils import Callbacks, Actions, Messages
-from Model.PortfolioManager import PortfolioManager
 
 
 class TradingMate():
@@ -23,9 +22,9 @@ class TradingMate():
         self.configurationManager = ConfigurationManager()
         # Setup the logging
         self.setup_logging()
-        # Init the pf_manager
-        self.pf_manager = PortfolioManager(self.configurationManager)
-        self.pf_manager.set_callback(
+        # Init the portfolio
+        self.portfolio = Portfolio("Portfolio1", self.configurationManager)
+        self.portfolio.set_callback(
             Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
         self.view = View()
@@ -67,18 +66,18 @@ class TradingMate():
                                 format="[%(asctime)s] %(levelname)s: %(message)s")
 
     def start(self):
-        self.pf_manager.start()
+        self.portfolio.start()
         self._update_share_trading_view(updateHistory=True)
         self.view.start()  # This should be the last instruction in this function
 
 # Functions
 
     def _check_new_trade_validity(self, newTrade):
+        # TODO move into Portfolio
         result = {"success": True, "message": "ok"}
-        portfolio = self.pf_manager.get_portfolio()
 
         if newTrade["action"] == Actions.WITHDRAW.name:
-            if newTrade["amount"] > portfolio.get_cash_available():
+            if newTrade["amount"] > self.portfolio.get_cash_available():
                 result["success"] = False
                 result["message"] = Messages.INSUF_FUNDING.value
         elif newTrade["action"] == Actions.BUY.name:
@@ -86,11 +85,11 @@ class TradingMate():
             fee = newTrade["fee"]
             tax = (newTrade["stamp_duty"] * cost) / 100
             totalCost = cost + fee + tax
-            if totalCost > portfolio.get_cash_available():
+            if totalCost > self.portfolio.get_cash_available():
                 result["success"] = False
                 result["message"] = Messages.INSUF_FUNDING.value
         elif newTrade["action"] == Actions.SELL.name:
-            if newTrade["amount"] > portfolio.get_holding_amount(newTrade["symbol"]):
+            if newTrade["amount"] > self.portfolio.get_holding_amount(newTrade["symbol"]):
                 result["success"] = False
                 result["message"] = Messages.INSUF_HOLDINGS.value
 
@@ -99,25 +98,24 @@ class TradingMate():
     def _update_share_trading_view(self, updateHistory=False):
         self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
-        filepath = self.pf_manager.get_db_filepath()
+        filepath = self.portfolio.get_db_filepath()
         self.view.set_db_filepath(filepath)
         # Update history table if required
         if updateHistory:
-            logAsList = self.pf_manager.get_log_as_list()[::-1]  # Reverse order
+            logAsList = self.portfolio.get_log_as_list()[::-1]  # Reverse order
             self.view.update_share_trading_history_log(logAsList)
         # Compute the current holding profits and balances
-        portfolio = self.pf_manager.get_portfolio()
         # get the balances from the portfolio and update the view
-        cash = portfolio.get_cash_available()
-        holdingsValue = portfolio.get_holdings_value()
-        totalValue = portfolio.get_total_value()
-        pl = portfolio.get_portfolio_pl()
-        pl_perc = portfolio.get_portfolio_pl_perc()
-        holdingPL = portfolio.get_open_positions_pl()
-        holdingPLPC = portfolio.get_open_positions_pl_perc()
+        cash = self.portfolio.get_cash_available()
+        holdingsValue = self.portfolio.get_holdings_value()
+        totalValue = self.portfolio.get_total_value()
+        pl = self.portfolio.get_portfolio_pl()
+        pl_perc = self.portfolio.get_portfolio_pl_perc()
+        holdingPL = self.portfolio.get_open_positions_pl()
+        holdingPLPC = self.portfolio.get_open_positions_pl_perc()
         # Update the view
         validity = True
-        for h in portfolio.get_holding_list():
+        for h in self.portfolio.get_holding_list():
             self.view.update_share_trading_holding(h.get_symbol(), h.get_amount(), h.get_open_price(),
                                                    h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_loss_perc(), h.get_last_price_valid())
             validity = validity and h.get_last_price_valid()
@@ -127,13 +125,13 @@ class TradingMate():
 # EVENTS
 
     def on_close_view_event(self):
-        self.pf_manager.stop_application()
+        self.portfolio.stop_application()
 
     def on_manual_refresh_event(self):
-        self.pf_manager.on_manual_refresh_live_data()
+        self.portfolio.on_manual_refresh_live_data()
 
     def on_set_auto_refresh(self, enabled):
-        self.pf_manager.set_auto_refresh(enabled)
+        self.portfolio.set_auto_refresh(enabled)
 
     def on_update_live_price(self):
         self._update_share_trading_view()
@@ -144,8 +142,7 @@ class TradingMate():
         valResult = self._check_new_trade_validity(newTrade)
 
         if valResult["success"]:
-            modelResult = self.pf_manager.add_new_trade(
-                newTrade)  # Update the pf_manager
+            modelResult = self.portfolio.add_trade(newTrade)
             if modelResult["success"]:
                 self._update_share_trading_view(updateHistory=True)
             else:
@@ -155,18 +152,18 @@ class TradingMate():
         return result
 
     def on_open_log_file_event(self, filepath):
-        result = self.pf_manager.open_log_file(filepath)
+        result = self.portfolio.open_log_file(filepath)
         if result["success"]:
             self.view.reset_view(resetHistory=True)
             self._update_share_trading_view(updateHistory=True)
         return result
 
     def on_save_log_file_event(self, filepath):
-        return self.pf_manager.save_log_file(filepath)
+        return self.portfolio.save_log_file(filepath)
 
     def on_delete_last_trade_event(self):
         result = {"success": True, "message": "ok"}
-        result = self.pf_manager.delete_last_trade()
+        result = self.portfolio.delete_last_trade()
         if result["success"]:
             self._update_share_trading_view(updateHistory=True)
         else:

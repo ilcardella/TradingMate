@@ -52,7 +52,6 @@ class StockPriceGetter(TaskThread):
             last = next(iter(timeSerie.values()))
             value = float(last["4. close"])
         except Exception:
-            print("LivePricesWebThread: _fetch_price_data(): {0}".format(url))
             value = None
         return value
 

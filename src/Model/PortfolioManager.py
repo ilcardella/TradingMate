@@ -23,12 +23,10 @@ class PortfolioManager():
         self._read_configuration(config)
         # DataStruct containing the callbacks
         self.callbacks = {}
-        # Class to collect stocks live prices
-        self.livePricesThread = StockPriceGetter(config, self.on_new_price_data)
         # Database handler
         self.db_handler = DatabaseHandler(config)
         # Portfolio instance
-        self.portfolio = Portfolio("Portfolio1")
+        self.portfolio = Portfolio("Portfolio1", config)
 
 # INTERNAL FUNCTIONS
 
@@ -38,96 +36,15 @@ class PortfolioManager():
     def _read_configuration(self, config):
         pass
 
-    def _update_portfolio(self):
-        """
-        Scan the database and update the Portfolio instance
-        """
-        cashAvailable = 0.0
-        investedAmount = 0.0
-        holdings = {}
-        for trade in self.log['trades']:
-            action = trade['action']
-            amount = float(trade['amount'])
-            symbol = trade['symbol'] if 'symbol' in trade else None
-            price = float(trade['price'])
-            fee = float(trade['fee'])
-            sd = float(trade['stamp_duty'])
-
-            if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
-                cashAvailable += amount
-                if action == Actions.DEPOSIT.name:
-                    investedAmount += amount
-            elif action == Actions.WITHDRAW.name:
-                cashAvailable -= amount
-                investedAmount -= amount
-            elif action == Actions.BUY.name:
-                if symbol not in holdings:
-                    holdings[symbol] = amount
-                else:
-                    holdings[symbol] += amount
-                cost = (price/100) * amount
-                tax = (sd * cost) / 100
-                totalCost = cost + tax + fee
-                cashAvailable -= totalCost
-            elif action == Actions.SELL.name:
-                holdings[symbol] -= amount
-                if holdings[symbol] < 1:
-                    del holdings[symbol]
-                profit = ((price/100) * amount) - fee
-                cashAvailable += profit
-
-        self.portfolio.clear()
-        for symbol, amount in holdings.items():
-            self.portfolio.update_holding_amount(symbol, amount)
-            self.portfolio.update_holding_open_price(
-                symbol, self.get_holding_open_price(symbol))
-        self.portfolio.set_invested_amount(investedAmount)
-        self.portfolio.set_cash_available(cashAvailable)
-        for symbol, price in self.livePricesThread.get_last_data().items():
-            self.portfolio.update_holding_last_price(symbol, price)
-
-    def _add_entry_to_db(self, logEntry):
-        if 'trades' in self.log:
-            self.log['trades'].append(logEntry)
-        else:
-            self.log['trades'] = []
-            self.log['trades'].append(logEntry)
-
-    def _remove_last_log_entry(self):
-        del self.log['trades'][-1]
-
     def _reset(self, filepath=None):
         self._read_configuration()
         self.db_handler.read_data(filepath)
-        self._update_portfolio()
+        self.portfolio.reload()
 
 # GETTERS
 
     def get_log_as_list(self):
-        return self.log['trades']
-
-    def get_holding_open_price(self, symbol):
-        """
-        Return the average price paid to open the current positon of the requested stock.
-        Starting from the end of the history log, find the BUY transaction that led to
-        to have the current amount, compute then the average price of these transactions
-        """
-        sum = 0
-        count = 0
-        targetAmount = self.portfolio.get_holding_amount(symbol)
-        for trade in self.log['trades'][::-1]:  # reverse order
-            action = trade['action']
-            sym = trade['symbol'] if 'symbol' in trade else None
-            price = float(trade['price'])
-            amount = float(trade['amount'])
-            if sym == symbol and action == Actions.BUY.name:
-                targetAmount -= amount
-                sum += price * amount
-                count += amount
-                if targetAmount <= 0:
-                    break
-        avg = sum / count
-        return round(avg, 4)
+        return self.portfolio.trading_history['trades']
 
     def get_portfolio(self):
         """
@@ -142,7 +59,7 @@ class PortfolioManager():
 
     def start(self):
         self.log = self.db_handler.read_data()
-        self._update_portfolio()
+        self.portfolio.reload()
         self.livePricesThread.set_symbol_list(
             self.portfolio.get_holding_symbols())
         self.livePricesThread.start()
@@ -155,8 +72,8 @@ class PortfolioManager():
     def add_new_trade(self, newTrade):
         result = {"success": True, "message": "ok"}
         try:
-            self._add_entry_to_db(newTrade)
-            self._update_portfolio()
+            self.portfolio.add_entry_to_db(newTrade)
+            self.portfolio.reload()
             self.livePricesThread.set_symbol_list(
                 self.portfolio.get_holding_symbols())
         except Exception:
@@ -164,14 +81,8 @@ class PortfolioManager():
             result["message"] = Messages.INVALID_OPERATION.value
         return result
 
-    def on_new_price_data(self):
-        priceDict = self.livePricesThread.get_last_data()
-        for symbol, price in priceDict.items():
-            self.portfolio.update_holding_last_price(symbol, price)
-        self.callbacks[Callbacks.UPDATE_LIVE_PRICES]()  # Call callback
-
     def set_auto_refresh(self, enabled):
-        self.livePricesThread.enable(enabled)
+        self.portfolio.livePricesThread.enable(enabled)
 
     def on_manual_refresh_live_data(self):
         if self.livePricesThread.is_enabled():
@@ -200,11 +111,11 @@ class PortfolioManager():
     def delete_last_trade(self):
         result = {"success": True, "message": "ok"}
         try:
-            self._remove_last_log_entry()
+            self.portfolio.remove_last_log_entry()
         except Exception:
             result["success"] = False
             result["message"] = Messages.INVALID_OPERATION
-        self._update_portfolio()
+        self.portfolio.reload()
         self.livePricesThread.set_symbol_list(
             self.portfolio.get_holding_symbols())
         return result
