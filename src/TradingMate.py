@@ -24,6 +24,7 @@ class TradingMate():
         self.setup_logging()
         # Init the portfolio
         self.portfolio = Portfolio("Portfolio1", self.configurationManager)
+        # TODO instead of a callback, set a timer that calls a getter every x seconds
         self.portfolio.set_callback(
             Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
@@ -72,29 +73,6 @@ class TradingMate():
 
 # Functions
 
-    def _check_new_trade_validity(self, newTrade):
-        # TODO move into Portfolio
-        result = {"success": True, "message": "ok"}
-
-        if newTrade["action"] == Actions.WITHDRAW.name:
-            if newTrade["amount"] > self.portfolio.get_cash_available():
-                result["success"] = False
-                result["message"] = Messages.INSUF_FUNDING.value
-        elif newTrade["action"] == Actions.BUY.name:
-            cost = (newTrade["price"] * newTrade["amount"]) / 100  # in £
-            fee = newTrade["fee"]
-            tax = (newTrade["stamp_duty"] * cost) / 100
-            totalCost = cost + fee + tax
-            if totalCost > self.portfolio.get_cash_available():
-                result["success"] = False
-                result["message"] = Messages.INSUF_FUNDING.value
-        elif newTrade["action"] == Actions.SELL.name:
-            if newTrade["amount"] > self.portfolio.get_holding_amount(newTrade["symbol"]):
-                result["success"] = False
-                result["message"] = Messages.INSUF_HOLDINGS.value
-
-        return result
-
     def _update_share_trading_view(self, updateHistory=False):
         self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
@@ -139,7 +117,7 @@ class TradingMate():
     def on_new_trade_event(self, newTrade):
         result = {"success": True, "message": "ok"}
 
-        valResult = self._check_new_trade_validity(newTrade)
+        valResult = self.portfolio.is_trade_valid(newTrade)
 
         if valResult["success"]:
             modelResult = self.portfolio.add_trade(newTrade)

@@ -175,6 +175,7 @@ class Portfolio():
         self._holdings.clear()
 
     def update_holding_amount(self, symbol, amount):
+        # TODO remove this and fix unit test
         if symbol in self._holdings:
             if amount < 1:
                 del self._holdings[symbol]
@@ -190,6 +191,7 @@ class Portfolio():
             raise ValueError('Invalid symbol')
 
     def update_holding_open_price(self, symbol, price):
+        # TODO remove this and fix unit test
         if symbol in self._holdings:
             self._holdings[symbol].set_open_price(price)
         else:
@@ -199,9 +201,9 @@ class Portfolio():
         """
         Read each trade from the database and load the portfolio
         """
-        cashAvailable = 0.0
-        investedAmount = 0.0
-        holdings = {}
+        # Reset the portfolio
+        self.clear()
+
         for trade in self.trading_history['trades']:
             action = trade['action']
             amount = float(trade['amount'])
@@ -211,37 +213,32 @@ class Portfolio():
             sd = float(trade['stamp_duty'])
 
             if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
-                cashAvailable += amount
+                self._cashAvailable += amount
                 if action == Actions.DEPOSIT.name:
-                    investedAmount += amount
+                    self._investedAmount += amount
             elif action == Actions.WITHDRAW.name:
-                cashAvailable -= amount
-                investedAmount -= amount
+                self._cashAvailable -= amount
+                self._investedAmount -= amount
             elif action == Actions.BUY.name:
-                if symbol not in holdings:
-                    holdings[symbol] = amount
+                if symbol not in self._holdings:
+                    self._holdings[symbol] = Holding(symbol, amount)
                 else:
-                    holdings[symbol] += amount
+                    self._holdings[symbol].add_quantity(amount)
                 cost = (price/100) * amount
                 tax = (sd * cost) / 100
                 totalCost = cost + tax + fee
-                cashAvailable -= totalCost
+                self._cashAvailable -= totalCost
             elif action == Actions.SELL.name:
-                holdings[symbol] -= amount
-                if holdings[symbol] < 1:
-                    del holdings[symbol]
+                self._holdings[symbol].add_quantity(-amount) # negative
+                if self._holdings[symbol].get_amount() < 1:
+                    del self._holdings[symbol]
                 profit = ((price/100) * amount) - fee
-                cashAvailable += profit
+                self._cashAvailable += profit
 
-        self.clear()
-        for symbol, amount in holdings.items():
-            self.update_holding_amount(symbol, amount)
-            self.update_holding_open_price(
-                symbol, self.compute_avg_holding_open_price(symbol))
-        self.set_invested_amount(investedAmount)
-        self.set_cash_available(cashAvailable)
+        for symbol in self._holdings.keys():
+            self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol))
         for symbol, price in self.livePricesThread.get_last_data().items():
-            self.update_holding_last_price(symbol, price)
+            self._holdings[symbol].set_last_price(price)
 
     def compute_avg_holding_open_price(self, symbol):
         """
@@ -275,6 +272,27 @@ class Portfolio():
         except Exception:
             result["success"] = False
             result["message"] = Messages.INVALID_OPERATION.value
+        return result
+
+    def is_trade_valid(self, newTrade):
+        result = {"success": True, "message": "ok"}
+
+        if newTrade["action"] == Actions.WITHDRAW.name:
+            if newTrade["amount"] > self.get_cash_available():
+                result["success"] = False
+                result["message"] = Messages.INSUF_FUNDING.value
+        elif newTrade["action"] == Actions.BUY.name:
+            cost = (newTrade["price"] * newTrade["amount"]) / 100  # in £
+            fee = newTrade["fee"]
+            tax = (newTrade["stamp_duty"] * cost) / 100
+            totalCost = cost + fee + tax
+            if totalCost > self.get_cash_available():
+                result["success"] = False
+                result["message"] = Messages.INSUF_FUNDING.value
+        elif newTrade["action"] == Actions.SELL.name:
+            if newTrade["amount"] > self.get_holding_amount(newTrade["symbol"]):
+                result["success"] = False
+                result["message"] = Messages.INSUF_HOLDINGS.value
         return result
 
 # EVENTS

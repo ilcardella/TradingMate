@@ -35,6 +35,12 @@ class Holding():
             raise ValueError("Invalid amount")
         self._amount = value
 
+    def add_quantity(self, value):
+        """
+        Add or subtract (if value is negative) the value to the holding quantity
+        """
+        self._amount += value
+
     def set_last_price_invalid(self):
         self._lastPriceValid = False
 
