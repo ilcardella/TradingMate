@@ -115,18 +115,11 @@ class TradingMate():
         self._update_share_trading_view()
 
     def on_new_trade_event(self, newTrade):
-        result = {"success": True, "message": "ok"}
-
-        valResult = self.portfolio.is_trade_valid(newTrade)
-
-        if valResult["success"]:
-            modelResult = self.portfolio.add_trade(newTrade)
-            if modelResult["success"]:
-                self._update_share_trading_view(updateHistory=True)
-            else:
-                return modelResult
+        result = self.portfolio.add_trade(newTrade)
+        if result["success"]:
+            self._update_share_trading_view(updateHistory=True)
         else:
-            return valResult
+            return result
         return result
 
     def on_open_log_file_event(self, filepath):

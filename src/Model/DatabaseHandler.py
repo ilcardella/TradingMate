@@ -9,6 +9,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from Utils.Utils import Utils
+from Utils.Trade import Trade
 from Utils.ConfigurationManager import ConfigurationManager
 
 class DatabaseHandler():
@@ -21,24 +22,44 @@ class DatabaseHandler():
         Initialise
         """
         self.db_filepath = config.get_trading_database_path()
-        self.trading_log = self.read_data()
 
     def read_data(self, filepath=None):
         """
-        Read data from database and return a dict
+        Read the trade history from the json database and return the list of trades
 
             - **filepath**: optional, if not set the configured path will be used
         """
         path = filepath if filepath is not None else self.db_filepath
         self.db_filepath = path
-        return Utils.load_json_file(path)
+        json_obj = Utils.load_json_file(path)
 
-    def write_data(self, data, filepath=None):
+        if 'trades' not in json_obj:
+            raise Exception('Database wrong format: trade key missing')
+
+        # Read
+        trades = []
+        for item in json_obj['trades']:
+            trade = Trade.from_dict(item)
+            trades.append(trade)
+        return trades
+
+
+    def write_data(self, trades, filepath=None):
         """
-        Write data to the database
+        Write the trade history to the database
         """
         path = filepath if filepath is not None else self.db_filepath
-        return Utils.write_json_file(path, data)
+
+        # Create a json object to store the trade history into
+        json_obj = {
+            'trades': []
+        }
+
+        for t in trades:
+            json_obj['trades'].append(t.to_dict())
+
+        # Write to file
+        return Utils.write_json_file(path, json_obj)
 
     def get_db_filepath(self):
         """

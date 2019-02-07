@@ -22,7 +22,7 @@ class Portfolio():
         # Data structure to store stock holdings: {"symbol": Holding}
         self._holdings = {}
         # In memory database of trades history
-        self.trading_history = {}
+        self.trading_history = []
         # Work thread that fetches stocks live prices
         self.livePricesThread = StockPriceGetter(config, self.on_new_price_data)
         # Database handler
@@ -149,7 +149,7 @@ class Portfolio():
         return self.db_handler.get_db_filepath()
 
     def get_log_as_list(self):
-        return self.trading_history['trades']
+        return self.trading_history
 
 # SETTERS
 
@@ -204,35 +204,28 @@ class Portfolio():
         # Reset the portfolio
         self.clear()
 
-        for trade in self.trading_history['trades']:
-            action = trade['action']
-            amount = float(trade['amount'])
-            symbol = trade['symbol'] if 'symbol' in trade else None
-            price = float(trade['price'])
-            fee = float(trade['fee'])
-            sd = float(trade['stamp_duty'])
-
-            if action == Actions.DEPOSIT.name or action == Actions.DIVIDEND.name:
-                self._cashAvailable += amount
-                if action == Actions.DEPOSIT.name:
-                    self._investedAmount += amount
-            elif action == Actions.WITHDRAW.name:
-                self._cashAvailable -= amount
-                self._investedAmount -= amount
-            elif action == Actions.BUY.name:
-                if symbol not in self._holdings:
-                    self._holdings[symbol] = Holding(symbol, amount)
+        for trade in self.trading_history:
+            if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
+                self._cashAvailable += trade.quantity
+                if trade.action == Actions.DEPOSIT:
+                    self._investedAmount += trade.quantity
+            elif trade.action == Actions.WITHDRAW:
+                self._cashAvailable -= trade.quantity
+                self._investedAmount -= trade.quantity
+            elif trade.action == Actions.BUY:
+                if trade.symbol not in self._holdings:
+                    self._holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)
                 else:
-                    self._holdings[symbol].add_quantity(amount)
-                cost = (price/100) * amount
-                tax = (sd * cost) / 100
-                totalCost = cost + tax + fee
+                    self._holdings[trade.symbol].add_quantity(trade.quantity)
+                cost = (trade.price/100) * trade.quantity
+                tax = (trade.sdr * cost) / 100
+                totalCost = cost + tax + trade.fee
                 self._cashAvailable -= totalCost
-            elif action == Actions.SELL.name:
-                self._holdings[symbol].add_quantity(-amount) # negative
-                if self._holdings[symbol].get_amount() < 1:
-                    del self._holdings[symbol]
-                profit = ((price/100) * amount) - fee
+            elif trade.action == Actions.SELL:
+                self._holdings[trade.symbol].add_quantity(-trade.quantity) # negative
+                if self._holdings[trade.symbol].get_amount() < 1:
+                    del self._holdings[trade.symbol]
+                profit = ((trade.price/100) * trade.quantity) - trade.fee
                 self._cashAvailable += profit
 
         for symbol in self._holdings.keys():
@@ -249,15 +242,11 @@ class Portfolio():
         sum = 0
         count = 0
         targetAmount = self.get_holding_amount(symbol)
-        for trade in self.trading_history['trades'][::-1]:  # reverse order
-            action = trade['action']
-            sym = trade['symbol'] if 'symbol' in trade else None
-            price = float(trade['price'])
-            amount = float(trade['amount'])
-            if sym == symbol and action == Actions.BUY.name:
-                targetAmount -= amount
-                sum += price * amount
-                count += amount
+        for trade in self.trading_history[::-1]:  # reverse order
+            if trade.symbol == symbol and trade.action == Actions.BUY:
+                targetAmount -= trade.quantity
+                sum += trade.price * trade.quantity
+                count += trade.quantity
                 if targetAmount <= 0:
                     break
         avg = sum / count
@@ -266,7 +255,7 @@ class Portfolio():
     def add_trade(self, trade):
         result = {"success": True, "message": "ok"}
         try:
-            self.add_entry_to_db(trade)
+            self.trading_history.append(trade)
             self.reload_portfolio()
             self.livePricesThread.set_symbol_list(self.get_holding_symbols())
         except Exception:
@@ -277,20 +266,24 @@ class Portfolio():
     def is_trade_valid(self, newTrade):
         result = {"success": True, "message": "ok"}
 
-        if newTrade["action"] == Actions.WITHDRAW.name:
-            if newTrade["amount"] > self.get_cash_available():
+        valResult = self.is_trade_valid(newTrade)
+        if not valResult['success']:
+            return valResult
+
+        if newTrade.action == Actions.WITHDRAW:
+            if newTrade.quantity > self.get_cash_available():
                 result["success"] = False
                 result["message"] = Messages.INSUF_FUNDING.value
-        elif newTrade["action"] == Actions.BUY.name:
-            cost = (newTrade["price"] * newTrade["amount"]) / 100  # in £
-            fee = newTrade["fee"]
-            tax = (newTrade["stamp_duty"] * cost) / 100
+        elif newTrade.action == Actions.BUY:
+            cost = (newTrade.price * newTrade.quantity) / 100  # in £
+            fee = newTrade.fee
+            tax = (newTrade.sdr * cost) / 100
             totalCost = cost + fee + tax
             if totalCost > self.get_cash_available():
                 result["success"] = False
                 result["message"] = Messages.INSUF_FUNDING.value
-        elif newTrade["action"] == Actions.SELL.name:
-            if newTrade["amount"] > self.get_holding_amount(newTrade["symbol"]):
+        elif newTrade.action == Actions.SELL:
+            if newTrade.quantity > self.get_holding_amount(newTrade.symbol):
                 result["success"] = False
                 result["message"] = Messages.INSUF_HOLDINGS.value
         return result
@@ -311,23 +304,13 @@ class Portfolio():
 
 # DATABASE OPERATION
 
-    def add_entry_to_db(self, logEntry):
-        """
-        Add a new trade into the trade history database
-        """
-        if 'trades' in self.trading_history:
-            self.trading_history['trades'].append(logEntry)
-        else:
-            self.trading_history['trades'] = []
-            self.trading_history['trades'].append(logEntry)
-
     def delete_last_trade(self):
         """
         Delete the last trade from the trade history database
         """
         result = {"success": True, "message": "ok"}
         try:
-            del self.trading_history['trades'][-1]
+            del self.trading_history[-1]
         except Exception:
             result["success"] = False
             result["message"] = Messages.INVALID_OPERATION
@@ -347,7 +330,7 @@ class Portfolio():
     def open_log_file(self, filepath):
         result = {"success": True, "message": "ok"}
         try:
-            self.db_handler.read_data(filepath)
+            self.trading_history = self.db_handler.read_data(filepath)
             self.reload()
         except Exception:
             result["success"] = False
