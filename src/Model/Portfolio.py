@@ -21,17 +21,13 @@ class Portfolio():
         self._investedAmount = 0
         # Data structure to store stock holdings: {"symbol": Holding}
         self._holdings = {}
-        # In memory database of trades history
-        self.trading_history = []
+        # DataStruct containing the callbacks
+        self.callbacks = {}
         # Work thread that fetches stocks live prices
         self.livePricesThread = StockPriceGetter(config, self.on_new_price_data)
         # Database handler
         self.db_handler = DatabaseHandler(config)
-        # DataStruct containing the callbacks
-        self.callbacks = {}
-
-    def start(self):
-        # TODO move in init and remove this function
+        # In memory database of trades history
         self.trading_history = self.db_handler.read_data()
         self.reload()
         self.livePricesThread.set_symbol_list(self.get_holding_symbols())

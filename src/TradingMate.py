@@ -67,7 +67,6 @@ class TradingMate():
                                 format="[%(asctime)s] %(levelname)s: %(message)s")
 
     def start(self):
-        self.portfolio.start()
         self._update_share_trading_view(updateHistory=True)
         self.view.start()  # This should be the last instruction in this function
 
