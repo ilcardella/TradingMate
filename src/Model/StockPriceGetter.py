@@ -1,7 +1,7 @@
 import os
 import sys
 import inspect
-import urllib.request
+import requests
 import json
 
 currentdir = os.path.dirname(os.path.abspath(
@@ -34,7 +34,7 @@ class StockPriceGetter(TaskThread):
             if not self._finished.isSet():
                 value = self._fetch_price_data(symbol)
                 # Wait 1 sec as suggested by AlphaVantage support
-                self._timeout.wait(1)
+                self._timeout.wait(2)
                 if value is not None:
                     priceDict[symbol] = value
         if not self._finished.isSet():
@@ -45,9 +45,10 @@ class StockPriceGetter(TaskThread):
         try:
             url = self._build_url("TIME_SERIES_DAILY",
                                   symbol, "5min", self.alphaVantageAPIKey)
-            request = urllib.request.urlopen(url, timeout=10)
-            content = request.read()
-            data = json.loads(content.decode('utf-8'))
+            response = requests.get(url)
+            if response.status_code != 200:
+                return None
+            data = json.loads(response.text)
             timeSerie = data["Time Series (Daily)"]
             last = next(iter(timeSerie.values()))
             value = float(last["4. close"])
