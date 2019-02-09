@@ -120,11 +120,3 @@ class View():
 
     def on_delete_last_trade_event(self):
         self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
-
-# ******* CRYPTO CURRENCIES FRAME ************
-
-    def on_start_autotrading(self):
-        self.callbacks[Callbacks.ON_START_AUTOTRADING]()
-
-    def on_stop_autotrading(self):
-        self.callbacks[Callbacks.ON_STOP_AUTOTRADING]()

@@ -44,6 +44,14 @@ DatabaseHandler
 .. autoclass:: DatabaseHandler
     :members:
 
+StockPriceGetter
+""""""""""""""""
+
+.. automodule:: Model.StockPriceGetter
+
+.. autoclass:: StockPriceGetter
+    :members:
+
 UI
 ^^^
 
@@ -110,6 +118,14 @@ TaskThread
 .. automodule:: Utils.TaskThread
 
 .. autoclass:: TaskThread
+    :members:
+
+Trade
+^^^^^^^^^^
+
+.. automodule:: Utils.Trade
+
+.. autoclass:: Trade
     :members:
 
 Utils

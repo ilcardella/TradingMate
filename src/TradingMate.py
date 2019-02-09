@@ -132,21 +132,19 @@ class TradingMate():
 
     def on_new_trade_event(self, newTrade):
         result = {"success": True, "message": "ok"}
-
         # Validate trade
         if not self.portfolio.is_trade_valid(newTrade):
             return {"success": False, "message": Messages.INVALID_OPERATION}
-
-        # Update databse
-        self.db_handler.add_trade(trade)
-        # Reload portfolio
-        self.portfolio.reload(self.db_handler.get_trades_list())
-
-        # If success update the ui
-        if result["success"]:
-            self._update_share_trading_view(updateHistory=True)
-        else:
-            return result
+        try:
+            # Update databse
+            self.db_handler.add_trade(trade)
+            # Reload portfolio
+            self.portfolio.reload(self.db_handler.get_trades_list())
+        except Exception as e:
+            logging.error('Unable to add trade: {}'.format(e))
+            return {"success": False, "message": Messages.INVALID_OPERATION}
+        # Update the ui
+        self._update_share_trading_view(updateHistory=True)
         return result
 
     def on_delete_last_trade_event(self):
