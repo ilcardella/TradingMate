@@ -10,21 +10,19 @@ sys.path.insert(0, parentdir)
 
 from Utils.Utils import Utils
 from Utils.Trade import Trade
-from Utils.ConfigurationManager import ConfigurationManager
 
 class DatabaseHandler():
     """
     Handles the IO operation with the database to handle persistent data
     """
-
     def __init__(self, config):
         """
         Initialise
         """
         # By default use the configured filepath
         self.db_filepath = config.get_trading_database_path()
-        # Read the db and store data in memory
-        self.trading_history = self.read_data()
+        # Create an empty list to store trades from database
+        self.trading_history = []
 
     def read_data(self, filepath=None):
         """
@@ -39,12 +37,11 @@ class DatabaseHandler():
         if 'trades' not in json_obj:
             raise Exception('Database wrong format: trade key missing')
 
-        # Read
-        trades = []
+        # Create a list of all the trades in the json file
         for item in json_obj['trades']:
             trade = Trade.from_dict(item)
-            trades.append(trade)
-        return trades
+            # Store the list internally
+            self.trading_history.append(trade)
 
 
     def write_data(self, filepath=None):

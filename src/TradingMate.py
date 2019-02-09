@@ -78,17 +78,21 @@ class TradingMate():
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
 
     def start(self):
+        # Read the configured database
+        self.db_handler.read_data()
+        # Start portfolio
         self.portfolio.start(self.db_handler.get_trades_list())
+        # Update the UI
         self._update_share_trading_view(updateHistory=True)
-        self.view.start()  # This should be the last instruction in this function
+        # This should be the last instruction in this function
+        self.view.start()
 
 # Functions
 
     def _update_share_trading_view(self, updateHistory=False):
         self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
-        filepath = self.db_handler.get_db_filepath()
-        self.view.set_db_filepath(filepath)
+        self.view.set_db_filepath(self.db_handler.get_db_filepath())
         # Update history table if required
         if updateHistory:
             logAsList = self.db_handler.get_trades_list()[::-1]  # Reverse order
