@@ -191,6 +191,8 @@ class Portfolio():
         sum = 0
         count = 0
         targetAmount = self.get_holding_amount(symbol)
+        if targetAmount == 0:
+            return None
         for trade in trades_list[::-1]:  # reverse order
             if trade.symbol == symbol and trade.action == Actions.BUY:
                 targetAmount -= trade.quantity
@@ -205,25 +207,20 @@ class Portfolio():
         """
         Validate the new Trade request against the current Portfolio
         """
-        result = {"success": True, "message": "ok"}
-
         if newTrade.action == Actions.WITHDRAW:
             if newTrade.quantity > self.get_cash_available():
-                result["success"] = False
-                result["message"] = Messages.INSUF_FUNDING.value
+                return False
         elif newTrade.action == Actions.BUY:
             cost = (newTrade.price * newTrade.quantity) / 100  # in £
             fee = newTrade.fee
             tax = (newTrade.sdr * cost) / 100
             totalCost = cost + fee + tax
             if totalCost > self.get_cash_available():
-                result["success"] = False
-                result["message"] = Messages.INSUF_FUNDING.value
+                return False
         elif newTrade.action == Actions.SELL:
             if newTrade.quantity > self.get_holding_amount(newTrade.symbol):
-                result["success"] = False
-                result["message"] = Messages.INSUF_HOLDINGS.value
-        return result
+                return False
+        return True
 
 # PRICE GETTER WORK THREAD
 

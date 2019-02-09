@@ -134,9 +134,8 @@ class TradingMate():
         result = {"success": True, "message": "ok"}
 
         # Validate trade
-        valResult = self.portfolio.is_trade_valid(newTrade)
-        if not valResult['success']:
-            return valResult
+        if not self.portfolio.is_trade_valid(newTrade):
+            return {"success": False, "message": Messages.INVALID_OPERATION}
 
         # Update databse
         self.db_handler.add_trade(trade)

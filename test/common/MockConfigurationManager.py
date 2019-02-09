@@ -15,10 +15,10 @@ class MockConfigurationManager():
         return parentdir + "/test_data/trading_log.json"
 
     def get_alpha_vantage_api_key(self):
-        return ""
+        return "MOCK"
 
     def get_alpha_vantage_base_url(self):
-        return ""
+        return "https://www.alphavantage.co/query"
 
     def get_alpha_vantage_polling_period(self):
         return 1
@@ -30,4 +30,4 @@ class MockConfigurationManager():
         return False
 
     def get_log_filepath(self):
-        return ""
+        return "/tmp/mock_log.txt"
