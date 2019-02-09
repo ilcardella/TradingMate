@@ -21,7 +21,10 @@ class DatabaseHandler():
         """
         Initialise
         """
+        # By default use the configured filepath
         self.db_filepath = config.get_trading_database_path()
+        # Read the db and store data in memory
+        self.trading_history = self.read_data()
 
     def read_data(self, filepath=None):
         """
@@ -44,7 +47,7 @@ class DatabaseHandler():
         return trades
 
 
-    def write_data(self, trades, filepath=None):
+    def write_data(self, filepath=None):
         """
         Write the trade history to the database
         """
@@ -55,7 +58,7 @@ class DatabaseHandler():
             'trades': []
         }
 
-        for t in trades:
+        for t in self.trading_history:
             json_obj['trades'].append(t.to_dict())
 
         # Write to file
@@ -66,3 +69,21 @@ class DatabaseHandler():
         Return the database filepath
         """
         return self.db_filepath
+
+    def get_trades_list(self):
+        """
+        Return the list of trades stored in the db
+        """
+        return self.trading_history
+
+    def add_trade(self, trade):
+        """
+        Add a trade to the database
+        """
+        self.trading_history.append(trade)
+
+    def remove_last_trade(self):
+        """
+        Remove the last trade from the trade history
+        """
+        del self.trading_history[-1]

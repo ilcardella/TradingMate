@@ -142,6 +142,7 @@ class AddTradeDialogWindow(tk.Toplevel):
 
     def add_new_trade(self):
         # Get selected data and call callback
+        item = {}
         item["date"] = self.dateSelected.get()
         item["action"] = self.actionSelected.get()
         market = Markets[self.marketSelected.get()]

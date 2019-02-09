@@ -67,6 +67,7 @@ class TradingMate():
                                 format="[%(asctime)s] %(levelname)s: %(message)s")
 
     def start(self):
+        self.portfolio.start()
         self._update_share_trading_view(updateHistory=True)
         self.view.start()  # This should be the last instruction in this function
 
@@ -79,7 +80,7 @@ class TradingMate():
         self.view.set_db_filepath(filepath)
         # Update history table if required
         if updateHistory:
-            logAsList = self.portfolio.get_log_as_list()[::-1]  # Reverse order
+            logAsList = self.portfolio.get_trades_list()[::-1]  # Reverse order
             self.view.update_share_trading_history_log(logAsList)
         # Compute the current holding profits and balances
         # get the balances from the portfolio and update the view
@@ -102,7 +103,7 @@ class TradingMate():
 # EVENTS
 
     def on_close_view_event(self):
-        self.portfolio.stop_application()
+        self.portfolio.stop()
 
     def on_manual_refresh_event(self):
         self.portfolio.on_manual_refresh_live_data()
