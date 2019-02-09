@@ -13,6 +13,7 @@ from Utils.ConfigurationManager import ConfigurationManager
 from Model.Portfolio import Portfolio
 from UI.View import View
 from Utils.Utils import Callbacks, Actions, Messages
+from Model.DatabaseHandler import DatabaseHandler
 
 
 class TradingMate():
@@ -20,29 +21,16 @@ class TradingMate():
     def __init__(self):
         # Init the configuration manager
         self.configurationManager = ConfigurationManager()
+        # Database handler
+        self.db_handler = DatabaseHandler(self.configurationManager)
         # Setup the logging
         self.setup_logging()
         # Init the portfolio
         self.portfolio = Portfolio("Portfolio1", self.configurationManager)
-        # TODO instead of a callback, set a timer that calls a getter every x seconds
-        self.portfolio.set_callback(
-            Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
         self.view = View()
-        self.view.set_callback(
-            Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
-        self.view.set_callback(
-            Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
-        self.view.set_callback(
-            Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
-        self.view.set_callback(
-            Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.on_set_auto_refresh)
-        self.view.set_callback(
-            Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
-        self.view.set_callback(
-            Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
-        self.view.set_callback(
-            Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+        # Register callbacks
+        self.register_callbacks()
 
     def setup_logging(self):
         """
@@ -66,8 +54,31 @@ class TradingMate():
             logging.basicConfig(level=debugLevel,
                                 format="[%(asctime)s] %(levelname)s: %(message)s")
 
+    def register_callbacks(self):
+        """
+        Register all the callback functions
+        """
+        # TODO instead of a callback, set a timer that calls a getter every x seconds
+        self.portfolio.set_callback(
+            Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
+        # Init the view
+        self.view.set_callback(
+            Callbacks.ON_CLOSE_VIEW_EVENT, self.on_close_view_event)
+        self.view.set_callback(
+            Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
+        self.view.set_callback(
+            Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
+        self.view.set_callback(
+            Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.on_set_auto_refresh)
+        self.view.set_callback(
+            Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
+        self.view.set_callback(
+            Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
+        self.view.set_callback(
+            Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+
     def start(self):
-        self.portfolio.start()
+        self.portfolio.start(self.db_handler.get_trades_list())
         self._update_share_trading_view(updateHistory=True)
         self.view.start()  # This should be the last instruction in this function
 
@@ -76,11 +87,11 @@ class TradingMate():
     def _update_share_trading_view(self, updateHistory=False):
         self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
-        filepath = self.portfolio.get_db_filepath()
+        filepath = self.db_handler.get_db_filepath()
         self.view.set_db_filepath(filepath)
         # Update history table if required
         if updateHistory:
-            logAsList = self.portfolio.get_trades_list()[::-1]  # Reverse order
+            logAsList = self.db_handler.get_trades_list()[::-1]  # Reverse order
             self.view.update_share_trading_history_log(logAsList)
         # Compute the current holding profits and balances
         # get the balances from the portfolio and update the view
@@ -104,6 +115,7 @@ class TradingMate():
 
     def on_close_view_event(self):
         self.portfolio.stop()
+        self.db_handler.write_data()
 
     def on_manual_refresh_event(self):
         self.portfolio.on_manual_refresh_live_data()
@@ -115,27 +127,51 @@ class TradingMate():
         self._update_share_trading_view()
 
     def on_new_trade_event(self, newTrade):
-        result = self.portfolio.add_trade(newTrade)
+        result = {"success": True, "message": "ok"}
+
+        # Validate trade
+        valResult = self.portfolio.is_trade_valid(newTrade)
+        if not valResult['success']:
+            return valResult
+
+        # Update databse
+        self.db_handler.add_trade(trade)
+        # Reload portfolio
+        self.portfolio.reload(self.db_handler.get_trades_list())
+
+        # If success update the ui
         if result["success"]:
             self._update_share_trading_view(updateHistory=True)
         else:
             return result
         return result
 
+    def on_delete_last_trade_event(self):
+        result = {"success": True, "message": "ok"}
+        # Remove trade from database
+        self.db_handler.remove_last_trade()
+        # Reload portfolio
+        self.portfolio.reload(self.db_handler.get_trades_list())
+        # Update the UI
+        if result["success"]:
+            self._update_share_trading_view(updateHistory=True)
+        else:
+            return result
+
     def on_open_log_file_event(self, filepath):
-        result = self.portfolio.open_log_file(filepath)
+        result = {"success": True, "message": "ok"}
+        # Read database from filepath
+        self.db_handler.read_data(filepath)
+        # Reload portfolio
+        self.portfolio.reload(self.db_handler.get_trades_list())
+        # Update the UI
         if result["success"]:
             self.view.reset_view(resetHistory=True)
             self._update_share_trading_view(updateHistory=True)
         return result
 
     def on_save_log_file_event(self, filepath):
-        return self.portfolio.save_log_file(filepath)
-
-    def on_delete_last_trade_event(self):
         result = {"success": True, "message": "ok"}
-        result = self.portfolio.delete_last_trade()
-        if result["success"]:
-            self._update_share_trading_view(updateHistory=True)
-        else:
-            return result
+        # Write data into the database
+        self.db_handler.write_data(filepath=filepath)
+        return result

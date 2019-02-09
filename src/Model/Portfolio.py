@@ -9,7 +9,6 @@ sys.path.insert(0,parentdir)
 from .Holding import Holding
 from Utils.Utils import Actions, Messages, Callbacks
 from .StockPriceGetter import StockPriceGetter
-from .DatabaseHandler import DatabaseHandler
 
 class Portfolio():
     def __init__(self, name, config):
@@ -25,21 +24,17 @@ class Portfolio():
         self.callbacks = {}
         # Work thread that fetches stocks live prices
         self.price_getter = StockPriceGetter(config, self.on_new_price_data)
-        # Database handler
-        self.db_handler = DatabaseHandler(config)
-        # Load portfolio data
-        self.reload()
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
 
-    def start(self):
+    def start(self, trades_list):
+        self.reload(trades_list)
         self.price_getter.start()
 
     def stop(self):
         self.price_getter.shutdown()
         self.price_getter.join()
-        self.db_handler.write_data()
 
 # GETTERS
 
@@ -141,12 +136,6 @@ class Portfolio():
             return None
         return ((valueSum - costSum) / costSum) * 100
 
-    def get_db_filepath(self):
-        return self.db_handler.get_db_filepath()
-
-    def get_trades_list(self):
-        return self.db_handler.get_trades_list()
-
 # FUNCTIONS
 
     def clear(self):
@@ -157,14 +146,14 @@ class Portfolio():
         self._invested_amount = 0
         self._holdings.clear()
 
-    def reload(self):
+    def reload(self, trades_list):
         """
-        Load the portfolio from the trade history database
+        Load the portfolio from the given trade list
         """
         # Reset the portfolio
         self.clear()
 
-        for trade in self.db_handler.get_trades_list():
+        for trade in trades_list:
             if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
                 self._cash_available += trade.quantity
                 if trade.action == Actions.DEPOSIT:
@@ -189,11 +178,11 @@ class Portfolio():
                 self._cash_available += profit
         self.price_getter.set_symbol_list(self.get_holding_symbols())
         for symbol in self._holdings.keys():
-            self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol))
+            self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol, trades_list))
         for symbol, price in self.price_getter.get_last_data().items():
             self._holdings[symbol].set_last_price(price)
 
-    def compute_avg_holding_open_price(self, symbol):
+    def compute_avg_holding_open_price(self, symbol, trades_list):
         """
         Return the average price paid to open the current positon of the requested stock.
         Starting from the end of the history log, find the BUY transaction that led to
@@ -202,7 +191,7 @@ class Portfolio():
         sum = 0
         count = 0
         targetAmount = self.get_holding_amount(symbol)
-        for trade in self.db_handler.get_trades_list()[::-1]:  # reverse order
+        for trade in trades_list[::-1]:  # reverse order
             if trade.symbol == symbol and trade.action == Actions.BUY:
                 targetAmount -= trade.quantity
                 sum += trade.price * trade.quantity
@@ -212,41 +201,11 @@ class Portfolio():
         avg = sum / count
         return round(avg, 4)
 
-    def add_trade(self, trade):
-        """
-        Add a new Trade to the Portfolio updating the trade history database
-        """
-        result = {"success": True, "message": "ok"}
-        try:
-            self.db_handler.add_trade(trade)
-            self.reload()
-        except Exception:
-            result["success"] = False
-            result["message"] = Messages.INVALID_OPERATION.value
-        return result
-
-    def delete_last_trade(self):
-        """
-        Delete the last trade from the trade history database
-        """
-        result = {"success": True, "message": "ok"}
-        try:
-            self.db_handler.remove_last_trade()
-            self.reload()
-        except Exception:
-            result["success"] = False
-            result["message"] = Messages.INVALID_OPERATION
-        return result
-
     def is_trade_valid(self, newTrade):
         """
         Validate the new Trade request against the current Portfolio
         """
         result = {"success": True, "message": "ok"}
-
-        valResult = self.is_trade_valid(newTrade)
-        if not valResult['success']:
-            return valResult
 
         if newTrade.action == Actions.WITHDRAW:
             if newTrade.quantity > self.get_cash_available():
@@ -283,26 +242,3 @@ class Portfolio():
 
     def set_auto_refresh(self, enabled):
         self.price_getter.enable(enabled)
-
-# DATABASE OPERATION
-
-    def save_log_file(self, filepath):
-        result = {"success": True, "message": "ok"}
-        try:
-            self.db_handler.write_data(filepath=filepath)
-        except Exception:
-            result["success"] = False
-            result["message"] = Messages.ERROR_SAVE_FILE
-        return result
-
-    def open_log_file(self, filepath):
-        result = {"success": True, "message": "ok"}
-        try:
-            self.db_handler.read_data(filepath)
-            self.reload()
-        except Exception:
-            result["success"] = False
-            result["message"] = Messages.ERROR_OPEN_FILE
-        return result
-
-# END CLASS
