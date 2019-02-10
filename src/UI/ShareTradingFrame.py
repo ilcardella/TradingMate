@@ -31,12 +31,21 @@ class ShareTradingFrame(tk.Frame):
         buttonsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
+        self.open_icon = tk.PhotoImage(file=currentdir + "/assets/open_file_icon.png").subsample(2)
         openButton = ttk.Button(buttonsFrame, text="Open Portfolio...", command=self._open_portfolio)
         openButton.pack(side="left", anchor="n", padx=5, pady=5)
+        openButton.config(image=self.open_icon)
+
+        self.save_icon = tk.PhotoImage(file=currentdir + "/assets/save_file_icon.png").subsample(2)
         saveButton = ttk.Button(buttonsFrame, text="Save Portfolio...", command=self._save_portfolio)
         saveButton.pack(side="left", anchor="n", padx=5, pady=5)
+        saveButton.config(image=self.save_icon)
+
+        self.add_icon = tk.PhotoImage(file=currentdir + "/assets/add_icon.png").subsample(2)
         addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
         addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
+        addTradeButton.config(image=self.add_icon)
+
         self.autoRefresh = tk.IntVar(value=1)
         self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
                                             command=self.set_auto_refresh, onvalue=1, offvalue=0)
