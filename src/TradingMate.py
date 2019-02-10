@@ -71,9 +71,9 @@ class TradingMate():
         self.view.set_callback(
             Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.on_set_auto_refresh)
         self.view.set_callback(
-            Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_log_file_event)
+            Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
         self.view.set_callback(
-            Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_log_file_event)
+            Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.view.set_callback(
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
 
@@ -97,7 +97,6 @@ class TradingMate():
         if updateHistory:
             logAsList = self.db_handler.get_trades_list()[::-1]  # Reverse order
             self.view.update_share_trading_history_log(logAsList)
-        # Compute the current holding profits and balances
         # get the balances from the portfolio and update the view
         cash = self.portfolio.get_cash_available()
         holdingsValue = self.portfolio.get_holdings_value()
@@ -130,49 +129,34 @@ class TradingMate():
     def on_update_live_price(self):
         self._update_share_trading_view()
 
-    def on_new_trade_event(self, newTrade):
-        result = {"success": True, "message": "ok"}
+    def on_new_trade_event(self, new_trade):
         # Validate trade
-        if not self.portfolio.is_trade_valid(newTrade):
-            return {"success": False, "message": Messages.INVALID_OPERATION}
-        try:
-            # Update databse
-            self.db_handler.add_trade(trade)
-            # Reload portfolio
-            self.portfolio.reload(self.db_handler.get_trades_list())
-        except Exception as e:
-            logging.error('Unable to add trade: {}'.format(e))
-            return {"success": False, "message": Messages.INVALID_OPERATION}
+        if not self.portfolio.is_trade_valid(new_trade):
+            raise RuntimeError('Trade is invalid')
+        # Update databse
+        self.db_handler.add_trade(new_trade)
+        # Reload portfolio
+        self.portfolio.reload(self.db_handler.get_trades_list())
         # Update the ui
         self._update_share_trading_view(updateHistory=True)
-        return result
 
     def on_delete_last_trade_event(self):
-        result = {"success": True, "message": "ok"}
         # Remove trade from database
         self.db_handler.remove_last_trade()
         # Reload portfolio
         self.portfolio.reload(self.db_handler.get_trades_list())
         # Update the UI
-        if result["success"]:
-            self._update_share_trading_view(updateHistory=True)
-        else:
-            return result
+        self._update_share_trading_view(updateHistory=True)
 
-    def on_open_log_file_event(self, filepath):
-        result = {"success": True, "message": "ok"}
+    def on_open_portfolio_event(self, filepath):
         # Read database from filepath
         self.db_handler.read_data(filepath)
         # Reload portfolio
         self.portfolio.reload(self.db_handler.get_trades_list())
         # Update the UI
-        if result["success"]:
-            self.view.reset_view(resetHistory=True)
-            self._update_share_trading_view(updateHistory=True)
-        return result
+        self.view.reset_view(resetHistory=True)
+        self._update_share_trading_view(updateHistory=True)
 
-    def on_save_log_file_event(self, filepath):
-        result = {"success": True, "message": "ok"}
+    def on_save_portfolio_event(self, filepath):
         # Write data into the database
         self.db_handler.write_data(filepath=filepath)
-        return result

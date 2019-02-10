@@ -1,6 +1,7 @@
 import os
 import inspect
 import sys
+import logging
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -96,7 +97,9 @@ class Portfolio():
         return holdingsValue
 
     def get_portfolio_pl(self):
-        """Return the profit/loss in £ of the portfolio over the invested amount"""
+        """
+        Return the profit/loss in £ of the portfolio over the invested amount
+        """
         value = self.get_total_value()
         invested = self.get_invested_amount()
         if value is None or invested is None:
@@ -104,7 +107,9 @@ class Portfolio():
         return value - invested
 
     def get_portfolio_pl_perc(self):
-        """Return the profit/loss in % of the portfolio over the invested amount"""
+        """
+        Return the profit/loss in % of the portfolio over the invested amount
+        """
         pl = self.get_portfolio_pl()
         invested = self.get_invested_amount()
         if pl is None or invested is None or invested < 1:
@@ -112,29 +117,41 @@ class Portfolio():
         return (pl / invested) * 100
 
     def get_open_positions_pl(self):
-        """Return the sum profit/loss in £ of the current open positions"""
-        sum = 0
-        for holding in self._holdings.values():
-            pl = holding.get_profit_loss()
-            if pl is None:
-                return None
-            sum += pl
-        return sum
+        """
+        Return the sum profit/loss in £ of the current open positions
+        """
+        try:
+            sum = 0
+            for holding in self._holdings.values():
+                pl = holding.get_profit_loss()
+                if pl is None:
+                    return None
+                sum += pl
+            return sum
+        except Exception as e:
+            logging.error(e)
+            raise RuntimeError('Unable to compute holgings profit/loss')
 
     def get_open_positions_pl_perc(self):
-        """Return the sum profit/loss in % of the current open positions"""
-        costSum = 0
-        valueSum = 0
-        for holding in self._holdings.values():
-            cost = holding.get_cost()
-            value = holding.get_value()
-            if cost is None or value is None:
+        """
+        Return the sum profit/loss in % of the current open positions
+        """
+        try:
+            costSum = 0
+            valueSum = 0
+            for holding in self._holdings.values():
+                cost = holding.get_cost()
+                value = holding.get_value()
+                if cost is None or value is None:
+                    return None
+                costSum += cost
+                valueSum += value
+            if costSum < 1:
                 return None
-            costSum += cost
-            valueSum += value
-        if costSum < 1:
-            return None
-        return ((valueSum - costSum) / costSum) * 100
+            return ((valueSum - costSum) / costSum) * 100
+        except Exception as e:
+            logging.error(e)
+            raise RuntimeError('Unable to compute holdings profit/loss percentage')
 
 # FUNCTIONS
 
@@ -150,37 +167,41 @@ class Portfolio():
         """
         Load the portfolio from the given trade list
         """
-        # Reset the portfolio
-        self.clear()
-
-        for trade in trades_list:
-            if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
-                self._cash_available += trade.quantity
-                if trade.action == Actions.DEPOSIT:
-                    self._invested_amount += trade.quantity
-            elif trade.action == Actions.WITHDRAW:
-                self._cash_available -= trade.quantity
-                self._invested_amount -= trade.quantity
-            elif trade.action == Actions.BUY:
-                if trade.symbol not in self._holdings:
-                    self._holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)
-                else:
-                    self._holdings[trade.symbol].add_quantity(trade.quantity)
-                cost = (trade.price/100) * trade.quantity
-                tax = (trade.sdr * cost) / 100
-                totalCost = cost + tax + trade.fee
-                self._cash_available -= totalCost
-            elif trade.action == Actions.SELL:
-                self._holdings[trade.symbol].add_quantity(-trade.quantity) # negative
-                if self._holdings[trade.symbol].get_amount() < 1:
-                    del self._holdings[trade.symbol]
-                profit = ((trade.price/100) * trade.quantity) - trade.fee
-                self._cash_available += profit
-        self.price_getter.set_symbol_list(self.get_holding_symbols())
-        for symbol in self._holdings.keys():
-            self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol, trades_list))
-        for symbol, price in self.price_getter.get_last_data().items():
-            self._holdings[symbol].set_last_price(price)
+        try:
+            # Reset the portfolio
+            self.clear()
+            # Scan the trades list and build the portfolio
+            for trade in trades_list:
+                if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
+                    self._cash_available += trade.quantity
+                    if trade.action == Actions.DEPOSIT:
+                        self._invested_amount += trade.quantity
+                elif trade.action == Actions.WITHDRAW:
+                    self._cash_available -= trade.quantity
+                    self._invested_amount -= trade.quantity
+                elif trade.action == Actions.BUY:
+                    if trade.symbol not in self._holdings:
+                        self._holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)
+                    else:
+                        self._holdings[trade.symbol].add_quantity(trade.quantity)
+                    cost = (trade.price/100) * trade.quantity
+                    tax = (trade.sdr * cost) / 100
+                    totalCost = cost + tax + trade.fee
+                    self._cash_available -= totalCost
+                elif trade.action == Actions.SELL:
+                    self._holdings[trade.symbol].add_quantity(-trade.quantity) # negative
+                    if self._holdings[trade.symbol].get_amount() < 1:
+                        del self._holdings[trade.symbol]
+                    profit = ((trade.price/100) * trade.quantity) - trade.fee
+                    self._cash_available += profit
+            self.price_getter.set_symbol_list(self.get_holding_symbols())
+            for symbol in self._holdings.keys():
+                self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol, trades_list))
+            for symbol, price in self.price_getter.get_last_data().items():
+                self._holdings[symbol].set_last_price(price)
+        except Exception as e:
+            logging.error(e)
+            raise RuntimeError('Unable to reload the portfolio')
 
     def compute_avg_holding_open_price(self, symbol, trades_list):
         """
@@ -209,17 +230,20 @@ class Portfolio():
         """
         if newTrade.action == Actions.WITHDRAW:
             if newTrade.quantity > self.get_cash_available():
-                return False
+                logging.error(Messages.INSUF_FUNDING.value)
+                raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.BUY:
             cost = (newTrade.price * newTrade.quantity) / 100  # in £
             fee = newTrade.fee
             tax = (newTrade.sdr * cost) / 100
             totalCost = cost + fee + tax
             if totalCost > self.get_cash_available():
-                return False
+                logging.error(Messages.INSUF_FUNDING.value)
+                raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.SELL:
             if newTrade.quantity > self.get_holding_amount(newTrade.symbol):
-                return False
+                logging.error(Messages.INSUF_HOLDINGS.value)
+                raise RuntimeError(Messages.INSUF_HOLDINGS.value)
         return True
 
 # PRICE GETTER WORK THREAD

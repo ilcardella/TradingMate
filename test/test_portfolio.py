@@ -180,10 +180,13 @@ def test_is_trade_valid(portfolio, trades):
 
     # Invalid buy
     item = {'date':'01/01/0001','action':'BUY','amount':1000,'symbol':'MOCK','price':1000.0,'fee':1.0,'stamp_duty':1.0}
-    assert not portfolio.is_trade_valid(Trade.from_dict(item))
+    with pytest.raises(RuntimeError):
+        assert not portfolio.is_trade_valid(Trade.from_dict(item))
     # Invalid sell
     item = {'date':'01/01/0001','action':'SELL','amount':1990,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
-    assert not portfolio.is_trade_valid(Trade.from_dict(item))
+    with pytest.raises(RuntimeError):
+        assert not portfolio.is_trade_valid(Trade.from_dict(item))
     # Invalid withdraw
     item = {'date':'01/01/0001','action':'WITHDRAW','amount':20000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
-    assert not portfolio.is_trade_valid(Trade.from_dict(item))
+    with pytest.raises(RuntimeError):
+        assert not portfolio.is_trade_valid(Trade.from_dict(item))
