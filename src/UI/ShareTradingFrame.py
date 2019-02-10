@@ -12,6 +12,7 @@ sys.path.insert(0,parentdir)
 from Utils.Utils import Callbacks
 from .AddTradeDialogWindow import AddTradeDialogWindow
 from .WarningWindow import WarningWindow
+from .ConfirmWindow import ConfirmWindow
 
 INVALID_STRING = "-"
 
@@ -195,7 +196,7 @@ class ShareTradingFrame(tk.Frame):
         # Create popup menu for the trade history log
         self.logPopupMenu = tk.Menu(self.logTreeView, tearoff=0)
         self.logPopupMenu.add_command(label="Add trade...", command=self._display_add_trade_panel)
-        self.logPopupMenu.add_command(label="Delete last trade", command=self._delete_last_trade)
+        self.logPopupMenu.add_command(label="Delete last...", command=self._delete_last_trade)
         self.logTreeView.bind("<Button-3>", self._trade_log_popup_menu_event)
 
     def _trade_log_popup_menu_event(self, event):
@@ -205,7 +206,7 @@ class ShareTradingFrame(tk.Frame):
         AddTradeDialogWindow(self.parent, self._on_add_new_trade_event)
 
     def _delete_last_trade(self):
-        self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
+        ConfirmWindow(self.parent, "Confirm", "Are you sure?", self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT])
 
     def _on_add_new_trade_event(self, newTrade):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
