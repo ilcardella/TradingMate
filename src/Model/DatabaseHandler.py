@@ -36,6 +36,7 @@ class DatabaseHandler():
             json_obj = Utils.load_json_file(path)
 
             # Create a list of all the trades in the json file
+            self.trading_history.clear()
             for item in json_obj['trades']:
                 trade = Trade.from_dict(item)
                 # Store the list internally
