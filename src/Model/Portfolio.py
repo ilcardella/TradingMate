@@ -1,19 +1,41 @@
 import os
 import inspect
 import sys
+import logging
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
 from .Holding import Holding
+from Utils.Utils import Actions, Messages, Callbacks
+from .StockPriceGetter import StockPriceGetter
 
 class Portfolio():
-    def __init__(self, name):
+    def __init__(self, name, config):
+        # Portfolio name
         self._name = name
-        self._cashAvailable = 0
-        self._investedAmount = 0
-        self._holdings = {} # Dict {"symbol": Holding}
+        # Amount of free cash available
+        self._cash_available = 0
+        # Overall amount of cash deposited - withdrawed
+        self._invested_amount = 0
+        # Data structure to store stock holdings: {"symbol": Holding}
+        self._holdings = {}
+        # DataStruct containing the callbacks
+        self.callbacks = {}
+        # Work thread that fetches stocks live prices
+        self.price_getter = StockPriceGetter(config, self.on_new_price_data)
+
+    def set_callback(self, id, callback):
+        self.callbacks[id] = callback
+
+    def start(self, trades_list):
+        self.reload(trades_list)
+        self.price_getter.start()
+
+    def stop(self):
+        self.price_getter.shutdown()
+        self.price_getter.join()
 
 # GETTERS
 
@@ -23,11 +45,11 @@ class Portfolio():
 
     def get_cash_available(self):
         """Return the available cash amount in the portfolio [int]"""
-        return self._cashAvailable
+        return self._cash_available
 
     def get_invested_amount(self):
         """Return the total invested amount in the portfolio [int]"""
-        return self._investedAmount
+        return self._invested_amount
 
     def get_holding_list(self):
         """Return a list of Holding instances held in the portfolio sorted alphabetically"""
@@ -60,7 +82,7 @@ class Portfolio():
         """Return the value of the whole portfolio as cash + holdings"""
         value = self.get_holdings_value()
         if value is not None:
-            return self._cashAvailable + value
+            return self._cash_available + value
         else:
             return None
 
@@ -75,7 +97,9 @@ class Portfolio():
         return holdingsValue
 
     def get_portfolio_pl(self):
-        """Return the profit/loss in £ of the portfolio over the invested amount"""
+        """
+        Return the profit/loss in £ of the portfolio over the invested amount
+        """
         value = self.get_total_value()
         invested = self.get_invested_amount()
         if value is None or invested is None:
@@ -83,7 +107,9 @@ class Portfolio():
         return value - invested
 
     def get_portfolio_pl_perc(self):
-        """Return the profit/loss in % of the portfolio over the invested amount"""
+        """
+        Return the profit/loss in % of the portfolio over the invested amount
+        """
         pl = self.get_portfolio_pl()
         invested = self.get_invested_amount()
         if pl is None or invested is None or invested < 1:
@@ -91,69 +117,149 @@ class Portfolio():
         return (pl / invested) * 100
 
     def get_open_positions_pl(self):
-        """Return the sum profit/loss in £ of the current open positions"""
-        sum = 0
-        for holding in self._holdings.values():
-            pl = holding.get_profit_loss()
-            if pl is None:
-                return None
-            sum += pl
-        return sum
+        """
+        Return the sum profit/loss in £ of the current open positions
+        """
+        try:
+            sum = 0
+            for holding in self._holdings.values():
+                pl = holding.get_profit_loss()
+                if pl is None:
+                    return None
+                sum += pl
+            return sum
+        except Exception as e:
+            logging.error(e)
+            raise RuntimeError('Unable to compute holgings profit/loss')
 
     def get_open_positions_pl_perc(self):
-        """Return the sum profit/loss in % of the current open positions"""
-        costSum = 0
-        valueSum = 0
-        for holding in self._holdings.values():
-            cost = holding.get_cost()
-            value = holding.get_value()
-            if cost is None or value is None:
+        """
+        Return the sum profit/loss in % of the current open positions
+        """
+        try:
+            costSum = 0
+            valueSum = 0
+            for holding in self._holdings.values():
+                cost = holding.get_cost()
+                value = holding.get_value()
+                if cost is None or value is None:
+                    return None
+                costSum += cost
+                valueSum += value
+            if costSum < 1:
                 return None
-            costSum += cost
-            valueSum += value
-        if costSum < 1:
-            return None
-        return ((valueSum - costSum) / costSum) * 100
-
-# SETTERS
-
-    def set_cash_available(self, value):
-        if value is None or value < 0:
-            raise ValueError('Invalid value for cash_available')
-        self._cashAvailable = value
-
-    def set_invested_amount(self, value):
-        if value is None or value < 0:
-            raise ValueError('Invalid value for investedAmount')
-        self._investedAmount = value
+            return ((valueSum - costSum) / costSum) * 100
+        except Exception as e:
+            logging.error(e)
+            raise RuntimeError('Unable to compute holdings profit/loss percentage')
 
 # FUNCTIONS
 
     def clear(self):
-        """Clear all data in the portfolio to default values"""
-        self._cashAvailable = 0
-        self._investedAmount = 0
+        """
+        Reset the Portfolio clearing all data
+        """
+        self._cash_available = 0
+        self._invested_amount = 0
         self._holdings.clear()
 
-    def update_holding_amount(self, symbol, amount):
-        if symbol in self._holdings:
-            if amount < 1:
-                del self._holdings[symbol]
-            else:
-                self._holdings[symbol].set_amount(amount)
-        else:
-            self._holdings[symbol] = Holding(symbol, amount)
+    def reload(self, trades_list):
+        """
+        Load the portfolio from the given trade list
+        """
+        try:
+            # Reset the portfolio
+            self.clear()
+            # Scan the trades list and build the portfolio
+            for trade in trades_list:
+                if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
+                    self._cash_available += trade.quantity
+                    if trade.action == Actions.DEPOSIT:
+                        self._invested_amount += trade.quantity
+                elif trade.action == Actions.WITHDRAW:
+                    self._cash_available -= trade.quantity
+                    self._invested_amount -= trade.quantity
+                elif trade.action == Actions.BUY:
+                    if trade.symbol not in self._holdings:
+                        self._holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)
+                    else:
+                        self._holdings[trade.symbol].add_quantity(trade.quantity)
+                    cost = (trade.price/100) * trade.quantity
+                    tax = (trade.sdr * cost) / 100
+                    totalCost = cost + tax + trade.fee
+                    self._cash_available -= totalCost
+                elif trade.action == Actions.SELL:
+                    self._holdings[trade.symbol].add_quantity(-trade.quantity) # negative
+                    if self._holdings[trade.symbol].get_amount() < 1:
+                        del self._holdings[trade.symbol]
+                    profit = ((trade.price/100) * trade.quantity) - trade.fee
+                    self._cash_available += profit
+            self.price_getter.set_symbol_list(self.get_holding_symbols())
+            for symbol in self._holdings.keys():
+                self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol, trades_list))
+            for symbol, price in self.price_getter.get_last_data().items():
+                self._holdings[symbol].set_last_price(price)
+        except Exception as e:
+            logging.error(e)
+            raise RuntimeError('Unable to reload the portfolio')
 
-    def update_holding_last_price(self, symbol, price):
-        if symbol in self._holdings:
-            self._holdings[symbol].set_last_price(price)
-        else:
-            raise ValueError('Invalid symbol')
+    def compute_avg_holding_open_price(self, symbol, trades_list):
+        """
+        Return the average price paid to open the current positon of the requested stock.
+        Starting from the end of the history log, find the BUY transaction that led to
+        to have the current amount, compute then the average price of these transactions
+        """
+        sum = 0
+        count = 0
+        targetAmount = self.get_holding_amount(symbol)
+        if targetAmount == 0:
+            return None
+        for trade in trades_list[::-1]:  # reverse order
+            if trade.symbol == symbol and trade.action == Actions.BUY:
+                targetAmount -= trade.quantity
+                sum += trade.price * trade.quantity
+                count += trade.quantity
+                if targetAmount <= 0:
+                    break
+        avg = sum / count
+        return round(avg, 4)
 
-    def update_holding_open_price(self, symbol, price):
-        if symbol in self._holdings:
-            self._holdings[symbol].set_open_price(price)
-        else:
-            raise ValueError('Invalid symbol')
+    def is_trade_valid(self, newTrade):
+        """
+        Validate the new Trade request against the current Portfolio
+        """
+        if newTrade.action == Actions.WITHDRAW:
+            if newTrade.quantity > self.get_cash_available():
+                logging.error(Messages.INSUF_FUNDING.value)
+                raise RuntimeError(Messages.INSUF_FUNDING.value)
+        elif newTrade.action == Actions.BUY:
+            cost = (newTrade.price * newTrade.quantity) / 100  # in £
+            fee = newTrade.fee
+            tax = (newTrade.sdr * cost) / 100
+            totalCost = cost + fee + tax
+            if totalCost > self.get_cash_available():
+                logging.error(Messages.INSUF_FUNDING.value)
+                raise RuntimeError(Messages.INSUF_FUNDING.value)
+        elif newTrade.action == Actions.SELL:
+            if newTrade.quantity > self.get_holding_amount(newTrade.symbol):
+                logging.error(Messages.INSUF_HOLDINGS.value)
+                raise RuntimeError(Messages.INSUF_HOLDINGS.value)
+        return True
 
-# END CLASS
+# PRICE GETTER WORK THREAD
+
+    def on_new_price_data(self):
+        priceDict = self.price_getter.get_last_data()
+        for symbol, price in priceDict.items():
+            if symbol in self._holdings:
+                self._holdings[symbol].set_last_price(price)
+        self.callbacks[Callbacks.UPDATE_LIVE_PRICES]()
+
+    def on_manual_refresh_live_data(self):
+        if self.price_getter.is_enabled():
+            self.price_getter.cancel_timeout()
+        else:
+            self.price_getter.force_single_run()
+
+    def set_auto_refresh(self, enabled):
+        self.price_getter.enable(enabled)

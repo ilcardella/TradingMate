@@ -271,14 +271,14 @@ class ShareTradingFrame(tk.Frame):
         value = self.autoRefresh.get()
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](bool(value))
 
-    def add_entry_to_log_table(self, logEntry):
-        v_date = self._check_string_value(logEntry["date"])
-        v_act = self._check_string_value(logEntry["action"])
-        v_sym = self._check_string_value(logEntry["symbol"])
-        v_am = self._check_float_value(logEntry["amount"])
-        v_pri = self._check_float_value(logEntry["price"])
-        v_fee = self._check_float_value(logEntry["fee"])
-        v_sd = self._check_float_value(logEntry["stamp_duty"])
+    def add_entry_to_log_table(self, trade):
+        v_date = self._check_string_value(trade.date.strftime('%d/%m/%Y'))
+        v_act = self._check_string_value(trade.action.name)
+        v_sym = self._check_string_value(trade.symbol)
+        v_am = self._check_float_value(trade.quantity)
+        v_pri = self._check_float_value(trade.price)
+        v_fee = self._check_float_value(trade.fee)
+        v_sd = self._check_float_value(trade.sdr)
         tag = "evenrow" if len(self.logTreeView.get_children()) % 2 == 0 else "oddrow"
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd), tags=(tag,))
 

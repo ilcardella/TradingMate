@@ -19,13 +19,6 @@ Model
 The ``Model`` module contains the business logic and the data management of
 TradingMate.
 
-Model
-"""""
-
-.. automodule:: Model.Model
-
-.. autoclass:: Model
-    :members:
 
 Holding
 """""""
@@ -41,6 +34,22 @@ Portfolio
 .. automodule:: Model.Portfolio
 
 .. autoclass:: Portfolio
+    :members:
+
+DatabaseHandler
+"""""""""""""""
+
+.. automodule:: Model.DatabaseHandler
+
+.. autoclass:: DatabaseHandler
+    :members:
+
+StockPriceGetter
+""""""""""""""""
+
+.. automodule:: Model.StockPriceGetter
+
+.. autoclass:: StockPriceGetter
     :members:
 
 UI
@@ -109,6 +118,14 @@ TaskThread
 .. automodule:: Utils.TaskThread
 
 .. autoclass:: TaskThread
+    :members:
+
+Trade
+^^^^^^^^^^
+
+.. automodule:: Utils.Trade
+
+.. autoclass:: Trade
     :members:
 
 Utils

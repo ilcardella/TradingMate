@@ -1,0 +1,508 @@
+{
+    "trades": [
+        {
+            "date": "04/10/2017",
+            "action": "DEPOSIT",
+            "amount": 3000.0,
+            "symbol": "",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "13/10/2017",
+            "action": "BUY",
+            "amount": 119.0,
+            "symbol": "MOCK1",
+            "price": 1255.0,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "13/10/2017",
+            "action": "BUY",
+            "amount": 1101.0,
+            "symbol": "MOCK2",
+            "price": 44.8501,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "17/10/2017",
+            "action": "BUY",
+            "amount": 94.0,
+            "symbol": "MOCK3",
+            "price": 524.0957,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "18/10/2017",
+            "action": "SELL",
+            "amount": 94.0,
+            "symbol": "MOCK3",
+            "price": 442.1206,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "20/10/2017",
+            "action": "BUY",
+            "amount": 100.0,
+            "symbol": "MOCK4",
+            "price": 488.54,
+            "fee": 5.95,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "24/10/2017",
+            "action": "DEPOSIT",
+            "amount": 600.0,
+            "symbol": "",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "24/10/2017",
+            "action": "BUY",
+            "amount": 105.0,
+            "symbol": "MOCK3",
+            "price": 470.3809,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "26/10/2017",
+            "action": "SELL",
+            "amount": 1101.0,
+            "symbol": "MOCK2",
+            "price": 40.06,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "02/11/2017",
+            "action": "DEPOSIT",
+            "amount": 1100.0,
+            "symbol": "",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "02/11/2017",
+            "action": "BUY",
+            "amount": 656.0,
+            "symbol": "MOCK5",
+            "price": 74.8993,
+            "fee": 5.95,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "02/11/2017",
+            "action": "BUY",
+            "amount": 32.0,
+            "symbol": "MOCK6",
+            "price": 1494.0,
+            "fee": 5.95,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "02/11/2017",
+            "action": "BUY",
+            "amount": 63.0,
+            "symbol": "MOCK7",
+            "price": 769.3968,
+            "fee": 5.95,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "15/11/2017",
+            "action": "SELL",
+            "amount": 119.0,
+            "symbol": "MOCK1",
+            "price": 1282.0,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "15/11/2017",
+            "action": "SELL",
+            "amount": 105.0,
+            "symbol": "MOCK3",
+            "price": 426.7508,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "20/11/2017",
+            "action": "BUY",
+            "amount": 127.0,
+            "symbol": "MOCK1",
+            "price": 1563.3464,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "28/11/2017",
+            "action": "SELL",
+            "amount": 32.0,
+            "symbol": "MOCK6",
+            "price": 1328.76,
+            "fee": 5.95,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "15/12/2017",
+            "action": "DIVIDEND",
+            "amount": 19.6,
+            "symbol": "MOCK4",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "12/02/2018",
+            "action": "BUY",
+            "amount": 40.0,
+            "symbol": "MOCK8",
+            "price": 1217.675,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "12/02/2018",
+            "action": "BUY",
+            "amount": 122.0,
+            "symbol": "MOCK9",
+            "price": 402.1475,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "23/02/2018",
+            "action": "DEPOSIT",
+            "amount": 1000.0,
+            "symbol": "",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "23/02/2018",
+            "action": "BUY",
+            "amount": 736.0,
+            "symbol": "MOCK10",
+            "price": 134.5,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "06/03/2018",
+            "action": "SELL",
+            "amount": 63.0,
+            "symbol": "MOCK7",
+            "price": 750.0,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "06/03/2018",
+            "action": "BUY",
+            "amount": 64.0,
+            "symbol": "MOCK7",
+            "price": 744.2031,
+            "fee": 8.0,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "07/03/2018",
+            "action": "SELL",
+            "amount": 122.0,
+            "symbol": "MOCK9",
+            "price": 345.0,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "12/03/2018",
+            "action": "SELL",
+            "amount": 127.0,
+            "symbol": "MOCK1",
+            "price": 1600.0,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "19/03/2018",
+            "action": "SELL",
+            "amount": 64.0,
+            "symbol": "MOCK7",
+            "price": 735.0,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "21/03/2018",
+            "action": "BUY",
+            "amount": 162.0,
+            "symbol": "MOCK4",
+            "price": 605.4814,
+            "fee": 8.0,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "21/03/2018",
+            "action": "BUY",
+            "amount": 660.0,
+            "symbol": "MOCK10",
+            "price": 135.5363,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "04/04/2018",
+            "action": "SELL",
+            "amount": 736.0,
+            "symbol": "MOCK10",
+            "price": 114.9,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "13/04/2018",
+            "action": "DIVIDEND",
+            "amount": 1.37,
+            "symbol": "MOCK8",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "20/04/2018",
+            "action": "SELL",
+            "amount": 660.0,
+            "symbol": "MOCK10",
+            "price": 109.8764,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "27/04/2018",
+            "action": "BUY",
+            "amount": 1528.0,
+            "symbol": "MOCK11",
+            "price": 64.587,
+            "fee": 8.0,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "30/04/2018",
+            "action": "BUY",
+            "amount": 8288.0,
+            "symbol": "MOCK12",
+            "price": 17.9,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "30/04/2018",
+            "action": "SELL",
+            "amount": 40.0,
+            "symbol": "MOCK8",
+            "price": 1220.0,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "04/05/2018",
+            "action": "BUY",
+            "amount": 595.0,
+            "symbol": "MOCK5",
+            "price": 90.35,
+            "fee": 5.0,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "14/05/2018",
+            "action": "DIVIDEND",
+            "amount": 8.65,
+            "symbol": "MOCK4",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "21/05/2018",
+            "action": "SELL",
+            "amount": 8288.0,
+            "symbol": "MOCK12",
+            "price": 12.044,
+            "fee": 5.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "08/06/2018",
+            "action": "DIVIDEND",
+            "amount": 18.77,
+            "symbol": "MOCK5",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "18/07/2018",
+            "action": "BUY",
+            "amount": 958.0,
+            "symbol": "MOCK5",
+            "price": 101.98,
+            "fee": 8.0,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "16/08/2018",
+            "action": "SELL",
+            "amount": 2209.0,
+            "symbol": "MOCK5",
+            "price": 95.12,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "16/08/2018",
+            "action": "SELL",
+            "amount": 1528.0,
+            "symbol": "MOCK11",
+            "price": 59.574,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "24/08/2018",
+            "action": "DEPOSIT",
+            "amount": 2000.0,
+            "symbol": "",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "07/09/2018",
+            "action": "BUY",
+            "amount": 2705.0,
+            "symbol": "MOCK13",
+            "price": 184.2,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "28/09/2018",
+            "action": "DIVIDEND",
+            "amount": 16.35,
+            "symbol": "MOCK11",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "09/11/2018",
+            "action": "DIVIDEND",
+            "amount": 166.36,
+            "symbol": "MOCK13",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "20/11/2018",
+            "action": "SELL",
+            "amount": 2705.0,
+            "symbol": "MOCK13",
+            "price": 170.86,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "28/11/2018",
+            "action": "BUY",
+            "amount": 340.0,
+            "symbol": "MOCK1",
+            "price": 1404.0,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "29/11/2018",
+            "action": "SELL",
+            "amount": 340.0,
+            "symbol": "MOCK1",
+            "price": 1494.1818,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "29/11/2018",
+            "action": "BUY",
+            "amount": 176.0,
+            "symbol": "MOCK4",
+            "price": 615.7576,
+            "fee": 8.0,
+            "stamp_duty": 0.5
+        },
+        {
+            "date": "17/12/2018",
+            "action": "DIVIDEND",
+            "amount": 62.62,
+            "symbol": "MOCK4",
+            "price": 0.0,
+            "fee": 0.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "17/12/2018",
+            "action": "BUY",
+            "amount": 183.0,
+            "symbol": "MOCK1",
+            "price": 1085.56,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "19/12/2018",
+            "action": "SELL",
+            "amount": 183.0,
+            "symbol": "MOCK1",
+            "price": 1104.44,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "21/12/2018",
+            "action": "BUY",
+            "amount": 1192.0,
+            "symbol": "MOCK13",
+            "price": 166.984,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "23/01/2019",
+            "action": "BUY",
+            "amount": 172.0,
+            "symbol": "MOCK1",
+            "price": 1153.92,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        },
+        {
+            "date": "29/01/2019",
+            "action": "SELL",
+            "amount": 172.0,
+            "symbol": "MOCK1",
+            "price": 1338.8323,
+            "fee": 8.0,
+            "stamp_duty": 0.0
+        }
+    ]
+}

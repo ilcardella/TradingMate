@@ -87,7 +87,11 @@ class View():
 # ******* SHARE TRADING FRAME ************
 
     def on_new_trade_event(self, newTrade):
-        return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
+        try:
+            self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
+            return {'success': True, 'message': 'ok'}
+        except RuntimeError as e:
+            return {'success': False, 'message': e}
 
     def on_manual_refresh_event(self):
         # Notify the Controller to request new data
@@ -113,18 +117,22 @@ class View():
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](value)
 
     def on_open_portfolio_event(self, filename):
-        return self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+        try:
+            self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+            return {'success': True, 'message': 'ok'}
+        except RuntimeError as e:
+            return {'success': False, 'message': e}
 
     def on_save_portfolio_event(self, filename):
-        return self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+        try:
+            self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+            return {'success': True, 'message': 'ok'}
+        except RuntimeError as e:
+            return {'success': False, 'message': e}
 
     def on_delete_last_trade_event(self):
-        self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
-
-# ******* CRYPTO CURRENCIES FRAME ************
-
-    def on_start_autotrading(self):
-        self.callbacks[Callbacks.ON_START_AUTOTRADING]()
-
-    def on_stop_autotrading(self):
-        self.callbacks[Callbacks.ON_STOP_AUTOTRADING]()
+        try:
+            self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
+            return {'success': True, 'message': 'ok'}
+        except RuntimeError as e:
+            return {'success': False, 'message': e}

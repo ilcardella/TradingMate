@@ -1,7 +1,7 @@
 import os
 import sys
 import inspect
-import urllib.request
+import requests
 import json
 
 currentdir = os.path.dirname(os.path.abspath(
@@ -15,16 +15,18 @@ from Utils.ConfigurationManager import ConfigurationManager
 
 class StockPriceGetter(TaskThread):
 
-    def __init__(self, config, onNewPriceDataCallback, updatePeriod):
-        TaskThread.__init__(self, updatePeriod)
-        self.onNewPriceDataCallback = onNewPriceDataCallback
+    def __init__(self, config, onNewPriceDataCallback):
+        TaskThread.__init__(self)
         self._read_configuration(config)
+        self.onNewPriceDataCallback = onNewPriceDataCallback
         self.lastData = {}
         self.symbolList = []
 
     def _read_configuration(self, config):
         self.alphaVantageAPIKey = config.get_alpha_vantage_api_key()
         self.alphaVantageBaseURL = config.get_alpha_vantage_base_url()
+        # Override the parent class default value
+        self._interval = config.get_alpha_vantage_polling_period()
 
     def task(self):
         priceDict = {}
@@ -32,7 +34,7 @@ class StockPriceGetter(TaskThread):
             if not self._finished.isSet():
                 value = self._fetch_price_data(symbol)
                 # Wait 1 sec as suggested by AlphaVantage support
-                self._timeout.wait(1)
+                self._timeout.wait(2)
                 if value is not None:
                     priceDict[symbol] = value
         if not self._finished.isSet():
@@ -43,14 +45,14 @@ class StockPriceGetter(TaskThread):
         try:
             url = self._build_url("TIME_SERIES_DAILY",
                                   symbol, "5min", self.alphaVantageAPIKey)
-            request = urllib.request.urlopen(url, timeout=10)
-            content = request.read()
-            data = json.loads(content.decode('utf-8'))
+            response = requests.get(url)
+            if response.status_code != 200:
+                return None
+            data = json.loads(response.text)
             timeSerie = data["Time Series (Daily)"]
             last = next(iter(timeSerie.values()))
             value = float(last["4. close"])
         except Exception:
-            print("LivePricesWebThread: _fetch_price_data(): {0}".format(url))
             value = None
         return value
 
