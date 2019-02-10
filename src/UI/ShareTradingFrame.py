@@ -190,7 +190,7 @@ class ShareTradingFrame(tk.Frame):
         self.logTreeView.bind("<Button-3>", self._trade_log_popup_menu_event)
 
     def _trade_log_popup_menu_event(self, event):
-        self.logPopupMenu.post(event.x_root, event.y_root)
+        self.logPopupMenu.tk_popup(event.x_root, event.y_root)
 
     def _display_add_trade_panel(self):
         AddTradeDialogWindow(self.parent, self._on_add_new_trade_event)
@@ -246,7 +246,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _open_portfolio(self):
         # Open a saved portfolio
-        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
+        filename =  filedialog.askopenfilename(initialdir="/home/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
         if filename is not None and len(filename) > 0:
             result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
             if result["success"] == False:
@@ -254,7 +254,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _save_portfolio(self):
         # Save the current log
-        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
+        filename =  filedialog.asksaveasfilename(initialdir="/home/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
         if filename is not None and len(filename) > 0:
             result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
             if result["success"] == False:
