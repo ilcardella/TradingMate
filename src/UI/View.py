@@ -107,8 +107,8 @@ class View():
     def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity):
         self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity)
 
-    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
-        self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity)
+    def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
+        self.shareTradingFrame.update_share_trading_holding(symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity)
 
     def set_db_filepath(self, filepath):
         self.shareTradingFrame.set_db_filepath(filepath)

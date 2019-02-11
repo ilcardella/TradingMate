@@ -137,9 +137,9 @@ class ShareTradingFrame(tk.Frame):
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(holdingsFrame)
         self.currentDataTreeView.pack(fill='x')
-        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl','pl_pc')
+        self.currentDataTreeView["columns"] = ('quantity','open','last','cost','value','pl','pl_pc')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
-        self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
+        self.currentDataTreeView.heading("quantity", text='Quantity', anchor='w')
         self.currentDataTreeView.heading("open", text='Open [p]', anchor='w')
         self.currentDataTreeView.heading("last", text='Last [p]', anchor='w')
         self.currentDataTreeView.heading("cost", text='Cost [£]', anchor='w')
@@ -147,7 +147,7 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.heading("pl", text='P/L £', anchor='w')
         self.currentDataTreeView.heading("pl_pc", text='P/L %', anchor='w')
         self.currentDataTreeView.column("#0", width=100)
-        self.currentDataTreeView.column("amount", width=100)
+        self.currentDataTreeView.column("quantity", width=100)
         self.currentDataTreeView.column("open", width=100)
         self.currentDataTreeView.column("last", width=100)
         self.currentDataTreeView.column("cost", width=100)
@@ -171,18 +171,18 @@ class ShareTradingFrame(tk.Frame):
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(tableFrame)
         self.logTreeView.pack(fill='x', side="left", expand=True)
-        self.logTreeView["columns"] = ('action','symbol','amount','price','fee', 'stamp_duty')
+        self.logTreeView["columns"] = ('action','symbol','quantity','price','fee', 'stamp_duty')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
         self.logTreeView.heading("symbol", text='Symbol', anchor='w')
-        self.logTreeView.heading("amount", text='Amount', anchor='w')
+        self.logTreeView.heading("quantity", text='Quantity', anchor='w')
         self.logTreeView.heading("price", text='Price [p]', anchor='w')
         self.logTreeView.heading("fee", text='Fee [£]', anchor='w')
         self.logTreeView.heading("stamp_duty", text='Stamp Duty [%]', anchor='w')
         self.logTreeView.column("#0", width=100)
         self.logTreeView.column("action", width=100)
         self.logTreeView.column("symbol", width=100)
-        self.logTreeView.column("amount", width=100)
+        self.logTreeView.column("quantity", width=100)
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
         self.logTreeView.column("stamp_duty", width=100)
@@ -292,9 +292,9 @@ class ShareTradingFrame(tk.Frame):
         tag = "evenrow" if len(self.logTreeView.get_children()) % 2 == 0 else "oddrow"
         self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd), tags=(tag,))
 
-    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
+    def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
         v_symbol=self._check_string_value(symbol)
-        v_amount=self._check_float_value(amount)
+        v_quantity=self._check_float_value(quantity)
         v_openPrice=self._check_float_value(openPrice)
         v_lastPrice=self._check_float_value(lastPrice, valid=validity)
         v_cost=self._check_float_value(cost)
@@ -310,7 +310,7 @@ class ShareTradingFrame(tk.Frame):
             s = item['text']
             if v_symbol == s:
                 found = True
-                self.currentDataTreeView.item(child, values=(v_amount,
+                self.currentDataTreeView.item(child, values=(v_quantity,
                                                             v_openPrice,
                                                             v_lastPrice,
                                                             v_cost,
@@ -320,7 +320,7 @@ class ShareTradingFrame(tk.Frame):
                 break
         if not found:
             #tag = "evenrow" if len(self.currentDataTreeView.get_children()) % 2 == 0 else "oddrow"
-            self.currentDataTreeView.insert('','end',text=symbol, values=(v_amount,
+            self.currentDataTreeView.insert('','end',text=symbol, values=(v_quantity,
                                                                                 v_openPrice,
                                                                                 v_lastPrice,
                                                                                 v_cost,

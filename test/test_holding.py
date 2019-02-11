@@ -13,14 +13,14 @@ from Model.Holding import Holding
 def test_init():
     holding = Holding('mock', 10)
     assert holding.get_symbol() == 'mock'
-    assert holding.get_amount() == 10
+    assert holding.get_quantity() == 10
     assert holding.get_open_price() == None
     assert holding.get_last_price() == None
     assert holding.get_last_price_valid() == False
 
     holding = Holding('mock', 10, 100)
     assert holding.get_symbol() == 'mock'
-    assert holding.get_amount() == 10
+    assert holding.get_quantity() == 10
     assert holding.get_open_price() == 100
     assert holding.get_last_price() == None
     assert holding.get_last_price_valid() == False
@@ -90,12 +90,12 @@ def test_set_open_price():
     with pytest.raises(ValueError) as e:
         h.set_open_price(-1)
 
-def test_set_amount():
+def test_set_quantity():
     h = Holding('mock', 1, 100)
     with pytest.raises(ValueError) as e:
-        h.set_amount(-1)
+        h.set_quantity(-1)
     with pytest.raises(ValueError) as e:
-        h.set_amount(0)
+        h.set_quantity(0)
 
 def test_set_last_price_invalid():
     h = Holding('mock', 1, 100)

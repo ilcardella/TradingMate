@@ -35,7 +35,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         ttk.Label(self, text="Action:").grid(row=1, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Market:").grid(row=2, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Symbol:").grid(row=3, sticky="w", padx=5, pady=5)
-        ttk.Label(self, text="Amount:").grid(row=4, sticky="w", padx=5, pady=5)
+        ttk.Label(self, text="Quantity:").grid(row=4, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Price [p] :").grid(row=5, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Fee [£] :").grid(row=6, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Stamp Duty [%] :").grid(row=7, sticky="w", padx=5, pady=5)
@@ -64,10 +64,10 @@ class AddTradeDialogWindow(tk.Toplevel):
         self.eSymbol = ttk.Entry(self, textvariable=self.symbolSelected)
         self.eSymbol.grid(row=3, column=1, sticky="w", padx=5, pady=5)
 
-        self.amountSelected = tk.StringVar()
-        self.amountSelected.trace_add('write', self.check_data_validity)
-        self.eAmount = ttk.Entry(self, textvariable=self.amountSelected)
-        self.eAmount.grid(row=4, column=1, sticky="w", padx=5, pady=5)
+        self.quantity_selected = tk.StringVar()
+        self.quantity_selected.trace_add('write', self.check_data_validity)
+        self.e_quantity = ttk.Entry(self, textvariable=self.quantity_selected)
+        self.e_quantity.grid(row=4, column=1, sticky="w", padx=5, pady=5)
 
         self.priceSelected = tk.StringVar()
         self.priceSelected.trace_add('write', self.check_data_validity)
@@ -99,7 +99,7 @@ class AddTradeDialogWindow(tk.Toplevel):
     def on_action_selected(self, selection):
         # Clear data entry
         self.symbolSelected.set("")
-        self.amountSelected.set("")
+        self.quantity_selected.set("")
         self.priceSelected.set("")
         self.feeSelected.set("")
         self.stampDutySelected.set("")
@@ -107,35 +107,35 @@ class AddTradeDialogWindow(tk.Toplevel):
         if selection == Actions.BUY.name:
             self.eMarket.config(state='enabled')
             self.eSymbol.config(state='enabled')
-            self.eAmount.config(state='enabled')
+            self.e_quantity.config(state='enabled')
             self.ePrice.config(state='enabled')
             self.eFee.config(state='enabled')
             self.eStampDuty.config(state='enabled')
         elif selection == Actions.SELL.name:
             self.eMarket.config(state='enabled')
             self.eSymbol.config(state='enabled')
-            self.eAmount.config(state='enabled')
+            self.e_quantity.config(state='enabled')
             self.ePrice.config(state='enabled')
             self.eFee.config(state='enabled')
             self.eStampDuty.config(state='disabled')
         elif selection == Actions.DEPOSIT.name:
             self.eMarket.config(state='disabled')
             self.eSymbol.config(state='disabled')
-            self.eAmount.config(state='enabled')
+            self.e_quantity.config(state='enabled')
             self.ePrice.config(state='disabled')
             self.eFee.config(state='disabled')
             self.eStampDuty.config(state='disabled')
         elif selection == Actions.DIVIDEND.name:
             self.eMarket.config(state='enabled')
             self.eSymbol.config(state='enabled')
-            self.eAmount.config(state='enabled')
+            self.e_quantity.config(state='enabled')
             self.ePrice.config(state='disabled')
             self.eFee.config(state='disabled')
             self.eStampDuty.config(state='disabled')
         elif selection == Actions.WITHDRAW.name:
             self.eMarket.config(state='disabled')
             self.eSymbol.config(state='disabled')
-            self.eAmount.config(state='enabled')
+            self.e_quantity.config(state='enabled')
             self.ePrice.config(state='disabled')
             self.eFee.config(state='disabled')
             self.eStampDuty.config(state='disabled')
@@ -147,7 +147,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         item["action"] = self.actionSelected.get()
         market = Markets[self.marketSelected.get()]
         item["symbol"] = (market.value + ":" + self.symbolSelected.get()) if self.symbolSelected.get() is not "" else ""
-        item["amount"] = float(self.amountSelected.get()) if self.amountSelected.get() is not "" else 0
+        item["quantity"] = float(self.quantity_selected.get()) if self.quantity_selected.get() is not "" else 0
         item["price"] = float(self.priceSelected.get()) if self.priceSelected.get() is not "" else 0
         item["fee"] = float(self.feeSelected.get()) if self.feeSelected.get() is not "" else 0
         item["stamp_duty"] = float(self.stampDutySelected.get()) if self.stampDutySelected.get() is not "" else 0
@@ -161,7 +161,7 @@ class AddTradeDialogWindow(tk.Toplevel):
 
     def check_data_validity(self, *args):
         # Check the validity of the Entry widgets data to enable the Add button
-        valid = self.is_date_valid() and self.is_symbol_valid() and self.is_amount_valid() \
+        valid = self.is_date_valid() and self.is_symbol_valid() and self.is_quantity_valid() \
                 and self.is_price_valid() and self.is_fee_valid() and self.is_sd_valid()
         self.addButton.config(state="normal" if valid else "disabled")
 
@@ -183,12 +183,12 @@ class AddTradeDialogWindow(tk.Toplevel):
         self.symbolSelected.set(self.symbolSelected.get().upper())
         return True
 
-    def is_amount_valid(self):
+    def is_quantity_valid(self):
         # If widget is disabled it should not affect the overall validity
-        if str(self.eAmount.cget("state")) == tk.DISABLED:
+        if str(self.e_quantity.cget("state")) == tk.DISABLED:
             return True
         try:
-            value = float(self.amountSelected.get())
+            value = float(self.quantity_selected.get())
             if value > 0:
                 return True
             return False

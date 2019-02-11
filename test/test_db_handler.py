@@ -68,7 +68,7 @@ def test_add_trade(dbh):
     Test it adds the trade to the in memory list
     """
     assert len(dbh.trading_history) == 0
-    item = {'date':'01/01/0001','action':'BUY','amount':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'BUY','quantity':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0}
     trade = Trade.from_dict(item)
     dbh.add_trade(trade)
     assert len(dbh.trading_history) == 1
@@ -78,7 +78,7 @@ def test_remove_last_trade(dbh):
     Test it removes the last trade from the in memory list
     """
     assert len(dbh.trading_history) == 0
-    item = {'date':'01/01/0001','action':'BUY','amount':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'BUY','quantity':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0}
     trade = Trade.from_dict(item)
     dbh.add_trade(trade)
     assert len(dbh.trading_history) == 1

@@ -44,11 +44,11 @@ class Portfolio():
         return self._name
 
     def get_cash_available(self):
-        """Return the available cash amount in the portfolio [int]"""
+        """Return the available cash quantity in the portfolio [int]"""
         return self._cash_available
 
     def get_invested_amount(self):
-        """Return the total invested amount in the portfolio [int]"""
+        """Return the amount of cash deposited in the portfolio [int]"""
         return self._invested_amount
 
     def get_holding_list(self):
@@ -59,10 +59,10 @@ class Portfolio():
         """Return a list containing the holding symbols as [string] sorted alphabetically"""
         return list(sorted(self._holdings.keys()))
 
-    def get_holding_amount(self, symbol):
-        """Return the amount held for the given symbol"""
+    def get_holding_quantity(self, symbol):
+        """Return the quantity held for the given symbol"""
         if symbol in self._holdings:
-            return self._holdings[symbol].get_amount()
+            return self._holdings[symbol].get_quantity()
         else:
             return 0
 
@@ -98,7 +98,7 @@ class Portfolio():
 
     def get_portfolio_pl(self):
         """
-        Return the profit/loss in £ of the portfolio over the invested amount
+        Return the profit/loss in £ of the portfolio over the deposited cash
         """
         value = self.get_total_value()
         invested = self.get_invested_amount()
@@ -108,7 +108,7 @@ class Portfolio():
 
     def get_portfolio_pl_perc(self):
         """
-        Return the profit/loss in % of the portfolio over the invested amount
+        Return the profit/loss in % of the portfolio over deposited cash
         """
         pl = self.get_portfolio_pl()
         invested = self.get_invested_amount()
@@ -190,7 +190,7 @@ class Portfolio():
                     self._cash_available -= totalCost
                 elif trade.action == Actions.SELL:
                     self._holdings[trade.symbol].add_quantity(-trade.quantity) # negative
-                    if self._holdings[trade.symbol].get_amount() < 1:
+                    if self._holdings[trade.symbol].get_quantity() < 1:
                         del self._holdings[trade.symbol]
                     profit = ((trade.price/100) * trade.quantity) - trade.fee
                     self._cash_available += profit
@@ -207,19 +207,19 @@ class Portfolio():
         """
         Return the average price paid to open the current positon of the requested stock.
         Starting from the end of the history log, find the BUY transaction that led to
-        to have the current amount, compute then the average price of these transactions
+        to have the current quantity, compute then the average price of these transactions
         """
         sum = 0
         count = 0
-        targetAmount = self.get_holding_amount(symbol)
-        if targetAmount == 0:
+        target = self.get_holding_quantity(symbol)
+        if target == 0:
             return None
         for trade in trades_list[::-1]:  # reverse order
             if trade.symbol == symbol and trade.action == Actions.BUY:
-                targetAmount -= trade.quantity
+                target -= trade.quantity
                 sum += trade.price * trade.quantity
                 count += trade.quantity
-                if targetAmount <= 0:
+                if target <= 0:
                     break
         avg = sum / count
         return round(avg, 4)
@@ -241,7 +241,7 @@ class Portfolio():
                 logging.error(Messages.INSUF_FUNDING.value)
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.SELL:
-            if newTrade.quantity > self.get_holding_amount(newTrade.symbol):
+            if newTrade.quantity > self.get_holding_quantity(newTrade.symbol):
                 logging.error(Messages.INSUF_HOLDINGS.value)
                 raise RuntimeError(Messages.INSUF_HOLDINGS.value)
         return True

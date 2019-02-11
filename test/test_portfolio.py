@@ -103,8 +103,8 @@ def test_get_holding_symbol(portfolio, trades):
 def test_get_holding_quantity(portfolio, trades):
     portfolio.start(trades)
 
-    assert portfolio.get_holding_amount('MOCK13') == 1192
-    assert portfolio.get_holding_amount('MOCK4') == 438
+    assert portfolio.get_holding_quantity('MOCK13') == 1192
+    assert portfolio.get_holding_quantity('MOCK4') == 438
 
 # def test_get_holding_last_price(portfolio, trades):
 #     portfolio.start(trades)
@@ -147,8 +147,8 @@ def test_reload(portfolio, trades):
     assert len(portfolio.get_holding_symbols()) == 2
     assert portfolio.get_holding_symbols()[0] == 'MOCK13'
     assert portfolio.get_holding_symbols()[1] == 'MOCK4'
-    assert portfolio.get_holding_amount('MOCK13') == 1192
-    assert portfolio.get_holding_amount('MOCK4') == 438
+    assert portfolio.get_holding_quantity('MOCK13') == 1192
+    assert portfolio.get_holding_quantity('MOCK4') == 438
 
 def test_compute_avg_holding_open_price(portfolio, trades):
     portfolio.start(trades)
@@ -163,30 +163,30 @@ def test_is_trade_valid(portfolio, trades):
     portfolio.start(trades)
 
     # Valid buy
-    item = {'date':'01/01/0001','action':'BUY','amount':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'BUY','quantity':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0}
     assert portfolio.is_trade_valid(Trade.from_dict(item))
     # Valid sell
-    item = {'date':'01/01/0001','action':'SELL','amount':1,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'SELL','quantity':1,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
     assert portfolio.is_trade_valid(Trade.from_dict(item))
     # Valid deposit
-    item = {'date':'01/01/0001','action':'DEPOSIT','amount':1000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'DEPOSIT','quantity':1000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
     assert portfolio.is_trade_valid(Trade.from_dict(item))
     # Valid withdraw
-    item = {'date':'01/01/0001','action':'WITHDRAW','amount':2000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'WITHDRAW','quantity':2000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
     assert portfolio.is_trade_valid(Trade.from_dict(item))
     # Valid dividend
-    item = {'date':'01/01/0001','action':'DIVIDEND','amount':1123,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'DIVIDEND','quantity':1123,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
     assert portfolio.is_trade_valid(Trade.from_dict(item))
 
     # Invalid buy
-    item = {'date':'01/01/0001','action':'BUY','amount':1000,'symbol':'MOCK','price':1000.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'BUY','quantity':1000,'symbol':'MOCK','price':1000.0,'fee':1.0,'stamp_duty':1.0}
     with pytest.raises(RuntimeError):
         assert not portfolio.is_trade_valid(Trade.from_dict(item))
     # Invalid sell
-    item = {'date':'01/01/0001','action':'SELL','amount':1990,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'SELL','quantity':1990,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
     with pytest.raises(RuntimeError):
         assert not portfolio.is_trade_valid(Trade.from_dict(item))
     # Invalid withdraw
-    item = {'date':'01/01/0001','action':'WITHDRAW','amount':20000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
+    item = {'date':'01/01/0001','action':'WITHDRAW','quantity':20000,'symbol':'MOCK13','price':1.0,'fee':1.0,'stamp_duty':1.0}
     with pytest.raises(RuntimeError):
         assert not portfolio.is_trade_valid(Trade.from_dict(item))
