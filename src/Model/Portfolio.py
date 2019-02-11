@@ -18,7 +18,7 @@ class Portfolio():
         # Amount of free cash available
         self._cash_available = 0
         # Overall amount of cash deposited - withdrawed
-        self._invested_amount = 0
+        self._cash_deposited = 0
         # Data structure to store stock holdings: {"symbol": Holding}
         self._holdings = {}
         # DataStruct containing the callbacks
@@ -47,9 +47,9 @@ class Portfolio():
         """Return the available cash quantity in the portfolio [int]"""
         return self._cash_available
 
-    def get_invested_amount(self):
+    def get_cash_deposited(self):
         """Return the amount of cash deposited in the portfolio [int]"""
-        return self._invested_amount
+        return self._cash_deposited
 
     def get_holding_list(self):
         """Return a list of Holding instances held in the portfolio sorted alphabetically"""
@@ -101,7 +101,7 @@ class Portfolio():
         Return the profit/loss in £ of the portfolio over the deposited cash
         """
         value = self.get_total_value()
-        invested = self.get_invested_amount()
+        invested = self.get_cash_deposited()
         if value is None or invested is None:
             return None
         return value - invested
@@ -111,7 +111,7 @@ class Portfolio():
         Return the profit/loss in % of the portfolio over deposited cash
         """
         pl = self.get_portfolio_pl()
-        invested = self.get_invested_amount()
+        invested = self.get_cash_deposited()
         if pl is None or invested is None or invested < 1:
             return None
         return (pl / invested) * 100
@@ -160,7 +160,7 @@ class Portfolio():
         Reset the Portfolio clearing all data
         """
         self._cash_available = 0
-        self._invested_amount = 0
+        self._cash_deposited = 0
         self._holdings.clear()
 
     def reload(self, trades_list):
@@ -175,10 +175,10 @@ class Portfolio():
                 if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
                     self._cash_available += trade.quantity
                     if trade.action == Actions.DEPOSIT:
-                        self._invested_amount += trade.quantity
+                        self._cash_deposited += trade.quantity
                 elif trade.action == Actions.WITHDRAW:
                     self._cash_available -= trade.quantity
-                    self._invested_amount -= trade.quantity
+                    self._cash_deposited -= trade.quantity
                 elif trade.action == Actions.BUY:
                     if trade.symbol not in self._holdings:
                         self._holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)

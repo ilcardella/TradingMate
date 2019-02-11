@@ -69,14 +69,14 @@ def test_get_cash_available(portfolio, trades):
     portfolio.reload(trades)
     assert portfolio.get_cash_available() == 2379.3144236000016
 
-def test_get_invested_amount(portfolio, trades):
-    assert portfolio.get_invested_amount() == 0
+def test_get_cash_deposited(portfolio, trades):
+    assert portfolio.get_cash_deposited() == 0
 
     portfolio.start([])
-    assert portfolio.get_invested_amount() == 0
+    assert portfolio.get_cash_deposited() == 0
 
     portfolio.reload(trades)
-    assert portfolio.get_invested_amount() == 7700
+    assert portfolio.get_cash_deposited() == 7700
 
 def test_get_holding_list(portfolio, trades):
     assert len(portfolio.get_holding_list()) == 0
@@ -134,7 +134,7 @@ def test_clear(portfolio, trades):
     portfolio.start(trades)
     portfolio.clear()
     assert portfolio.get_cash_available() == 0
-    assert portfolio.get_invested_amount() == 0
+    assert portfolio.get_cash_deposited() == 0
     assert len(portfolio.get_holding_list()) == 0
 
 def test_reload(portfolio, trades):
@@ -142,7 +142,7 @@ def test_reload(portfolio, trades):
     portfolio.clear()
     portfolio.reload(trades)
     assert portfolio.get_cash_available() == 2379.3144236000016
-    assert portfolio.get_invested_amount() == 7700
+    assert portfolio.get_cash_deposited() == 7700
     assert len(portfolio.get_holding_list()) == 2
     assert len(portfolio.get_holding_symbols()) == 2
     assert portfolio.get_holding_symbols()[0] == 'MOCK13'
