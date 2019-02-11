@@ -11,6 +11,7 @@ sys.path.insert(0, parentdir)
 
 from Utils.TaskThread import TaskThread
 from Utils.ConfigurationManager import ConfigurationManager
+from Utils.Utils import Markets
 
 
 class StockPriceGetter(TaskThread):
@@ -58,10 +59,20 @@ class StockPriceGetter(TaskThread):
 
     def _build_url(self, aLength, aSymbol, anInterval, anApiKey):
         function = "function=" + aLength
-        symbol = "symbol=" + aSymbol
+        symbol = "symbol=" + self.convert_market_to_alphavantage(aSymbol)
         apiKey = "apikey=" + anApiKey
         url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + apiKey
         return url
+
+    def convert_market_to_alphavantage(self, symbol):
+        """
+        Convert the market (LSE, etc.) into the alphavantage market compatible string
+        i.e.: the LSE needs to be converted to LON
+        """
+        # Extract the market part from the symbol string
+        market = str(symbol).split(':')[0]
+        av_market = Markets[market]
+        return '{}:{}'.format(av_market.value, str(symbol).split(':')[1])
 
     def get_last_data(self):
         return self.lastData
