@@ -171,7 +171,7 @@ class ShareTradingFrame(tk.Frame):
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(tableFrame)
         self.logTreeView.pack(fill='x', side="left", expand=True)
-        self.logTreeView["columns"] = ('action','symbol','quantity','price','fee', 'stamp_duty')
+        self.logTreeView["columns"] = ('action','symbol','quantity','price','fee', 'stamp_duty','total')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
         self.logTreeView.heading("symbol", text='Symbol', anchor='w')
@@ -179,6 +179,7 @@ class ShareTradingFrame(tk.Frame):
         self.logTreeView.heading("price", text='Price [p]', anchor='w')
         self.logTreeView.heading("fee", text='Fee [£]', anchor='w')
         self.logTreeView.heading("stamp_duty", text='Stamp Duty [%]', anchor='w')
+        self.logTreeView.heading("total", text='Total [£]', anchor='w')
         self.logTreeView.column("#0", width=100)
         self.logTreeView.column("action", width=100)
         self.logTreeView.column("symbol", width=100)
@@ -186,6 +187,7 @@ class ShareTradingFrame(tk.Frame):
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
         self.logTreeView.column("stamp_duty", width=100)
+        self.logTreeView.column("total", width=100)
         # Treeview colour layout
         self.logTreeView.tag_configure('oddrow', background='white')
         self.logTreeView.tag_configure('evenrow', background='lightblue')
@@ -289,8 +291,9 @@ class ShareTradingFrame(tk.Frame):
         v_pri = self._check_float_value(trade.price)
         v_fee = self._check_float_value(trade.fee)
         v_sd = self._check_float_value(trade.sdr)
+        v_tot = self._check_float_value(trade.total, canBeNegative=True)
         tag = "evenrow" if len(self.logTreeView.get_children()) % 2 == 0 else "oddrow"
-        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd), tags=(tag,))
+        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd,v_tot), tags=(tag,))
 
     def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
         v_symbol=self._check_string_value(symbol)

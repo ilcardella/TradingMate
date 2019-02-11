@@ -25,6 +25,7 @@ class Trade():
             self.price = price
             self.fee = fee
             self.sdr = sdr
+            self.total = self.__compute_total()
         except Exception as e:
             logging.error(e)
             raise ValueError("Invalid argument")
@@ -47,3 +48,15 @@ class Trade():
 
         return Trade(item['date'], Actions[item['action']], item['quantity'],
                      item['symbol'], float(item['price']), float(item['fee']), float(item['stamp_duty']))
+
+    def __compute_total(self):
+        if self.action in (Actions.DEPOSIT, Actions.WITHDRAW, Actions.DIVIDEND):
+            return self.quantity
+        elif self.action == Actions.BUY:
+            cost = (self.price / 100) * self.quantity
+            return cost + self.fee + ((cost * self.sdr) / 100)
+        elif self.action == Actions.SELL:
+            cost = (self.price / 100) * self.quantity
+            total = cost + self.fee + ((cost * self.sdr) / 100)
+            return total * -1
+        return 0
