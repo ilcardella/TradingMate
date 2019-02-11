@@ -25,6 +25,7 @@ class Trade():
             self.price = price
             self.fee = fee
             self.sdr = sdr
+            self.total = self.__compute_total()
         except Exception as e:
             logging.error(e)
             raise ValueError("Invalid argument")
@@ -33,7 +34,7 @@ class Trade():
         return {
             'date': self.date.strftime('%d/%m/%Y'),
             'action': self.action.name,
-            'amount': self.quantity,
+            'quantity': self.quantity,
             'symbol': self.symbol,
             'price': self.price,
             'fee': self.fee,
@@ -42,8 +43,20 @@ class Trade():
 
     @staticmethod
     def from_dict(item):
-        if any(['date' not in item, 'action' not in item, 'amount' not in item, 'symbol' not in item, 'price' not in item, 'fee' not in item, 'stamp_duty' not in item]):
+        if any(['date' not in item, 'action' not in item, 'quantity' not in item, 'symbol' not in item, 'price' not in item, 'fee' not in item, 'stamp_duty' not in item]):
             raise ValueError('item not well formatted')
 
-        return Trade(item['date'], Actions[item['action']], item['amount'],
+        return Trade(item['date'], Actions[item['action']], item['quantity'],
                      item['symbol'], float(item['price']), float(item['fee']), float(item['stamp_duty']))
+
+    def __compute_total(self):
+        if self.action in (Actions.DEPOSIT, Actions.WITHDRAW, Actions.DIVIDEND):
+            return self.quantity
+        elif self.action == Actions.BUY:
+            cost = (self.price / 100) * self.quantity
+            return cost + self.fee + ((cost * self.sdr) / 100)
+        elif self.action == Actions.SELL:
+            cost = (self.price / 100) * self.quantity
+            total = cost + self.fee + ((cost * self.sdr) / 100)
+            return total * -1
+        return 0

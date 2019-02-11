@@ -28,7 +28,7 @@ class View():
         # Create main window
         self.mainWindow = tk.Tk()
         self.mainWindow.title(APP_NAME)
-        img = tk.Image("photo", file=currentdir + '/assets/icon.png')
+        img = tk.Image("photo", file=currentdir + '/assets/trading_mate_icon.png')
         self.mainWindow.tk.call('wm','iconphoto',self.mainWindow._w,img)
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
         self.mainWindow.geometry("1024x600")
@@ -107,8 +107,8 @@ class View():
     def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity):
         self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity)
 
-    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
-        self.shareTradingFrame.update_share_trading_holding(symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity)
+    def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
+        self.shareTradingFrame.update_share_trading_holding(symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity)
 
     def set_db_filepath(self, filepath):
         self.shareTradingFrame.set_db_filepath(filepath)

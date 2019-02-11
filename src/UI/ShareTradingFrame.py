@@ -12,6 +12,7 @@ sys.path.insert(0,parentdir)
 from Utils.Utils import Callbacks
 from .AddTradeDialogWindow import AddTradeDialogWindow
 from .WarningWindow import WarningWindow
+from .ConfirmWindow import ConfirmWindow
 
 INVALID_STRING = "-"
 
@@ -31,12 +32,21 @@ class ShareTradingFrame(tk.Frame):
         buttonsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
+        self.open_icon = tk.PhotoImage(file=currentdir + "/assets/open_file_icon.png").subsample(2)
         openButton = ttk.Button(buttonsFrame, text="Open Portfolio...", command=self._open_portfolio)
         openButton.pack(side="left", anchor="n", padx=5, pady=5)
+        openButton.config(image=self.open_icon)
+
+        self.save_icon = tk.PhotoImage(file=currentdir + "/assets/save_file_icon.png").subsample(2)
         saveButton = ttk.Button(buttonsFrame, text="Save Portfolio...", command=self._save_portfolio)
         saveButton.pack(side="left", anchor="n", padx=5, pady=5)
+        saveButton.config(image=self.save_icon)
+
+        self.add_icon = tk.PhotoImage(file=currentdir + "/assets/add_icon.png").subsample(2)
         addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
         addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
+        addTradeButton.config(image=self.add_icon)
+
         self.autoRefresh = tk.IntVar(value=1)
         self.autoRefreshCheckBox = ttk.Checkbutton(buttonsFrame, text="Auto", variable=self.autoRefresh,
                                             command=self.set_auto_refresh, onvalue=1, offvalue=0)
@@ -127,9 +137,9 @@ class ShareTradingFrame(tk.Frame):
         # Create a table for the current data
         self.currentDataTreeView = ttk.Treeview(holdingsFrame)
         self.currentDataTreeView.pack(fill='x')
-        self.currentDataTreeView["columns"] = ('amount','open','last','cost','value','pl','pl_pc')
+        self.currentDataTreeView["columns"] = ('quantity','open','last','cost','value','pl','pl_pc')
         self.currentDataTreeView.heading("#0", text='Symbol', anchor='w')
-        self.currentDataTreeView.heading("amount", text='Amount', anchor='w')
+        self.currentDataTreeView.heading("quantity", text='Quantity', anchor='w')
         self.currentDataTreeView.heading("open", text='Open [p]', anchor='w')
         self.currentDataTreeView.heading("last", text='Last [p]', anchor='w')
         self.currentDataTreeView.heading("cost", text='Cost [£]', anchor='w')
@@ -137,7 +147,7 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.heading("pl", text='P/L £', anchor='w')
         self.currentDataTreeView.heading("pl_pc", text='P/L %', anchor='w')
         self.currentDataTreeView.column("#0", width=100)
-        self.currentDataTreeView.column("amount", width=100)
+        self.currentDataTreeView.column("quantity", width=100)
         self.currentDataTreeView.column("open", width=100)
         self.currentDataTreeView.column("last", width=100)
         self.currentDataTreeView.column("cost", width=100)
@@ -161,21 +171,23 @@ class ShareTradingFrame(tk.Frame):
         # Create a table for the trading log
         self.logTreeView = ttk.Treeview(tableFrame)
         self.logTreeView.pack(fill='x', side="left", expand=True)
-        self.logTreeView["columns"] = ('action','symbol','amount','price','fee', 'stamp_duty')
+        self.logTreeView["columns"] = ('action','symbol','quantity','price','fee', 'stamp_duty','total')
         self.logTreeView.heading("#0", text='Date', anchor='w')
         self.logTreeView.heading("action", text='Action', anchor='w')
         self.logTreeView.heading("symbol", text='Symbol', anchor='w')
-        self.logTreeView.heading("amount", text='Amount', anchor='w')
+        self.logTreeView.heading("quantity", text='Quantity', anchor='w')
         self.logTreeView.heading("price", text='Price [p]', anchor='w')
         self.logTreeView.heading("fee", text='Fee [£]', anchor='w')
         self.logTreeView.heading("stamp_duty", text='Stamp Duty [%]', anchor='w')
+        self.logTreeView.heading("total", text='Total [£]', anchor='w')
         self.logTreeView.column("#0", width=100)
         self.logTreeView.column("action", width=100)
         self.logTreeView.column("symbol", width=100)
-        self.logTreeView.column("amount", width=100)
+        self.logTreeView.column("quantity", width=100)
         self.logTreeView.column("price", width=100)
         self.logTreeView.column("fee", width=100)
         self.logTreeView.column("stamp_duty", width=100)
+        self.logTreeView.column("total", width=100)
         # Treeview colour layout
         self.logTreeView.tag_configure('oddrow', background='white')
         self.logTreeView.tag_configure('evenrow', background='lightblue')
@@ -186,17 +198,17 @@ class ShareTradingFrame(tk.Frame):
         # Create popup menu for the trade history log
         self.logPopupMenu = tk.Menu(self.logTreeView, tearoff=0)
         self.logPopupMenu.add_command(label="Add trade...", command=self._display_add_trade_panel)
-        self.logPopupMenu.add_command(label="Delete last trade", command=self._delete_last_trade)
+        self.logPopupMenu.add_command(label="Delete last...", command=self._delete_last_trade)
         self.logTreeView.bind("<Button-3>", self._trade_log_popup_menu_event)
 
     def _trade_log_popup_menu_event(self, event):
-        self.logPopupMenu.post(event.x_root, event.y_root)
+        self.logPopupMenu.tk_popup(event.x_root, event.y_root)
 
     def _display_add_trade_panel(self):
         AddTradeDialogWindow(self.parent, self._on_add_new_trade_event)
 
     def _delete_last_trade(self):
-        self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
+        ConfirmWindow(self.parent, "Confirm", "Are you sure?", self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT])
 
     def _on_add_new_trade_event(self, newTrade):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
@@ -246,7 +258,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _open_portfolio(self):
         # Open a saved portfolio
-        filename =  filedialog.askopenfilename(initialdir="/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
+        filename =  filedialog.askopenfilename(initialdir="/home/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
         if filename is not None and len(filename) > 0:
             result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
             if result["success"] == False:
@@ -254,7 +266,7 @@ class ShareTradingFrame(tk.Frame):
 
     def _save_portfolio(self):
         # Save the current log
-        filename =  filedialog.asksaveasfilename(initialdir="/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
+        filename =  filedialog.asksaveasfilename(initialdir="/home/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
         if filename is not None and len(filename) > 0:
             result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
             if result["success"] == False:
@@ -279,12 +291,13 @@ class ShareTradingFrame(tk.Frame):
         v_pri = self._check_float_value(trade.price)
         v_fee = self._check_float_value(trade.fee)
         v_sd = self._check_float_value(trade.sdr)
+        v_tot = self._check_float_value(trade.total, canBeNegative=True)
         tag = "evenrow" if len(self.logTreeView.get_children()) % 2 == 0 else "oddrow"
-        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd), tags=(tag,))
+        self.logTreeView.insert('', 'end', text=v_date, values=(v_act,v_sym,v_am,v_pri,v_fee,v_sd,v_tot), tags=(tag,))
 
-    def update_share_trading_holding(self, symbol, amount, openPrice, lastPrice, cost, value, pl, plPc, validity):
+    def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
         v_symbol=self._check_string_value(symbol)
-        v_amount=self._check_float_value(amount)
+        v_quantity=self._check_float_value(quantity)
         v_openPrice=self._check_float_value(openPrice)
         v_lastPrice=self._check_float_value(lastPrice, valid=validity)
         v_cost=self._check_float_value(cost)
@@ -300,7 +313,7 @@ class ShareTradingFrame(tk.Frame):
             s = item['text']
             if v_symbol == s:
                 found = True
-                self.currentDataTreeView.item(child, values=(v_amount,
+                self.currentDataTreeView.item(child, values=(v_quantity,
                                                             v_openPrice,
                                                             v_lastPrice,
                                                             v_cost,
@@ -310,7 +323,7 @@ class ShareTradingFrame(tk.Frame):
                 break
         if not found:
             #tag = "evenrow" if len(self.currentDataTreeView.get_children()) % 2 == 0 else "oddrow"
-            self.currentDataTreeView.insert('','end',text=symbol, values=(v_amount,
+            self.currentDataTreeView.insert('','end',text=symbol, values=(v_quantity,
                                                                                 v_openPrice,
                                                                                 v_lastPrice,
                                                                                 v_cost,

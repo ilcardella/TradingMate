@@ -108,7 +108,7 @@ class TradingMate():
         # Update the view
         validity = True
         for h in self.portfolio.get_holding_list():
-            self.view.update_share_trading_holding(h.get_symbol(), h.get_amount(), h.get_open_price(),
+            self.view.update_share_trading_holding(h.get_symbol(), h.get_quantity(), h.get_open_price(),
                                                    h.get_last_price(), h.get_cost(), h.get_value(), h.get_profit_loss(), h.get_profit_loss_perc(), h.get_last_price_valid())
             validity = validity and h.get_last_price_valid()
         self.view.update_share_trading_portfolio_balances(

@@ -8,13 +8,13 @@ sys.path.insert(0,parentdir)
 
 class Holding():
 
-    def __init__(self, symbol, amount, open_price=None):
-        if amount is None or amount < 1:
-            raise ValueError("Invalid amount")
+    def __init__(self, symbol, quantity, open_price=None):
+        if quantity is None or quantity < 1:
+            raise ValueError("Invalid quantity")
         if open_price is not None and open_price < 0:
             raise ValueError('Invalid open_price')
         self._symbol = symbol
-        self._amount = amount
+        self._quantity = quantity
         self._openPrice = open_price
         self._lastPrice = None
         self._lastPriceValid = False
@@ -30,16 +30,16 @@ class Holding():
             raise ValueError("Invalid price")
         self._openPrice = price
 
-    def set_amount(self, value):
+    def set_quantity(self, value):
         if value is None or value < 1:
-            raise ValueError("Invalid amount")
-        self._amount = value
+            raise ValueError("Invalid quantity")
+        self._quantity = value
 
     def add_quantity(self, value):
         """
         Add or subtract (if value is negative) the value to the holding quantity
         """
-        self._amount += value
+        self._quantity += value
 
     def set_last_price_invalid(self):
         self._lastPriceValid = False
@@ -53,18 +53,18 @@ class Holding():
     def get_open_price(self):
         return self._openPrice
 
-    def get_amount(self):
-        return self._amount
+    def get_quantity(self):
+        return self._quantity
 
     def get_cost(self):
         if self._openPrice is None:
             return None
-        return self._amount * (self._openPrice/100) # £
+        return self._quantity * (self._openPrice/100) # £
 
     def get_value(self):
         if self._lastPrice is None:
             return None
-        return self._amount * (self._lastPrice/100) # £
+        return self._quantity * (self._lastPrice/100) # £
 
     def get_profit_loss(self):
         value = self.get_value()
