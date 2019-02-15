@@ -26,6 +26,7 @@ class DatabaseHandler():
         os.makedirs(os.path.dirname(self.db_filepath), exist_ok=True)
         # Create an empty list to store trades from database
         self.trading_history = []
+        logging.info('DatabaseHandler initialised')
 
     def read_data(self, filepath=None):
         """
@@ -34,6 +35,7 @@ class DatabaseHandler():
             - **filepath**: optional, if not set the configured path will be used
         """
         path = filepath if filepath is not None else self.db_filepath
+        logging.info('DatabaseHandler - reading data from {}'.format(path))
         self.db_filepath = path
         json_obj = Utils.load_json_file(path)
         self.trading_history.clear()
@@ -50,6 +52,7 @@ class DatabaseHandler():
         Write the trade history to the database
         """
         path = filepath if filepath is not None else self.db_filepath
+        logging.info('DatabaseHandler - writing data to {}'.format(path))
         # Create a json object and store the trade history into it
         json_obj = {
             'trades': []
@@ -77,6 +80,7 @@ class DatabaseHandler():
         """
         try:
             self.trading_history.append(trade)
+            logging.info('DatabaseHandler - adding trade {}'.format(trade))
         except Exception as e:
             logging.error(e)
             raise RuntimeError('Unable to add trade to the database')
@@ -87,6 +91,7 @@ class DatabaseHandler():
         """
         try:
             del self.trading_history[-1]
+            logging.info('DatabaseHandler - removed last trade')
         except Exception as e:
             logging.error(e)
             raise RuntimeError('Unable to delete last trade')

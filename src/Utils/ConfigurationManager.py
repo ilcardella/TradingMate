@@ -38,9 +38,10 @@ class ConfigurationManager():
 
         credentials_json = Utils.load_json_file(credentials_filepath)
         if credentials_json is None:
-            logging.warn('Credentials not configured: {}'.format(credentials_filepath))
+            logging.warning('Credentials not configured: {}'.format(credentials_filepath))
             credentials_json = {'av_api_key':''}
         self.credentials = credentials_json
+        logging.info('ConfigurationManager initialised')
 
     def get_trading_database_path(self):
         """
@@ -71,12 +72,6 @@ class ConfigurationManager():
         Get the logging level
         """
         return self.config['general']['debug_log']
-
-    def get_enable_file_log(self):
-        """
-        Enable logging on file status
-        """
-        return self.config['general']['enable_file_log']
 
     def get_log_filepath(self):
         """

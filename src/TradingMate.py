@@ -22,10 +22,10 @@ class TradingMate():
     def __init__(self):
         # Init the configuration manager
         self.configurationManager = ConfigurationManager()
-        # Database handler
-        self.db_handler = DatabaseHandler(self.configurationManager)
         # Setup the logging
         self.setup_logging()
+        # Database handler
+        self.db_handler = DatabaseHandler(self.configurationManager)
         # Init the portfolio
         self.portfolio = Portfolio("Portfolio1", self.configurationManager)
         # Init the view
@@ -74,6 +74,7 @@ class TradingMate():
             Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.view.set_callback(
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+        logging.info('TradingMate - callbacks registered')
 
     def start(self):
         logging.info('TradingMate start...')
@@ -118,7 +119,7 @@ class TradingMate():
     def on_close_view_event(self):
         self.portfolio.stop()
         self.db_handler.write_data()
-        logging.info('TradingMate stopped')
+        logging.info('TradingMate view stopped')
 
     def on_manual_refresh_event(self):
         self.portfolio.on_manual_refresh_live_data()
@@ -130,6 +131,7 @@ class TradingMate():
         self._update_share_trading_view()
 
     def on_new_trade_event(self, new_trade):
+        logging.info('TradingMate - new trade event {}'.format(new_trade))
         # Validate trade
         if not self.portfolio.is_trade_valid(new_trade):
             raise RuntimeError('Trade is invalid')
@@ -141,6 +143,7 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
 
     def on_delete_last_trade_event(self):
+        logging.info('TradingMate - delete last trade request')
         # Remove trade from database
         self.db_handler.remove_last_trade()
         # Reload portfolio
@@ -149,6 +152,7 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
 
     def on_open_portfolio_event(self, filepath):
+        logging.info('TradingMate - open portfolio request from {}'.format(filepath))
         # Read database from filepath
         self.db_handler.read_data(filepath)
         # Reload portfolio
@@ -158,5 +162,6 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
 
     def on_save_portfolio_event(self, filepath):
+        logging.info('TradingMate - save portfolio request to {}'.format(filepath))
         # Write data into the database
         self.db_handler.write_data(filepath=filepath)
