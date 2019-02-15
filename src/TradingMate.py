@@ -32,6 +32,7 @@ class TradingMate():
         self.view = View()
         # Register callbacks
         self.register_callbacks()
+        logging.info('TradingMate initialised')
 
     def setup_logging(self):
         """
@@ -40,20 +41,16 @@ class TradingMate():
         # Define the global logging settings
         debugLevel = logging.DEBUG if self.configurationManager.get_debug_log_active() else logging.INFO
         # If enabled define log file filename with current timestamp
-        if self.configurationManager.get_enable_file_log():
-            log_filename = self.configurationManager.get_log_filepath()
-            time_str = dt.datetime.now().isoformat()
-            time_suffix = time_str.replace(':', '_').replace('.', '_')
-            home = str(Path.home())
-            log_filename = log_filename.replace(
-                '{timestamp}', time_suffix).replace('{home}', home)
-            os.makedirs(os.path.dirname(log_filename), exist_ok=True)
-            logging.basicConfig(filename=log_filename,
-                                level=debugLevel,
-                                format="[%(asctime)s] %(levelname)s: %(message)s")
-        else:
-            logging.basicConfig(level=debugLevel,
-                                format="[%(asctime)s] %(levelname)s: %(message)s")
+        log_filename = self.configurationManager.get_log_filepath()
+        time_str = dt.datetime.now().isoformat()
+        time_suffix = time_str.replace(':', '_').replace('.', '_')
+        home = str(Path.home())
+        log_filename = log_filename.replace(
+            '{timestamp}', time_suffix).replace('{home}', home)
+        os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+        logging.basicConfig(filename=log_filename,
+                            level=debugLevel,
+                            format="[%(asctime)s] %(levelname)s: %(message)s")
 
     def register_callbacks(self):
         """
@@ -79,6 +76,7 @@ class TradingMate():
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
 
     def start(self):
+        logging.info('TradingMate start...')
         # Read the configured database
         self.db_handler.read_data()
         # Start portfolio
@@ -120,6 +118,7 @@ class TradingMate():
     def on_close_view_event(self):
         self.portfolio.stop()
         self.db_handler.write_data()
+        logging.info('TradingMate stopped')
 
     def on_manual_refresh_event(self):
         self.portfolio.on_manual_refresh_live_data()

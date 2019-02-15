@@ -82,4 +82,4 @@ class ConfigurationManager():
         """
         Get the log filepath
         """
-        return self.config['general']['log_filepath']
+        return '{home}/.TradingMate/log/trading_mate_{timestamp}.log'

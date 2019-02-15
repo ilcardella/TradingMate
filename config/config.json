@@ -1,10 +1,8 @@
 {
     "general": {
         "debug_log": false,
-        "enable_file_log": true,
-        "log_filepath": "{home}/.TradingMate/log/trading_mate_{timestamp}.log",
         "trading_log_path": "{home}/.TradingMate/trading_log.json",
-        "credentials_filepath": "../data/.credentials"
+        "credentials_filepath": "{home}/.TradingMate/config/.credentials"
     },
     "alpha_vantage": {
         "api_base_uri": "https://www.alphavantage.co/query",
