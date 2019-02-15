@@ -2,6 +2,7 @@ import os
 import sys
 import inspect
 import logging
+from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -20,7 +21,9 @@ class DatabaseHandler():
         Initialise
         """
         # By default use the configured filepath
-        self.db_filepath = config.get_trading_database_path()
+        filepath = config.get_trading_database_path()
+        self.db_filepath = filepath.replace('{home}', str(Path.home()))
+        os.makedirs(os.path.dirname(self.db_filepath), exist_ok=True)
         # Create an empty list to store trades from database
         self.trading_history = []
 
@@ -30,39 +33,31 @@ class DatabaseHandler():
 
             - **filepath**: optional, if not set the configured path will be used
         """
-        try:
-            path = filepath if filepath is not None else self.db_filepath
-            self.db_filepath = path
-            json_obj = Utils.load_json_file(path)
-
+        path = filepath if filepath is not None else self.db_filepath
+        self.db_filepath = path
+        json_obj = Utils.load_json_file(path)
+        self.trading_history.clear()
+        if json_obj is not None:
             # Create a list of all the trades in the json file
-            self.trading_history.clear()
             for item in json_obj['trades']:
                 trade = Trade.from_dict(item)
                 # Store the list internally
                 self.trading_history.append(trade)
-        except Exception as e:
-            logging.error(e)
-            raise RuntimeError('Unable to read data from the database')
 
 
     def write_data(self, filepath=None):
         """
         Write the trade history to the database
         """
-        try:
-            path = filepath if filepath is not None else self.db_filepath
-            # Create a json object and store the trade history into it
-            json_obj = {
-                'trades': []
-            }
-            for t in self.trading_history:
-                json_obj['trades'].append(t.to_dict())
-            # Write to file
-            return Utils.write_json_file(path, json_obj)
-        except Exception as e:
-            logging.error(e)
-            raise RuntimeError('Unable to write data to the database')
+        path = filepath if filepath is not None else self.db_filepath
+        # Create a json object and store the trade history into it
+        json_obj = {
+            'trades': []
+        }
+        for t in self.trading_history:
+            json_obj['trades'].append(t.to_dict())
+        # Write to file
+        return Utils.write_json_file(path, json_obj)
 
     def get_db_filepath(self):
         """

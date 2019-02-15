@@ -3,6 +3,7 @@ import sys
 import inspect
 import logging
 import datetime as dt
+from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))

@@ -62,7 +62,7 @@ class Utils():
                 return json.load(file)
         except Exception as e:
             logging.error("Unable to load JSON file {}".format(e))
-        return {}
+        return None
 
     @staticmethod
     def write_json_file(filepath, data):
