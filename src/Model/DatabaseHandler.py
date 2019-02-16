@@ -2,7 +2,6 @@ import os
 import sys
 import inspect
 import logging
-from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -22,7 +21,7 @@ class DatabaseHandler():
         """
         # By default use the configured filepath
         filepath = config.get_trading_database_path()
-        self.db_filepath = filepath.replace('{home}', str(Path.home()))
+        self.db_filepath = filepath.replace('{home}', Utils.get_home_path())
         os.makedirs(os.path.dirname(self.db_filepath), exist_ok=True)
         # Create an empty list to store trades from database
         self.trading_history = []

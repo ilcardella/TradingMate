@@ -3,7 +3,6 @@ import sys
 import inspect
 import json
 import logging
-from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -20,7 +19,7 @@ class ConfigurationManager():
 
     def __init__(self):
         # Load configuration file
-        config_filepath = '{}/.TradingMate/config/config.json'.format(str(Path.home()))
+        config_filepath = '{}/.TradingMate/config/config.json'.format(Utils.get_home_path())
         os.makedirs(os.path.dirname(config_filepath), exist_ok=True)
         self.config = Utils.load_json_file(config_filepath)
         if self.config is None:
@@ -30,9 +29,9 @@ class ConfigurationManager():
         # Load credentials file
         try:
             credentials_filepath = self.config['general']['credentials_filepath']
-            credentials_filepath = credentials_filepath.replace('{home}', str(Path.home()))
+            credentials_filepath = credentials_filepath.replace('{home}', Utils.get_home_path())
         except:
-            credentials_filepath = '{}/.TradingMate/config/.credentials'.format(str(Path.home()))
+            credentials_filepath = '{}/.TradingMate/config/.credentials'.format(Utils.get_home_path())
             os.makedirs(os.path.dirname(credentials_filepath), exist_ok=True)
             logging.error("credentials filepath parameter not configured! Using default: {}".format(credentials_filepath))
 

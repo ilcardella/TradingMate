@@ -3,7 +3,6 @@ import sys
 import inspect
 import logging
 import datetime as dt
-from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -15,6 +14,7 @@ from Utils.Utils import Callbacks, Actions, Messages
 from UI.View import View
 from Model.Portfolio import Portfolio
 from Utils.ConfigurationManager import ConfigurationManager
+from Utils.Utils import Utils
 
 
 class TradingMate():
@@ -45,7 +45,7 @@ class TradingMate():
         time_str = dt.datetime.now().isoformat()
         time_suffix = time_str.replace(':', '_').replace('.', '_')
         log_filename = self.LOG_FILEPATH.replace(
-            '{timestamp}', time_suffix).replace('{home}', str(Path.home()))
+            '{timestamp}', time_suffix).replace('{home}', Utils.get_home_path())
         os.makedirs(os.path.dirname(log_filename), exist_ok=True)
         logging.basicConfig(filename=log_filename,
                             level=logging.INFO,
