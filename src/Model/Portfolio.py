@@ -165,6 +165,7 @@ class Portfolio():
         self._cash_available = 0
         self._cash_deposited = 0
         self._holdings.clear()
+        self.price_getter.reset()
         logging.info('Portfolio cleared')
 
     def reload(self, trades_list):

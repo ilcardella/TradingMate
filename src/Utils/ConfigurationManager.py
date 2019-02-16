@@ -18,15 +18,20 @@ class ConfigurationManager():
     """
 
     def __init__(self):
-        # Load configuration file
-        config_filepath = '{}/.TradingMate/config/config.json'.format(Utils.get_home_path())
-        os.makedirs(os.path.dirname(config_filepath), exist_ok=True)
-        self.config = Utils.load_json_file(config_filepath)
+        # Define the config filepath
+        self.config_filepath = '{}/.TradingMate/config/config.json'.format(Utils.get_home_path())
+        os.makedirs(os.path.dirname(self.config_filepath), exist_ok=True)
+        self.config = Utils.load_json_file(self.config_filepath)
         if self.config is None:
-            logging.error("Please configure TradingMate: {}".format(config_filepath))
+            logging.error("Please configure TradingMate: {}".format(self.config_filepath))
             raise RuntimeError("Empty configuration file")
+        self.load_credentials()
+        logging.info('ConfigurationManager initialised')
 
-        # Load credentials file
+    def load_credentials(self):
+        """
+        Load the credentials file
+        """
         try:
             credentials_filepath = self.config['general']['credentials_filepath']
             credentials_filepath = credentials_filepath.replace('{home}', Utils.get_home_path())
@@ -39,8 +44,9 @@ class ConfigurationManager():
         if credentials_json is None:
             logging.warning('Credentials not configured: {}'.format(credentials_filepath))
             credentials_json = {'av_api_key':''}
-        self.credentials = credentials_json
-        logging.info('ConfigurationManager initialised')
+
+        self.config['credentials'] = credentials_json
+
 
     def get_trading_database_path(self):
         """
@@ -48,11 +54,17 @@ class ConfigurationManager():
         """
         return self.config['general']['trading_log_path']
 
+    def get_credentials_path(self):
+        """
+        Get the filepath of the credentials file
+        """
+        return self.config['general']['credentials_filepath']
+
     def get_alpha_vantage_api_key(self):
         """
         Get the alphavantage api key
         """
-        return self.credentials['av_api_key']
+        return self.config['credentials']['av_api_key']
 
     def get_alpha_vantage_base_url(self):
         """
@@ -70,5 +82,17 @@ class ConfigurationManager():
         """
         Get a dictionary containing the editable configuration parameters
         """
-        # TODO make a combo dictionary for config and credentials
         return self.config
+
+    def save_settings(self, config):
+        """
+        Save the edited configuration settings
+        """
+        # Overwrite settings
+        self.config = config
+        self.load_credentials()
+        # Remove credentials part
+        del config['credentials']
+        # Write into file
+        Utils.write_json_file(self.config_filepath, config)
+        logging.info('ConfigurationManater - settings have been saved')

@@ -115,9 +115,6 @@ class View():
     def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
         self.shareTradingFrame.update_share_trading_holding(symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity)
 
-    def set_db_filepath(self, filepath):
-        self.shareTradingFrame.set_db_filepath(filepath)
-
     def set_auto_refresh_event(self, value):
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](value)
 
@@ -147,6 +144,5 @@ class View():
             return {'success': False, 'message': e}
 
     def on_show_settings(self):
-        # TODO set the callback to save the settings
         config = self.callbacks[Callbacks.ON_SHOW_SETTINGS_EVENT]()
-        SettingsWindow(self.mainWindow, config, None)
+        SettingsWindow(self.mainWindow, config, self.callbacks[Callbacks.ON_SAVE_SETTINGS_EVENT])

@@ -52,10 +52,6 @@ class ShareTradingFrame(tk.Frame):
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
 
-        self.dbFilepathStringVar = tk.StringVar()
-        dbLabel = ttk.Label(self, textvariable=self.dbFilepathStringVar)
-        dbLabel.pack(anchor="w")
-
         # This frame is a container for smaller frames displaying balances
         balancesFrame = ttk.Frame(self)
         balancesFrame.pack(fill="none", expand=True, anchor="n", pady=5)
@@ -348,6 +344,3 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
         if resetHistory:
             self.logTreeView.delete(*self.logTreeView.get_children())
-
-    def set_db_filepath(self, filepath):
-        self.dbFilepathStringVar.set("DB: " + filepath)

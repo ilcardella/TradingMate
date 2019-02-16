@@ -35,15 +35,27 @@ class SettingsWindow(tk.Toplevel):
 
         self.trading_log_string = tk.StringVar()
         #self.trading_log_string.trace_add('write', self.check_data_validity)
-        self.e_log_path = ttk.Entry(self, textvariable=self.trading_log_string)
-        self.e_log_path.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+        self.e_log_path = ttk.Entry(self, width=50, textvariable=self.trading_log_string)
+        self.e_log_path.grid(row=0, column=1, sticky="e", padx=5, pady=5)
 
         self.credentials_string = tk.StringVar()
         #self.credentials_string.trace_add('write', self.check_data_validity)
-        self.e_cred_path = ttk.Entry(self, textvariable=self.credentials_string)
-        self.e_cred_path.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+        self.e_cred_path = ttk.Entry(self, width=50, textvariable=self.credentials_string)
+        self.e_cred_path.grid(row=1, column=1, sticky="e", padx=5, pady=5)
 
         self.trading_log_string.set(self.config['general']['trading_log_path'])
         self.credentials_string.set(self.config['general']['credentials_filepath'])
 
-        # TODO add button to save and cancel
+        cancelButton = ttk.Button(self, text="Cancel", command=self.destroy)
+        cancelButton.grid(row=2, column=0, sticky="e", padx=5, pady=5)
+        addButton = ttk.Button(self, text="Save", command=self.save)
+        addButton.grid(row=2, column=1, sticky="e", padx=5, pady=5)
+
+    def save(self):
+        self.config['general']['trading_log_path'] = self.trading_log_string.get()
+        self.config['general']['credentials_filepath'] = self.credentials_string.get()
+        try:
+            self.save_cb(self.config)
+            self.destroy()
+        except Exception as e:
+            WarningWindow(self, "Warning", e)
