@@ -66,15 +66,3 @@ class ConfigurationManager():
         Get the alphavantage configured polling period
         """
         return self.config['alpha_vantage']['polling_period_sec']
-
-    def get_debug_log_active(self):
-        """
-        Get the logging level
-        """
-        return self.config['general']['debug_log']
-
-    def get_log_filepath(self):
-        """
-        Get the log filepath
-        """
-        return '{home}/.TradingMate/log/trading_mate_{timestamp}.log'

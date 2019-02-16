@@ -3,6 +3,7 @@ import sys
 import inspect
 import requests
 import json
+import logging
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -22,6 +23,7 @@ class StockPriceGetter(TaskThread):
         self.onNewPriceDataCallback = onNewPriceDataCallback
         self.lastData = {}
         self.symbolList = []
+        logging.info('StockPriceGetter initialised')
 
     def _read_configuration(self, config):
         self.alphaVantageAPIKey = config.get_alpha_vantage_api_key()
@@ -34,7 +36,7 @@ class StockPriceGetter(TaskThread):
         for symbol in self.symbolList:
             if not self._finished.isSet():
                 value = self._fetch_price_data(symbol)
-                # Wait 1 sec as suggested by AlphaVantage support
+                # Wait as suggested by AlphaVantage support
                 self._timeout.wait(2)
                 if value is not None:
                     priceDict[symbol] = value
@@ -48,12 +50,16 @@ class StockPriceGetter(TaskThread):
                                   symbol, "5min", self.alphaVantageAPIKey)
             response = requests.get(url)
             if response.status_code != 200:
+                logging.error('StockPriceGetter - Request for {} returned code {}'.format(
+                    url.split('apikey')[0], response.status_code))
                 return None
             data = json.loads(response.text)
             timeSerie = data["Time Series (Daily)"]
             last = next(iter(timeSerie.values()))
             value = float(last["4. close"])
         except Exception:
+            logging.error(
+                'StockPriceGetter - Unable to fetch data from {}'.format(url.split('apikey')[0]))
             value = None
         return value
 
