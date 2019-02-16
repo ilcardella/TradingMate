@@ -48,6 +48,11 @@ class StockPriceGetter(TaskThread):
         try:
             url = self._build_url("TIME_SERIES_DAILY",
                                   symbol, "5min", self.alphaVantageAPIKey)
+        except Exception:
+            logging.error(
+                'StockPriceGetter - Unable to build url for {}'.format(symbol))
+            return None
+        try:
             response = requests.get(url)
             if response.status_code != 200:
                 logging.error('StockPriceGetter - Request for {} returned code {}'.format(
