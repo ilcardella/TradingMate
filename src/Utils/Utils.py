@@ -4,6 +4,7 @@ import sys
 import inspect
 import json
 import logging
+from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
@@ -62,7 +63,7 @@ class Utils():
                 return json.load(file)
         except Exception as e:
             logging.error("Unable to load JSON file {}".format(e))
-        return {}
+        return None
 
     @staticmethod
     def write_json_file(filepath, data):
@@ -80,3 +81,12 @@ class Utils():
         except Exception as e:
             logging.error("Unable to write JSON file: ".format(e))
         return False
+
+    @staticmethod
+    def get_home_path():
+        """
+        Returns the user home folder path as string
+        """
+        if sys.version_info < (3,5):
+            return str(os.path.expanduser("~"))
+        return str(Path.home())

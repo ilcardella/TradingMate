@@ -9,50 +9,47 @@ currentdir = os.path.dirname(os.path.abspath(
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from Utils.ConfigurationManager import ConfigurationManager
-from Model.Portfolio import Portfolio
-from UI.View import View
-from Utils.Utils import Callbacks, Actions, Messages
 from Model.DatabaseHandler import DatabaseHandler
+from Utils.Utils import Callbacks, Actions, Messages
+from UI.View import View
+from Model.Portfolio import Portfolio
+from Utils.ConfigurationManager import ConfigurationManager
+from Utils.Utils import Utils
 
 
 class TradingMate():
+    """
+    Main class that handles the interaction between the User Interface and the
+    underlying business logic of the whole application
+    """
+    LOG_FILEPATH = '{home}/.TradingMate/log/trading_mate_{timestamp}.log'
 
     def __init__(self):
+        self.setup_logging()
         # Init the configuration manager
         self.configurationManager = ConfigurationManager()
         # Database handler
         self.db_handler = DatabaseHandler(self.configurationManager)
-        # Setup the logging
-        self.setup_logging()
         # Init the portfolio
         self.portfolio = Portfolio("Portfolio1", self.configurationManager)
         # Init the view
         self.view = View()
         # Register callbacks
         self.register_callbacks()
+        logging.info('TradingMate initialised')
 
     def setup_logging(self):
         """
         Setup the global logging settings
         """
-        # Define the global logging settings
-        debugLevel = logging.DEBUG if self.configurationManager.get_debug_log_active() else logging.INFO
-        # If enabled define log file filename with current timestamp
-        if self.configurationManager.get_enable_file_log():
-            log_filename = self.configurationManager.get_log_filepath()
-            time_str = dt.datetime.now().isoformat()
-            time_suffix = time_str.replace(':', '_').replace('.', '_')
-            home = str(Path.home())
-            log_filename = log_filename.replace(
-                '{timestamp}', time_suffix).replace('{home}', home)
-            os.makedirs(os.path.dirname(log_filename), exist_ok=True)
-            logging.basicConfig(filename=log_filename,
-                                level=debugLevel,
-                                format="[%(asctime)s] %(levelname)s: %(message)s")
-        else:
-            logging.basicConfig(level=debugLevel,
-                                format="[%(asctime)s] %(levelname)s: %(message)s")
+        time_str = dt.datetime.now().isoformat()
+        time_suffix = time_str.replace(':', '_').replace('.', '_')
+        log_filename = self.LOG_FILEPATH.replace(
+            '{timestamp}', time_suffix).replace('{home}', Utils.get_home_path())
+        os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+        logging.basicConfig(filename=log_filename,
+                            level=logging.INFO,
+                            format="[%(asctime)s] %(levelname)s: %(message)s")
 
     def register_callbacks(self):
         """
@@ -76,8 +73,13 @@ class TradingMate():
             Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.view.set_callback(
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+        logging.info('TradingMate - callbacks registered')
 
     def start(self):
+        """
+        Start the application
+        """
+        logging.info('TradingMate start')
         # Read the configured database
         self.db_handler.read_data()
         # Start portfolio
@@ -90,12 +92,16 @@ class TradingMate():
 # Functions
 
     def _update_share_trading_view(self, updateHistory=False):
+        """
+        Collect data from the model and update the view
+        """
         self.view.reset_view(updateHistory)
         # Update the database filepath shown in the share trading frame
         self.view.set_db_filepath(self.db_handler.get_db_filepath())
         # Update history table if required
         if updateHistory:
-            logAsList = self.db_handler.get_trades_list()[::-1]  # Reverse order
+            logAsList = self.db_handler.get_trades_list()[
+                ::-1]  # Reverse order
             self.view.update_share_trading_history_log(logAsList)
         # get the balances from the portfolio and update the view
         cash = self.portfolio.get_cash_available()
@@ -117,19 +123,36 @@ class TradingMate():
 # EVENTS
 
     def on_close_view_event(self):
+        """
+        Callback function to handle close event of the user interface
+        """
         self.portfolio.stop()
         self.db_handler.write_data()
+        logging.info('TradingMate stop')
 
     def on_manual_refresh_event(self):
+        """
+        Callback function to handle refresh data request
+        """
         self.portfolio.on_manual_refresh_live_data()
 
     def on_set_auto_refresh(self, enabled):
+        """
+        Callback function to handle set/unset of auto refresh data
+        """
         self.portfolio.set_auto_refresh(enabled)
 
     def on_update_live_price(self):
+        """
+        Callback function to handle update of stock prices data
+        """
         self._update_share_trading_view()
 
     def on_new_trade_event(self, new_trade):
+        """
+        Callback function to handle new trade event
+        """
+        logging.info('TradingMate - new trade event {}'.format(new_trade))
         # Validate trade
         if not self.portfolio.is_trade_valid(new_trade):
             raise RuntimeError('Trade is invalid')
@@ -141,6 +164,10 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
 
     def on_delete_last_trade_event(self):
+        """
+        Callback function to handle delete of last trade request
+        """
+        logging.info('TradingMate - delete last trade request')
         # Remove trade from database
         self.db_handler.remove_last_trade()
         # Reload portfolio
@@ -149,6 +176,11 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
 
     def on_open_portfolio_event(self, filepath):
+        """
+        Callback function to handle request to open a new portfolio file
+        """
+        logging.info(
+            'TradingMate - open portfolio request from {}'.format(filepath))
         # Read database from filepath
         self.db_handler.read_data(filepath)
         # Reload portfolio
@@ -158,5 +190,10 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
 
     def on_save_portfolio_event(self, filepath):
+        """
+        Callback function to handler request to save/export the portfolio
+        """
+        logging.info(
+            'TradingMate - save portfolio request to {}'.format(filepath))
         # Write data into the database
         self.db_handler.write_data(filepath=filepath)

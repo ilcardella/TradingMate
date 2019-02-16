@@ -25,6 +25,7 @@ class Portfolio():
         self.callbacks = {}
         # Work thread that fetches stocks live prices
         self.price_getter = StockPriceGetter(config, self.on_new_price_data)
+        logging.info('Portfolio initialised')
 
     def set_callback(self, id, callback):
         self.callbacks[id] = callback
@@ -32,10 +33,12 @@ class Portfolio():
     def start(self, trades_list):
         self.reload(trades_list)
         self.price_getter.start()
+        logging.info('Portfolio started')
 
     def stop(self):
         self.price_getter.shutdown()
         self.price_getter.join()
+        logging.info('Portfolio stopped')
 
 # GETTERS
 
@@ -162,6 +165,7 @@ class Portfolio():
         self._cash_available = 0
         self._cash_deposited = 0
         self._holdings.clear()
+        logging.info('Portfolio cleared')
 
     def reload(self, trades_list):
         """
@@ -199,6 +203,7 @@ class Portfolio():
                 self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol, trades_list))
             for symbol, price in self.price_getter.get_last_data().items():
                 self._holdings[symbol].set_last_price(price)
+            logging.info('Portfolio reloaded successfully')
         except Exception as e:
             logging.error(e)
             raise RuntimeError('Unable to reload the portfolio')
@@ -230,7 +235,7 @@ class Portfolio():
         """
         if newTrade.action == Actions.WITHDRAW:
             if newTrade.quantity > self.get_cash_available():
-                logging.error(Messages.INSUF_FUNDING.value)
+                logging.warning(Messages.INSUF_FUNDING.value)
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.BUY:
             cost = (newTrade.price * newTrade.quantity) / 100  # in £
@@ -238,17 +243,19 @@ class Portfolio():
             tax = (newTrade.sdr * cost) / 100
             totalCost = cost + fee + tax
             if totalCost > self.get_cash_available():
-                logging.error(Messages.INSUF_FUNDING.value)
+                logging.warning(Messages.INSUF_FUNDING.value)
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.SELL:
             if newTrade.quantity > self.get_holding_quantity(newTrade.symbol):
-                logging.error(Messages.INSUF_HOLDINGS.value)
+                logging.warning(Messages.INSUF_HOLDINGS.value)
                 raise RuntimeError(Messages.INSUF_HOLDINGS.value)
+        logging.info('Portfolio - trade validated')
         return True
 
 # PRICE GETTER WORK THREAD
 
     def on_new_price_data(self):
+        logging.info('Portfolio - new live price available')
         priceDict = self.price_getter.get_last_data()
         for symbol, price in priceDict.items():
             if symbol in self._holdings:
@@ -256,10 +263,12 @@ class Portfolio():
         self.callbacks[Callbacks.UPDATE_LIVE_PRICES]()
 
     def on_manual_refresh_live_data(self):
+        logging.info('Portfolio - manual refresh live price')
         if self.price_getter.is_enabled():
             self.price_getter.cancel_timeout()
         else:
             self.price_getter.force_single_run()
 
     def set_auto_refresh(self, enabled):
+        logging.info('Portfolio - live price auto refresh: {}'.format(enabled))
         self.price_getter.enable(enabled)

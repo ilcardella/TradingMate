@@ -16,13 +16,31 @@ class ConfigurationManager():
     Class that loads the configuration and credentials json files exposing
     static methods to provide the configurable parameters
     """
-    CONFIG_FILEPATH = '../config/config.json'
 
     def __init__(self):
         # Load configuration file
-        self.config = Utils.load_json_file(self.CONFIG_FILEPATH)
+        config_filepath = '{}/.TradingMate/config/config.json'.format(Utils.get_home_path())
+        os.makedirs(os.path.dirname(config_filepath), exist_ok=True)
+        self.config = Utils.load_json_file(config_filepath)
+        if self.config is None:
+            logging.error("Please configure TradingMate: {}".format(config_filepath))
+            raise RuntimeError("Empty configuration file")
+
         # Load credentials file
-        self.credentials = Utils.load_json_file(self.config['general']['credentials_filepath'])
+        try:
+            credentials_filepath = self.config['general']['credentials_filepath']
+            credentials_filepath = credentials_filepath.replace('{home}', Utils.get_home_path())
+        except:
+            credentials_filepath = '{}/.TradingMate/config/.credentials'.format(Utils.get_home_path())
+            os.makedirs(os.path.dirname(credentials_filepath), exist_ok=True)
+            logging.error("credentials filepath parameter not configured! Using default: {}".format(credentials_filepath))
+
+        credentials_json = Utils.load_json_file(credentials_filepath)
+        if credentials_json is None:
+            logging.warning('Credentials not configured: {}'.format(credentials_filepath))
+            credentials_json = {'av_api_key':''}
+        self.credentials = credentials_json
+        logging.info('ConfigurationManager initialised')
 
     def get_trading_database_path(self):
         """
@@ -47,21 +65,3 @@ class ConfigurationManager():
         Get the alphavantage configured polling period
         """
         return self.config['alpha_vantage']['polling_period_sec']
-
-    def get_debug_log_active(self):
-        """
-        Get the logging level
-        """
-        return self.config['general']['debug_log']
-
-    def get_enable_file_log(self):
-        """
-        Enable logging on file status
-        """
-        return self.config['general']['enable_file_log']
-
-    def get_log_filepath(self):
-        """
-        Get the log filepath
-        """
-        return self.config['general']['log_filepath']
