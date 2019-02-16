@@ -55,7 +55,6 @@ class TradingMate():
         """
         Register all the callback functions
         """
-        # TODO instead of a callback, set a timer that calls a getter every x seconds
         self.portfolio.set_callback(
             Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
@@ -73,6 +72,8 @@ class TradingMate():
             Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.view.set_callback(
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+        self.view.set_callback(
+            Callbacks.ON_SHOW_SETTINGS_EVENT, self.on_show_settings_event)
         logging.info('TradingMate - callbacks registered')
 
     def start(self):
@@ -191,9 +192,15 @@ class TradingMate():
 
     def on_save_portfolio_event(self, filepath):
         """
-        Callback function to handler request to save/export the portfolio
+        Callback function to handle request to save/export the portfolio
         """
         logging.info(
             'TradingMate - save portfolio request to {}'.format(filepath))
         # Write data into the database
         self.db_handler.write_data(filepath=filepath)
+
+    def on_show_settings_event(self):
+        """
+        Callback to handle request to show the settings panel
+        """
+        return self.configurationManager.get_editable_config()

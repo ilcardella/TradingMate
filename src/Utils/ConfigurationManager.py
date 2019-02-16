@@ -65,3 +65,10 @@ class ConfigurationManager():
         Get the alphavantage configured polling period
         """
         return self.config['alpha_vantage']['polling_period_sec']
+
+    def get_editable_config(self):
+        """
+        Get a dictionary containing the editable configuration parameters
+        """
+        # TODO make a combo dictionary for config and credentials
+        return self.config

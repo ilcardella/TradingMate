@@ -148,4 +148,5 @@ class View():
 
     def on_show_settings(self):
         # TODO set the callback to save the settings
-        SettingsWindow(self.mainWindow, None)
+        config = self.callbacks[Callbacks.ON_SHOW_SETTINGS_EVENT]()
+        SettingsWindow(self.mainWindow, config, None)
