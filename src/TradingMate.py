@@ -213,4 +213,5 @@ class TradingMate():
         self.configurationManager.save_settings(config)
         self.db_handler.read_data(self.configurationManager.get_trading_database_path())
         self.portfolio.reload(self.db_handler.get_trades_list())
+        self._update_share_trading_view(updateHistory=True)
         logging.info('TradingMate - application reloaded')
