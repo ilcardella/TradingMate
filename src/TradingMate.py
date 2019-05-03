@@ -55,7 +55,6 @@ class TradingMate():
         """
         Register all the callback functions
         """
-        # TODO instead of a callback, set a timer that calls a getter every x seconds
         self.portfolio.set_callback(
             Callbacks.UPDATE_LIVE_PRICES, self.on_update_live_price)
         # Init the view
@@ -73,6 +72,10 @@ class TradingMate():
             Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
         self.view.set_callback(
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+        self.view.set_callback(
+            Callbacks.ON_SHOW_SETTINGS_EVENT, self.on_show_settings_event)
+        self.view.set_callback(
+            Callbacks.ON_SAVE_SETTINGS_EVENT, self.on_save_settings_event)
         logging.info('TradingMate - callbacks registered')
 
     def start(self):
@@ -96,8 +99,6 @@ class TradingMate():
         Collect data from the model and update the view
         """
         self.view.reset_view(updateHistory)
-        # Update the database filepath shown in the share trading frame
-        self.view.set_db_filepath(self.db_handler.get_db_filepath())
         # Update history table if required
         if updateHistory:
             logAsList = self.db_handler.get_trades_list()[
@@ -126,6 +127,7 @@ class TradingMate():
         """
         Callback function to handle close event of the user interface
         """
+        logging.info('UserInterface main window closed')
         self.portfolio.stop()
         self.db_handler.write_data()
         logging.info('TradingMate stop')
@@ -191,9 +193,25 @@ class TradingMate():
 
     def on_save_portfolio_event(self, filepath):
         """
-        Callback function to handler request to save/export the portfolio
+        Callback function to handle request to save/export the portfolio
         """
         logging.info(
             'TradingMate - save portfolio request to {}'.format(filepath))
         # Write data into the database
         self.db_handler.write_data(filepath=filepath)
+
+    def on_show_settings_event(self):
+        """
+        Callback to handle request to show the settings panel
+        """
+        return self.configurationManager.get_editable_config()
+
+    def on_save_settings_event(self, config):
+        """
+        Callback to save edited settings
+        """
+        self.configurationManager.save_settings(config)
+        self.db_handler.read_data(self.configurationManager.get_trading_database_path())
+        self.portfolio.reload(self.db_handler.get_trades_list())
+        self._update_share_trading_view(updateHistory=True)
+        logging.info('TradingMate - application reloaded')

@@ -24,6 +24,8 @@ class Callbacks(Enum):
     ON_DELETE_LAST_TRADE_EVENT = 8
     ON_START_AUTOTRADING = 9
     ON_STOP_AUTOTRADING = 10
+    ON_SHOW_SETTINGS_EVENT = 11
+    ON_SAVE_SETTINGS_EVENT = 12
 
 class Actions(Enum):
     BUY = 1

@@ -33,7 +33,7 @@ class DatabaseHandler():
 
             - **filepath**: optional, if not set the configured path will be used
         """
-        path = filepath if filepath is not None else self.db_filepath
+        path = filepath.replace('{home}', Utils.get_home_path()) if filepath is not None else self.db_filepath
         logging.info('DatabaseHandler - reading data from {}'.format(path))
         self.db_filepath = path
         json_obj = Utils.load_json_file(path)
@@ -50,7 +50,7 @@ class DatabaseHandler():
         """
         Write the trade history to the database
         """
-        path = filepath if filepath is not None else self.db_filepath
+        path = filepath.replace('{home}', Utils.get_home_path()) if filepath is not None else self.db_filepath
         logging.info('DatabaseHandler - writing data to {}'.format(path))
         # Create a json object and store the trade history into it
         json_obj = {

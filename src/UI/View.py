@@ -4,14 +4,16 @@ import inspect
 import tkinter as tk
 from tkinter import ttk
 from tkinter import StringVar
+from tkinter import filedialog
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-from Utils.Utils import Callbacks, Messages
+from Utils.Utils import Callbacks, Messages, Utils
 from .WarningWindow import WarningWindow
 from .ShareTradingFrame import ShareTradingFrame
+from .SettingsWindow import SettingsWindow
 
 APP_NAME = "TradingMate"
 
@@ -44,6 +46,9 @@ class View():
         self.menubar = tk.Menu(self.mainWindow)
         # Menu File
         filemenu = tk.Menu(self.menubar, tearoff=0)
+        filemenu.add_command(label="Open...", command=self.on_open_portfolio_event)
+        filemenu.add_command(label="Export...", command=self.on_save_portfolio_event)
+        filemenu.add_command(label="Settings...", command=self.on_show_settings)
         filemenu.add_command(label="Exit", command=self.on_close_event)
         self.menubar.add_cascade(label="File", menu=filemenu)
         # Menu About
@@ -110,25 +115,26 @@ class View():
     def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
         self.shareTradingFrame.update_share_trading_holding(symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity)
 
-    def set_db_filepath(self, filepath):
-        self.shareTradingFrame.set_db_filepath(filepath)
-
     def set_auto_refresh_event(self, value):
         self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](value)
 
-    def on_open_portfolio_event(self, filename):
+    def on_open_portfolio_event(self):
         try:
-            self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
-            return {'success': True, 'message': 'ok'}
+            filename = filedialog.askopenfilename(initialdir=Utils.get_home_path(
+            ), title="Select file", filetypes=(("json files", "*.json"), ("all files", "*.*")))
+            if filename is not None and len(filename) > 0:
+                self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
         except RuntimeError as e:
-            return {'success': False, 'message': e}
+            WarningWindow(self.parent, "Warning", e)
 
-    def on_save_portfolio_event(self, filename):
+    def on_save_portfolio_event(self):
         try:
-            self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
-            return {'success': True, 'message': 'ok'}
+            filename =  filedialog.asksaveasfilename(initialdir=Utils.get_home_path(
+            ),title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
+            if filename is not None and len(filename) > 0:
+                self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
         except RuntimeError as e:
-            return {'success': False, 'message': e}
+            WarningWindow(self.parent, "Warning", e)
 
     def on_delete_last_trade_event(self):
         try:
@@ -136,3 +142,7 @@ class View():
             return {'success': True, 'message': 'ok'}
         except RuntimeError as e:
             return {'success': False, 'message': e}
+
+    def on_show_settings(self):
+        config = self.callbacks[Callbacks.ON_SHOW_SETTINGS_EVENT]()
+        SettingsWindow(self.mainWindow, config, self.callbacks[Callbacks.ON_SAVE_SETTINGS_EVENT])

@@ -3,7 +3,6 @@ import sys
 import inspect
 import tkinter as tk
 from tkinter import ttk
-from tkinter import filedialog
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -11,7 +10,6 @@ sys.path.insert(0,parentdir)
 
 from Utils.Utils import Callbacks
 from .AddTradeDialogWindow import AddTradeDialogWindow
-from .WarningWindow import WarningWindow
 from .ConfirmWindow import ConfirmWindow
 
 INVALID_STRING = "-"
@@ -53,10 +51,6 @@ class ShareTradingFrame(tk.Frame):
         self.autoRefreshCheckBox.pack(side="right", anchor="n", padx=5, pady=5)
         self.refreshButton = ttk.Button(buttonsFrame, text="Refresh", command=self._refresh_live_data)
         self.refreshButton.pack(side="right", anchor="n", padx=5, pady=5)
-
-        self.dbFilepathStringVar = tk.StringVar()
-        dbLabel = ttk.Label(self, textvariable=self.dbFilepathStringVar)
-        dbLabel.pack(anchor="w")
 
         # This frame is a container for smaller frames displaying balances
         balancesFrame = ttk.Frame(self)
@@ -257,20 +251,10 @@ class ShareTradingFrame(tk.Frame):
             pass
 
     def _open_portfolio(self):
-        # Open a saved portfolio
-        filename =  filedialog.askopenfilename(initialdir="/home/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
-        if filename is not None and len(filename) > 0:
-            result = self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
-            if result["success"] == False:
-                WarningWindow(self.parent, "Warning", result["message"])
+        self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT]()
 
     def _save_portfolio(self):
-        # Save the current log
-        filename =  filedialog.asksaveasfilename(initialdir="/home/",title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
-        if filename is not None and len(filename) > 0:
-            result = self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
-            if result["success"] == False:
-                WarningWindow(self.parent, "Warning", result["message"])
+        self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT]()
 
     def _update_refresh_button_state(self):
         # Disable the Refresh button when AutoRefresh is active
@@ -360,6 +344,3 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
         if resetHistory:
             self.logTreeView.delete(*self.logTreeView.get_children())
-
-    def set_db_filepath(self, filepath):
-        self.dbFilepathStringVar.set("DB: " + filepath)

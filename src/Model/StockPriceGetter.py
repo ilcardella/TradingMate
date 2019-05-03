@@ -19,17 +19,14 @@ class StockPriceGetter(TaskThread):
 
     def __init__(self, config, onNewPriceDataCallback):
         TaskThread.__init__(self)
-        self._read_configuration(config)
+        self.config = config
         self.onNewPriceDataCallback = onNewPriceDataCallback
-        self.lastData = {}
-        self.symbolList = []
+        self.reset()
         logging.info('StockPriceGetter initialised')
 
-    def _read_configuration(self, config):
-        self.alphaVantageAPIKey = config.get_alpha_vantage_api_key()
-        self.alphaVantageBaseURL = config.get_alpha_vantage_base_url()
+    def _read_configuration(self):
         # Override the parent class default value
-        self._interval = config.get_alpha_vantage_polling_period()
+        self._interval = self.config.get_alpha_vantage_polling_period()
 
     def task(self):
         priceDict = {}
@@ -47,8 +44,9 @@ class StockPriceGetter(TaskThread):
     def _fetch_price_data(self, symbol):
         try:
             url = self._build_url("TIME_SERIES_DAILY",
-                                  symbol, "5min", self.alphaVantageAPIKey)
-        except Exception:
+                                  symbol, "5min", self.config.get_alpha_vantage_api_key())
+        except Exception as e:
+            logging.error(e)
             logging.error(
                 'StockPriceGetter - Unable to build url for {}'.format(symbol))
             return None
@@ -69,11 +67,10 @@ class StockPriceGetter(TaskThread):
         return value
 
     def _build_url(self, aLength, aSymbol, anInterval, anApiKey):
-        function = "function=" + aLength
-        symbol = "symbol=" + self.convert_market_to_alphavantage(aSymbol)
-        apiKey = "apikey=" + anApiKey
-        url = self.alphaVantageBaseURL + "?" + function + "&" + symbol + "&" + apiKey
-        return url
+        function = "function={}".format(aLength)
+        symbol = "symbol={}".format(self.convert_market_to_alphavantage(aSymbol))
+        apiKey = "apikey={}".format(anApiKey)
+        return '{}?{}&{}&{}'.format(self.config.get_alpha_vantage_base_url(), function, symbol, apiKey)
 
     def convert_market_to_alphavantage(self, symbol):
         """
@@ -90,3 +87,8 @@ class StockPriceGetter(TaskThread):
 
     def set_symbol_list(self, aList):
         self.symbolList = aList
+
+    def reset(self):
+        self._read_configuration()
+        self.lastData = {}
+        self.symbolList = []
