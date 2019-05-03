@@ -13,51 +13,42 @@ your assets and the overall profit (or loss!)
 
 View file `requirements.txt` for the full list of python dependencies.
 
+# Install
+
+After cloning this repo, to install TradingMate simply run:
+```
+./trading_mate_ctrl install
+```
+(This will require super-user access)
+
+The required dependencies will be installed and all necessary files installed in /opt/TradingMate by default. It is recommended to add this path to your PATH environment variable.
+
 # Setup
 
-It is recommended to use a virtual environment to run TradingMate.
-
-Install dependencies with pip
-```
-pip install -r requirements.txt
-```
-TradingMate supports different sources for market data, at the moment these are
-the supported ones:
-
-- AlphaVantage
-
-It's up to you to choose your preferred one or even all of them. The following
-steps depends on the what you chose:
+TradingMate uses AlphaVantage to fetch markets data online:
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
 - Insert these info in a file called `.credentials`
-
 This must be in json format
-
 ```
 {
     "av_api_key": "apiKey"
 }
 ```
-
-- Copy the `.credentials` file in the `data` folder
-- Revoke permissions to read the file if you are paranoid
-
+- Copy the `.credentials` file in the `$HOME/.TradingMate/data` folder
+- Revoke permissions to read the file by others
 ```
-cd data
+cd $HOME/.TradingMate/data
 sudo chmod 600 .credentials
 ```
 ### Configuration file
 
-The `config.json` file is in the `config` folder and it contains several configurable parameter to personalise how TradingMate works.
+The `config.json` file is in the `$HOME/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
 - **general/trading_log_path**: The absolute path of the trading log where the history
 of your trades are saved
-- **general/debug_log**: Activate the debug logging level
-- **general/enable_file_log**: Activate logging on a file
-- **general/log_filepath**: File path of the logging file (if active)
 - **general/credentials_filepath**: File path of the .credentials file
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
 - **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
@@ -82,14 +73,11 @@ You can also use the command:
 
 # Test
 
-If you have setup a virtual environment you can run the test by running `pytest`
-from the project root folder.
-
-You can run the test from a clean environment with:
+Test can't run with the installed script.
+You can run the test from a "workspace" environment with:
 ```
 ./trading_mate_ctrl test
 ```
-
 You can run the test in Docker containers against different python versions:
 ```
 ./trading_mate_ctrl test_docker
@@ -104,7 +92,7 @@ Read the documentation at:
 
 https://tradingmate.readthedocs.io
 
-You can build it locally from the project root folder:
+You can build it locally from the "workspace" root folder:
 ```
 ./trading_mate_ctrl docs
 ```
@@ -113,7 +101,6 @@ The generated html files will be under `doc/_build/html`.
 
 # Contributing
 
-I am really happy to receive any help so please just open a pull request
-with your changes and I will handle it.
-
-If you instead find problems or have ideas for future improvements open an Issue. Thanks for all the support!
+I appreciate any help so if you have suggestions or issues open an Issue for discussion.
+If you can contribute please just open a pull request with your changes.
+Thanks for all the support!
