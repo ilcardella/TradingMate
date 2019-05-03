@@ -1,59 +1,165 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+TRADINGMATE_DIR=$HOME/.TradingMate
+LOG_DIR=$TRADINGMATE_DIR/log
+DATA_DIR=$TRADINGMATE_DIR/data
+CONFIG_DIR=$TRADINGMATE_DIR/config
+INSTALL_DIR=/opt/TradingMate
+
+SCRIPT_FILE=$SCRIPT_DIR/trading_mate_ctrl
+REQUIREMENTS_FILE=$SCRIPT_DIR/requirements.txt
+PID_FILE=$LOG_DIR/pid.txt
+CONFIG_FILE=$CONFIG_DIR/config.json
+CREDENTIALS_FILE=$DATA_DIR/.credentials
+RUN_ARGS=""
+PYTHON_BIN="$(command -v python3) -u"
+MAIN_BIN="$INSTALL_DIR/main.py"
+RUN_COMMAND="$PYTHON_BIN $MAIN_BIN $RUN_ARGS"
+PIP_BIN="$(command -v pip3)"
 
 start()
 {
-  cd $SCRIPT_DIR/src
-  python3 main.py & echo $! > pid.txt
+  if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]
+  then
+    echo Please install TradingMate: ./trading_mate_ctrl install
+    exit 1
+  fi
+
+  RUN_ARGS=""
+  $RUN_COMMAND & echo $! > $PID_FILE
+  echo TradingMate started
 }
 
 stop()
 {
-  echo Stopping TradingMate...
-  cd $SCRIPT_DIR/src
-  cat pid.txt | xargs kill
-  rm pid.txt
+  if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]
+  then
+    echo Please install TradingMate: ./trading_mate_ctrl install
+    exit 1
+  fi
+
+  cat $PID_FILE | xargs kill
+  rm $PID_FILE
   echo TradingMate stopped
 }
 
 install_deps()
 {
-  echo Installing TradingMate dependencies...
-  pip install -r $SCRIPT_DIR/requirements.txt
-  echo Installation complete
+  echo Installing dependencies...
+  if ! command -v $PIP_BIN > /dev/null 2>&1;
+  then
+      apt-get install -y python3-pip
+  fi
+  $PIP_BIN install -r $REQUIREMENTS_FILE
 }
 
 test()
 {
+  if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
+  then
+    echo Testing is disabled after installation!
+    exit 1
+  fi
+
   echo Running unit test with pytest...
   install_deps
-  cd $SCRIPT_DIR
-  sphinx-build -nWT -b dummy docs docs/_build/html
   pytest
+  echo Testing documentation build...
+  sphinx-build -nWT -b dummy docs docs/_build/html
 }
 
 docs()
 {
-    echo Building Sphinx documentation...
-    cd $SCRIPT_DIR
-    sphinx-build -nWT -b html docs docs/_build/html
-    echo Documentation built
+  if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
+  then
+    echo Documentation build is disabled after installation!
+    exit 1
+  fi
+
+  echo Building Sphinx documentation...
+  sphinx-build -nWT -b html docs docs/_build/html
 }
 
 test_docker()
 {
+  if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
+  then
+    echo Testing is disabled after installation!
+    exit 1
+  fi
+
   echo Running unit test with pytest in a Docker container...
   echo Testing against Python 3.4...
-  docker run -it --rm -v $(pwd):/app python:3.4 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  docker run -it --rm -v $(pwd):/app -w "/app" python:3.4 /bin/bash -cx "./trading_mate_ctrl test"
   echo Testing against Python 3.5...
-  docker run -it --rm -v $(pwd):/app python:3.5 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  docker run -it --rm -v $(pwd):/app -w "/app" python:3.5 /bin/bash -cx "./trading_mate_ctrl test"
   echo Testing against Python 3.6...
-  docker run -it --rm -v $(pwd):/app python:3.6 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  docker run -it --rm -v $(pwd):/app -w "/app" python:3.6 /bin/bash -cx "./trading_mate_ctrl test"
   echo Testing against Python 3 latest...
-  docker run -it --rm -v $(pwd):/app python:3 /bin/bash -cx "cd app && ./trading_mate_ctrl test"
+  docker run -it --rm -v $(pwd):/app -w "/app" python:3 /bin/bash -cx "./trading_mate_ctrl test"
+}
+
+install()
+{
+  if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
+  then
+    echo You have already installed TradingMate
+    exit 1
+  fi
+
+  if ! command -v rsync > /dev/null 2>&1;
+  then
+      apt-get install -y rsync
+  fi
+
+  echo Removing any previous installation...
+  sudo rm -rf $INSTALL_DIR
+
+  echo Installing TradingMate...
+  # Save the user
+  CURRENT_USER=$USER
+  # Install dependencies
+  install_deps
+  # Create installation directory
+  sudo mkdir -p $INSTALL_DIR
+  # Copy sources in installation directory
+  sudo rsync -avm --include='*.py' --include='*.png' -f 'hide,! */' $SCRIPT_DIR/src/ $INSTALL_DIR
+  # Copy scripts too
+  rsync -avm $SCRIPT_FILE $INSTALL_DIR
+  rsync -avm $REQUIREMENTS_FILE $INSTALL_DIR
+  # Create TradingMate user folder
+  mkdir -p $TRADINGMATE_DIR
+  mkdir -p $CONFIG_DIR
+  mkdir -p $LOG_DIR
+  mkdir -p $DATA_DIR
+  # Copy config file
+  rsync -avm -p $SCRIPT_DIR/config/config.json $CONFIG_FILE
+
+  sudo chown -R $CURRENT_USER: $TRADINGMATE_DIR
+  sudo chown -R $CURRENT_USER: $INSTALL_DIR
+
+  echo Installation successful!
+}
+
+help()
+{
+  echo "Try with:"
+  echo "  help - Show this help message"
+  echo "  start - Start TradingMate"
+  echo "  stop - Stop TradingMate"
+  echo "  test - Run TradingMate automatic test suite"
+  echo "  test_docker - Run TradingMate automatic test suite inside docker containers"
+  echo "  docs - Build TradingMate documentation"
+  echo "  install - Install TradingMate"
 }
 
 case $1 in
-  start|stop|install_deps|test|test_docker|docs) "$1" ;;
+  start) start;;
+  stop) stop;;
+  test) test;;
+  test_docker) test_docker;;
+  docs) docs;;
+  install) install;;
+  *) help;;
 esac
