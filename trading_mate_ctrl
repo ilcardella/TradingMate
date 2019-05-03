@@ -10,7 +10,6 @@ INSTALL_DIR=/opt/TradingMate
 SCRIPT_FILE=$SCRIPT_DIR/trading_mate_ctrl
 REQUIREMENTS_FILE=$SCRIPT_DIR/requirements.txt
 PID_FILE=$LOG_DIR/pid.txt
-LOG_FILE=$LOG_DIR/log.txt
 CONFIG_FILE=$CONFIG_DIR/config.json
 CREDENTIALS_FILE=$DATA_DIR/.credentials
 RUN_ARGS=""
@@ -21,13 +20,25 @@ PIP_BIN="$(command -v pip3)"
 
 start()
 {
+  if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]
+  then
+    echo Please install TradingMate: ./trading_mate_ctrl install
+    exit 1
+  fi
+
   RUN_ARGS=""
-  nohup $RUN_COMMAND >$LOG_FILE 2>&1 & echo $! > $PID_FILE
+  $RUN_COMMAND & echo $! > $PID_FILE
   echo TradingMate started
 }
 
 stop()
 {
+  if [ "$SCRIPT_DIR" != "$INSTALL_DIR" ]
+  then
+    echo Please install TradingMate: ./trading_mate_ctrl install
+    exit 1
+  fi
+
   cat $PID_FILE | xargs kill
   rm $PID_FILE
   echo TradingMate stopped
@@ -47,7 +58,7 @@ test()
 {
   if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
   then
-    echo Automatic test are disabled after installation!
+    echo Testing is disabled after installation!
     exit 1
   fi
 
@@ -72,6 +83,12 @@ docs()
 
 test_docker()
 {
+  if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
+  then
+    echo Testing is disabled after installation!
+    exit 1
+  fi
+
   echo Running unit test with pytest in a Docker container...
   echo Testing against Python 3.4...
   docker run -it --rm -v $(pwd):/app -w "/app" python:3.4 /bin/bash -cx "./trading_mate_ctrl test"
@@ -85,6 +102,17 @@ test_docker()
 
 install()
 {
+  if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
+  then
+    echo You have already installed TradingMate
+    exit 1
+  fi
+
+  if ! command -v rsync > /dev/null 2>&1;
+  then
+      apt-get install -y rsync
+  fi
+
   echo Removing any previous installation...
   sudo rm -rf $INSTALL_DIR
 
@@ -96,17 +124,17 @@ install()
   # Create installation directory
   sudo mkdir -p $INSTALL_DIR
   # Copy sources in installation directory
-  sudo rsync -avm --include='*.py' -f 'hide,! */' $SCRIPT_DIR/src/ $INSTALL_DIR
+  sudo rsync -avm --include='*.py' --include='*.png' -f 'hide,! */' $SCRIPT_DIR/src/ $INSTALL_DIR
   # Copy scripts too
-  rsync $SCRIPT_FILE $INSTALL_DIR
-  rsync $REQUIREMENTS_FILE $INSTALL_DIR
+  rsync -avm $SCRIPT_FILE $INSTALL_DIR
+  rsync -avm $REQUIREMENTS_FILE $INSTALL_DIR
   # Create TradingMate user folder
   mkdir -p $TRADINGMATE_DIR
   mkdir -p $CONFIG_DIR
   mkdir -p $LOG_DIR
   mkdir -p $DATA_DIR
   # Copy config file
-  cp -p $SCRIPT_DIR/config/config.json $CONFIG_FILE
+  rsync -avm -p $SCRIPT_DIR/config/config.json $CONFIG_FILE
 
   sudo chown -R $CURRENT_USER: $TRADINGMATE_DIR
   sudo chown -R $CURRENT_USER: $INSTALL_DIR
@@ -120,7 +148,6 @@ help()
   echo "  help - Show this help message"
   echo "  start - Start TradingMate"
   echo "  stop - Stop TradingMate"
-  echo "  install_deps - Install TradingMate dependencies"
   echo "  test - Run TradingMate automatic test suite"
   echo "  test_docker - Run TradingMate automatic test suite inside docker containers"
   echo "  docs - Build TradingMate documentation"
@@ -130,7 +157,6 @@ help()
 case $1 in
   start) start;;
   stop) stop;;
-  install_deps) install_deps;;
   test) test;;
   test_docker) test_docker;;
   docs) docs;;
