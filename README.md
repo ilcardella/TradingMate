@@ -15,13 +15,14 @@ View file `requirements.txt` for the full list of python dependencies.
 
 # Install
 
-After cloning this repo, to install TradingMate simply run:
+After cloning this repo, to setup and install TradingMate simply run:
 ```
-./trading_mate_ctrl install
+sudo ./trading_mate_ctrl setup
 ```
-(This will require super-user access)
 
-The required dependencies will be installed and all necessary files installed in /opt/TradingMate by default. It is recommended to add this path to your PATH environment variable.
+The required dependencies will be installed and all necessary files copied in
+/opt/TradingMate by default.
+It is recommended to add this path to your PATH environment variable.
 
 # Setup
 
