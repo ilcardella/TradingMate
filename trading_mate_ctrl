@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Directories
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 TRADINGMATE_DIR=$HOME/.TradingMate
 LOG_DIR=$TRADINGMATE_DIR/log
@@ -7,16 +8,14 @@ DATA_DIR=$TRADINGMATE_DIR/data
 CONFIG_DIR=$TRADINGMATE_DIR/config
 INSTALL_DIR=/opt/TradingMate
 
+# Files
 SCRIPT_FILE=$SCRIPT_DIR/trading_mate_ctrl
 REQUIREMENTS_FILE=$SCRIPT_DIR/requirements.txt
 PID_FILE=$LOG_DIR/pid.txt
 CONFIG_FILE=$CONFIG_DIR/config.json
-CREDENTIALS_FILE=$DATA_DIR/.credentials
-RUN_ARGS=""
-PYTHON_BIN="$(command -v python3) -u"
 MAIN_BIN="$INSTALL_DIR/main.py"
-RUN_COMMAND="$PYTHON_BIN $MAIN_BIN $RUN_ARGS"
-PIP_BIN="$(command -v pip3)"
+RUN_COMMAND="$(command -v python3) -u $MAIN_BIN"
+
 
 start()
 {
@@ -26,7 +25,6 @@ start()
     exit 1
   fi
 
-  RUN_ARGS=""
   $RUN_COMMAND & echo $! > $PID_FILE
   echo TradingMate started
 }
@@ -47,11 +45,46 @@ stop()
 install_deps()
 {
   echo Installing dependencies...
-  if ! command -v $PIP_BIN > /dev/null 2>&1;
+
+  export DEBIAN_FRONTEND=noninteractive
+
+  apt-get update
+
+  # Require Python version 3
+  install_package "python3" "python3"
+
+  # Require Python Tkinter
+  if ! dpkg -s python3-tk >/dev/null 2>&1;
   then
-      apt-get install -y python3-pip
+    echo Tkinter not found!
+    echo Installing package python3-tk...
+    apt-get install -y python3-tk
+  else
+    echo Found Tkinter
   fi
-  $PIP_BIN install -r $REQUIREMENTS_FILE
+
+  # Require Pip version 3
+  install_package "python3-pip" "pip3"
+
+  # Require rsync to copy files
+  install_package "rsync" "rsync"
+
+  # Install all python dependencies
+  $(command -v pip3) install -r $REQUIREMENTS_FILE
+}
+
+install_package()
+{
+  # $1=package name, $2=binary name
+  echo Required package: $1 - $2
+  if ! [ -x "$(command -v $2)" ];
+  then
+    echo $2 not found!
+    echo Installing package $1...
+    apt-get install -y $1
+  else
+    echo Found $2: $(command -v $2)
+  fi
 }
 
 test()
@@ -100,44 +133,48 @@ test_docker()
   docker run -it --rm -v $(pwd):/app -w "/app" python:3 /bin/bash -cx "./trading_mate_ctrl test"
 }
 
-install()
+setup()
 {
+  # Check if setup has been called from the repo folder
   if [ "$SCRIPT_DIR" == "$INSTALL_DIR" ]
   then
     echo You have already installed TradingMate
     exit 1
+  else
+    echo Installing TradingMate...
   fi
 
-  if ! command -v rsync > /dev/null 2>&1;
+  # Check if setup has been called with sudo
+  if ! [ "$USER" == "root" ];
   then
-      apt-get install -y rsync
+    echo Setup requires sudo privileges
+    exit 1
   fi
 
-  echo Removing any previous installation...
-  sudo rm -rf $INSTALL_DIR
-
-  echo Installing TradingMate...
-  # Save the user
-  CURRENT_USER=$USER
   # Install dependencies
   install_deps
+
+  echo Removing any previous installation...
+  rm -rf $INSTALL_DIR
+
+  echo Copying files...
   # Create installation directory
-  sudo mkdir -p $INSTALL_DIR
+  mkdir -p $INSTALL_DIR
   # Copy sources in installation directory
-  sudo rsync -avm --include='*.py' --include='*.png' -f 'hide,! */' $SCRIPT_DIR/src/ $INSTALL_DIR
+  rsync -am --include='*.py' --include='*.png' -f 'hide,! */' $SCRIPT_DIR/src/ $INSTALL_DIR
   # Copy scripts too
-  rsync -avm $SCRIPT_FILE $INSTALL_DIR
-  rsync -avm $REQUIREMENTS_FILE $INSTALL_DIR
+  rsync -am $SCRIPT_FILE $INSTALL_DIR
+  rsync -am $REQUIREMENTS_FILE $INSTALL_DIR
   # Create TradingMate user folder
   mkdir -p $TRADINGMATE_DIR
   mkdir -p $CONFIG_DIR
   mkdir -p $LOG_DIR
   mkdir -p $DATA_DIR
   # Copy config file
-  rsync -avm -p $SCRIPT_DIR/config/config.json $CONFIG_FILE
+  rsync -am -p $SCRIPT_DIR/config/config.json $CONFIG_FILE
 
-  sudo chown -R $CURRENT_USER: $TRADINGMATE_DIR
-  sudo chown -R $CURRENT_USER: $INSTALL_DIR
+  chown -R $SUDO_USER: $TRADINGMATE_DIR
+  chown -R $SUDO_USER: $INSTALL_DIR
 
   echo Installation successful!
 }
@@ -151,7 +188,7 @@ help()
   echo "  test - Run TradingMate automatic test suite"
   echo "  test_docker - Run TradingMate automatic test suite inside docker containers"
   echo "  docs - Build TradingMate documentation"
-  echo "  install - Install TradingMate"
+  echo "  setup - Install TradingMate"
 }
 
 case $1 in
@@ -160,6 +197,6 @@ case $1 in
   test) test;;
   test_docker) test_docker;;
   docs) docs;;
-  install) install;;
+  setup) setup;;
   *) help;;
 esac
