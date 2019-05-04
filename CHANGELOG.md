@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Issue37 - Improved installation process and dependencies setup
+- Updated default .credentials configured path
 
 ## [1.0.0] 2019-05-03
 ### Added
