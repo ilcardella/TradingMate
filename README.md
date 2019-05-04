@@ -31,6 +31,7 @@ TradingMate uses AlphaVantage to fetch markets data online:
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
 - Insert these info in a file called `.credentials`
+
 This must be in json format
 ```
 {
@@ -39,6 +40,7 @@ This must be in json format
 ```
 - Copy the `.credentials` file in the `$HOME/.TradingMate/data` folder
 - Revoke permissions to read the file by others
+
 ```
 cd $HOME/.TradingMate/data
 sudo chmod 600 .credentials
@@ -48,8 +50,7 @@ sudo chmod 600 .credentials
 The `config.json` file is in the `$HOME/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
-- **general/trading_log_path**: The absolute path of the trading log where the history
-of your trades are saved
+- **general/trading_log_path**: The absolute path of the trading log where the history of your trades are saved
 - **general/credentials_filepath**: File path of the .credentials file
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
 - **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
@@ -60,6 +61,7 @@ TradingMate can be controlled by the `trading_mate_ctrl` shell script.
 The script provides commands to perform different actions:
 
 ### Start TradingMate
+
 ```
 ./trading_mate_ctrl start
 ```
