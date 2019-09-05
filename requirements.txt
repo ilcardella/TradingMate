@@ -3,7 +3,7 @@ Sphinx==2.0.1; python_version >= '3.5'
 sphinx-rtd-theme==0.4.3
 requests==2.21.0; python_version < '3.5'
 requests==2.22.0; python_version >= '3.5'
-requests-mock==1.6.0
+requests-mock==1.7.0
 pytest==4.6.4; python_version < '3.5'
 pytest==5.0.1; python_version >= '3.5'
 alpha-vantage==2.1.0
