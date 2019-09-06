@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>UI.View &mdash; TradingMate 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TradingMate
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/system.html">1. System Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../source/system.html#tradingmate">1.1. TradingMate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">2. Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#module-TradingMate">2.1. TradingMate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#model">2.2. Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-Model.Holding">2.2.1. Holding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-Model.Portfolio">2.2.2. Portfolio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-Model.DatabaseHandler">2.2.3. DatabaseHandler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-Model.StockPriceGetter">2.2.4. StockPriceGetter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#ui">2.3. UI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-UI.View">2.3.1. View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-UI.ShareTradingFrame">2.3.2. ShareTradingFrame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-UI.AddTradeDialogWindow">2.3.3. AddTradeDialogWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-UI.WarningWindow">2.3.4. WarningWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../source/modules.html#module-UI.Widgets">2.3.5. Widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#utils">2.4. Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#module-Utils.ConfigurationManager">2.5. ConfigurationManager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#module-Utils.TaskThread">2.6. TaskThread</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#module-Utils.Trade">2.7. Trade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/modules.html#id1">2.8. Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/changelog.html">3. Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../source/changelog.html#unreleased">3.1. [Unreleased]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/changelog.html#changed">3.1.1. Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../source/changelog.html#id1">3.2. [1.0.0] 2019-05-03</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../source/changelog.html#added">3.2.1. Added</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">TradingMate</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>UI.View</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for UI.View</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">ttk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">StringVar</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">filedialog</span>
+
+<span class="n">currentdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">())))</span>
+<span class="n">parentdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">currentdir</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">parentdir</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">Utils.Utils</span> <span class="k">import</span> <span class="n">Callbacks</span><span class="p">,</span> <span class="n">Messages</span><span class="p">,</span> <span class="n">Utils</span>
+<span class="kn">from</span> <span class="nn">.WarningWindow</span> <span class="k">import</span> <span class="n">WarningWindow</span>
+<span class="kn">from</span> <span class="nn">.ShareTradingFrame</span> <span class="k">import</span> <span class="n">ShareTradingFrame</span>
+<span class="kn">from</span> <span class="nn">.SettingsWindow</span> <span class="k">import</span> <span class="n">SettingsWindow</span>
+
+<span class="n">APP_NAME</span> <span class="o">=</span> <span class="s2">&quot;TradingMate&quot;</span>
+
+<div class="viewcode-block" id="View"><a class="viewcode-back" href="../../source/modules.html#UI.View.View">[docs]</a><span class="k">class</span> <span class="nc">View</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Local data initialisation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_UI</span><span class="p">()</span>
+
+<span class="c1"># GRAPHICAL DEFINITIONS</span>
+
+    <span class="k">def</span> <span class="nf">create_UI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Create main window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">APP_NAME</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;photo&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">currentdir</span> <span class="o">+</span> <span class="s1">&#39;/assets/trading_mate_icon.png&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;wm&#39;</span><span class="p">,</span><span class="s1">&#39;iconphoto&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span><span class="n">img</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">protocol</span><span class="p">(</span><span class="s2">&quot;WM_DELETE_WINDOW&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="s2">&quot;1024x600&quot;</span><span class="p">)</span>
+        <span class="c1"># Define the app menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_menu</span><span class="p">()</span>
+        <span class="c1"># Create the tab format window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noteBook</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Notebook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noteBook</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+        <span class="c1"># Create Share trading Tab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_share_trading_tab</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">create_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">)</span>
+        <span class="c1"># Menu File</span>
+        <span class="n">filemenu</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">filemenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Open...&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_open_portfolio_event</span><span class="p">)</span>
+        <span class="n">filemenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Export...&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_save_portfolio_event</span><span class="p">)</span>
+        <span class="n">filemenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Settings...&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_show_settings</span><span class="p">)</span>
+        <span class="n">filemenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exit&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_close_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">add_cascade</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="n">filemenu</span><span class="p">)</span>
+        <span class="c1"># Menu About</span>
+        <span class="n">helpmenu</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Menu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">,</span> <span class="n">tearoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">helpmenu</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;About&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_about_popup</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">add_cascade</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Help&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="n">helpmenu</span><span class="p">)</span>
+        <span class="c1"># Display the menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">menu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_share_trading_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Create the main frame container and add it to the notebook as a tab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span> <span class="o">=</span> <span class="n">ShareTradingFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noteBook</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noteBook</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Shares Trading&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_MANUAL_REFRESH_EVENT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_manual_refresh_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_NEW_TRADE_EVENT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_new_trade_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_SET_AUTO_REFRESH_EVENT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_auto_refresh_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_OPEN_LOG_FILE_EVENT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_open_portfolio_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_SAVE_LOG_FILE_EVENT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_save_portfolio_event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_callback</span><span class="p">(</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_DELETE_LAST_TRADE_EVENT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_delete_last_trade_event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">set_auto_refresh</span><span class="p">()</span>
+        <span class="c1"># Start the view thread</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span>
+
+<span class="c1"># ******* MAIN WINDOW ***********</span>
+
+    <span class="k">def</span> <span class="nf">on_close_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Notify the Controller and close the main window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_CLOSE_VIEW_EVENT</span><span class="p">]()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">show_about_popup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Show the about panel</span>
+        <span class="n">WarningWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">,</span> <span class="s2">&quot;About&quot;</span><span class="p">,</span> <span class="n">Messages</span><span class="o">.</span><span class="n">ABOUT_MESSAGE</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># ******* SHARE TRADING FRAME ************</span>
+
+    <span class="k">def</span> <span class="nf">on_new_trade_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newTrade</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_NEW_TRADE_EVENT</span><span class="p">](</span><span class="n">newTrade</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;ok&#39;</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">e</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">on_manual_refresh_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Notify the Controller to request new data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_MANUAL_REFRESH_EVENT</span><span class="p">]()</span>
+
+    <span class="k">def</span> <span class="nf">reset_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resetHistory</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">reset_view</span><span class="p">(</span><span class="n">resetHistory</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_share_trading_history_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logList</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">logList</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">add_entry_to_log_table</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_share_trading_portfolio_balances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cash</span><span class="p">,</span> <span class="n">holdingsValue</span><span class="p">,</span> <span class="n">totalValue</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">pl_perc</span><span class="p">,</span> <span class="n">holdingPL</span><span class="p">,</span> <span class="n">holdingPLPC</span><span class="p">,</span> <span class="n">validity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">update_portfolio_balances</span><span class="p">(</span><span class="n">cash</span><span class="p">,</span> <span class="n">holdingsValue</span><span class="p">,</span> <span class="n">totalValue</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">pl_perc</span><span class="p">,</span> <span class="n">holdingPL</span><span class="p">,</span> <span class="n">holdingPLPC</span><span class="p">,</span> <span class="n">validity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_share_trading_holding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">openPrice</span><span class="p">,</span> <span class="n">lastPrice</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">plPc</span><span class="p">,</span> <span class="n">validity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shareTradingFrame</span><span class="o">.</span><span class="n">update_share_trading_holding</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">quantity</span><span class="p">,</span> <span class="n">openPrice</span><span class="p">,</span> <span class="n">lastPrice</span><span class="p">,</span> <span class="n">cost</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">plPc</span><span class="p">,</span> <span class="n">validity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_auto_refresh_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_SET_AUTO_REFRESH_EVENT</span><span class="p">](</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_open_portfolio_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilename</span><span class="p">(</span><span class="n">initialdir</span><span class="o">=</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_home_path</span><span class="p">(</span>
+            <span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Select file&quot;</span><span class="p">,</span> <span class="n">filetypes</span><span class="o">=</span><span class="p">((</span><span class="s2">&quot;json files&quot;</span><span class="p">,</span> <span class="s2">&quot;*.json&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;all files&quot;</span><span class="p">,</span> <span class="s2">&quot;*.*&quot;</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_OPEN_LOG_FILE_EVENT</span><span class="p">](</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">WarningWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;Warning&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_save_portfolio_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span>  <span class="n">filedialog</span><span class="o">.</span><span class="n">asksaveasfilename</span><span class="p">(</span><span class="n">initialdir</span><span class="o">=</span><span class="n">Utils</span><span class="o">.</span><span class="n">get_home_path</span><span class="p">(</span>
+            <span class="p">),</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Select file&quot;</span><span class="p">,</span><span class="n">filetypes</span><span class="o">=</span><span class="p">((</span><span class="s2">&quot;json files&quot;</span><span class="p">,</span><span class="s2">&quot;*.json&quot;</span><span class="p">),(</span><span class="s2">&quot;all files&quot;</span><span class="p">,</span><span class="s2">&quot;*.*&quot;</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_SAVE_LOG_FILE_EVENT</span><span class="p">](</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">WarningWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;Warning&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_delete_last_trade_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_DELETE_LAST_TRADE_EVENT</span><span class="p">]()</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;ok&#39;</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">e</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">on_show_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_SHOW_SETTINGS_EVENT</span><span class="p">]()</span>
+        <span class="n">SettingsWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">Callbacks</span><span class="o">.</span><span class="n">ON_SAVE_SETTINGS_EVENT</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Alberto Cardellini
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
