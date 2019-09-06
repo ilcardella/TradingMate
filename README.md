@@ -7,7 +7,7 @@ your assets and the overall profit (or loss!)
 
 # Dependencies
 
-- Python 3.4+
+- Python 3.5+
 - Pipenv
 - Tkinter: https://docs.python.org/3/library/tk.html
 - AlphaVantage: https://www.alphavantage.co/
