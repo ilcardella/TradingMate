@@ -5,13 +5,13 @@ python:
   - "3.5"
   - "3.6"
   - "3.7-dev"
+  - "3.8-dev"
+  - "nightly"
 
-cache: pip
-
-# command to install dependencies
 install:
-  - pip install -r requirements.txt
+  - export PIPENV_IGNORE_VIRTUALENVS=1
+  - pipenv install --three --dev
 
-# command to run tests
 script:
-  - ./trading_mate_ctrl test
+  - pipenv run pytest
+  - pipenv run sphinx-build -nWT -b dummy doc doc/_build/html
