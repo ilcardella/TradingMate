@@ -7,22 +7,46 @@ your assets and the overall profit (or loss!)
 
 # Dependencies
 
-- Python 3.4+
+- Python 3.5+
+- Pipenv
 - Tkinter: https://docs.python.org/3/library/tk.html
 - AlphaVantage: https://www.alphavantage.co/
 
-View file `requirements.txt` for the full list of python dependencies.
+View `Pipfile` for the full list of python dependencies.
 
 # Install
 
-After cloning this repo, to setup and install TradingMate simply run:
+First install python 3 and pipenv
 ```
-sudo ./trading_mate_ctrl setup
+sudo apt-get update && sudo apt-get install python3 python3-pip
+sudo -H pip3 install -U pipenv
 ```
 
-The required dependencies will be installed and all necessary files copied in
-/opt/TradingMate by default.
-It is recommended to add this path to your PATH environment variable.
+The UI is based on Tkinter so let's install it
+```
+sudo apt-get update && sudo apt-get install python3-tk
+```
+
+Clone this repo in your workspace and setup the python virtual environment
+by running the following commands in the repository root folder
+```
+pipenv install --three
+```
+You can install development packages adding the flag `--dev`
+
+After that, to install TradingMate simply run:
+```
+sudo ./install.py
+```
+
+All necessary files will be copied in `/opt/TradingMate` by default.
+It is recommended to add this path to your `PATH` environment variable.
+
+The last step is to set file permissions for your user on the installed folders with the
+following command:
+```shell
+sudo chown -R $USER: $HOME/.TradingMate
+```
 
 # Setup
 
@@ -30,15 +54,18 @@ TradingMate uses AlphaVantage to fetch markets data online:
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
-- Insert these info in a file called `.credentials`
+- Insert these info in a file called `.credentials` in `$HOME/.TradingMate/data`
+```
+touch $HOME/.TradingMate/data
+```
 
-This must be in json format
+This must be in json format and contain:
 ```
 {
     "av_api_key": "apiKey"
 }
 ```
-- Copy the `.credentials` file in the `$HOME/.TradingMate/data` folder
+
 - Revoke permissions to read the file by others
 
 ```
@@ -55,36 +82,32 @@ These are the descriptions of each parameter:
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
 - **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
 
-# Run
+# Start TradingMate
 
-TradingMate can be controlled by the `trading_mate_ctrl` shell script.
-The script provides commands to perform different actions:
-
-### Start TradingMate
-
+You can start TradingMate in your current terminal
 ```
-./trading_mate_ctrl start
+/opt/TradingMate/src/TradingMate.py
+```
+or you can start it in detached mode, letting it run in the background
+```
+nohup /opt/TradingMate/src/TradingMate.py >/dev/null 2>&1 &
 ```
 
-### Stop TradingMate
+# Stop TradingMate
 
-Closing the main window will stop the whole application.
-You can also use the command:
+To stop a TradingMate instance running in the background
 ```
-./trading_mate_ctrl stop
+ps -ef | grep TradingMate | xargs kill -9
 ```
 
 # Test
 
-Test can't run with the installed script.
-You can run the test from a "workspace" environment with:
+You can run the test from the workspace with:
 ```
-./trading_mate_ctrl test
+pipenv run pytest
 ```
-You can run the test in Docker containers against different python versions:
-```
-./trading_mate_ctrl test_docker
-```
+
+NOTE: you must have installed the python dependencies with the `--dev` flag
 
 # Documentation
 
@@ -97,13 +120,22 @@ https://tradingmate.readthedocs.io
 
 You can build it locally from the "workspace" root folder:
 ```
-./trading_mate_ctrl docs
+pipenv run sphinx-build -nWT -b html doc doc/_build/html
 ```
 
 The generated html files will be under `doc/_build/html`.
 
 # Contributing
 
-I appreciate any help so if you have suggestions or issues open an Issue for discussion.
-If you can contribute please just open a pull request with your changes.
-Thanks for all the support!
+Any contribution or suggestion is welcome, please follow the suggested workflow.
+
+### Pull Requests
+
+To add a new feature or to resolve a bug, create a feature branch from the
+`develop` branch.
+
+Commit your changes and if possible add unit/integration test cases.
+Eventually push your branch and create a Pull Request against `develop`.
+
+If you instead find problems or you have ideas and suggestions for future
+improvements, please open an Issue. Thanks for the support!
