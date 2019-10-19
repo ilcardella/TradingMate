@@ -104,3 +104,5 @@ ENV/
 .pytest_cache
 _builds
 pid.txt
+
+Pipfile.lock
