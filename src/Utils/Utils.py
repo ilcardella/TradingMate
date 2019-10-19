@@ -33,6 +33,7 @@ class Actions(Enum):
     DEPOSIT = 3
     DIVIDEND = 4
     WITHDRAW = 5
+    FEE = 6
 
 class Messages(Enum):
     INSUF_FUNDING = "ERROR: Insufficient funding available"

@@ -10,7 +10,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from Model.DatabaseHandler import DatabaseHandler
-from Utils.Utils import Callbacks, Actions, Messages
+from Utils.Utils import Callbacks
 from UI.View import View
 from Model.Portfolio import Portfolio
 from Utils.ConfigurationManager import ConfigurationManager

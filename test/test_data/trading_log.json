@@ -7,7 +7,8 @@
             "symbol": "",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "13/10/2017",
@@ -16,7 +17,8 @@
             "symbol": "MOCK1",
             "price": 1255.0,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "13/10/2017",
@@ -25,7 +27,8 @@
             "symbol": "MOCK2",
             "price": 44.8501,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "17/10/2017",
@@ -34,7 +37,8 @@
             "symbol": "MOCK3",
             "price": 524.0957,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "18/10/2017",
@@ -43,7 +47,8 @@
             "symbol": "MOCK3",
             "price": 442.1206,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "20/10/2017",
@@ -52,7 +57,8 @@
             "symbol": "MOCK4",
             "price": 488.54,
             "fee": 5.95,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "24/10/2017",
@@ -61,7 +67,8 @@
             "symbol": "",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "24/10/2017",
@@ -70,7 +77,8 @@
             "symbol": "MOCK3",
             "price": 470.3809,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "26/10/2017",
@@ -79,7 +87,8 @@
             "symbol": "MOCK2",
             "price": 40.06,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "02/11/2017",
@@ -88,7 +97,8 @@
             "symbol": "",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "02/11/2017",
@@ -97,7 +107,8 @@
             "symbol": "MOCK5",
             "price": 74.8993,
             "fee": 5.95,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "02/11/2017",
@@ -106,7 +117,8 @@
             "symbol": "MOCK6",
             "price": 1494.0,
             "fee": 5.95,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "02/11/2017",
@@ -115,7 +127,8 @@
             "symbol": "MOCK7",
             "price": 769.3968,
             "fee": 5.95,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "15/11/2017",
@@ -124,7 +137,8 @@
             "symbol": "MOCK1",
             "price": 1282.0,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "15/11/2017",
@@ -133,7 +147,8 @@
             "symbol": "MOCK3",
             "price": 426.7508,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "20/11/2017",
@@ -142,7 +157,8 @@
             "symbol": "MOCK1",
             "price": 1563.3464,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "28/11/2017",
@@ -151,7 +167,8 @@
             "symbol": "MOCK6",
             "price": 1328.76,
             "fee": 5.95,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "15/12/2017",
@@ -160,7 +177,8 @@
             "symbol": "MOCK4",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "12/02/2018",
@@ -169,7 +187,8 @@
             "symbol": "MOCK8",
             "price": 1217.675,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "12/02/2018",
@@ -178,7 +197,8 @@
             "symbol": "MOCK9",
             "price": 402.1475,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "23/02/2018",
@@ -187,7 +207,8 @@
             "symbol": "",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "23/02/2018",
@@ -196,7 +217,8 @@
             "symbol": "MOCK10",
             "price": 134.5,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "06/03/2018",
@@ -205,7 +227,8 @@
             "symbol": "MOCK7",
             "price": 750.0,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "06/03/2018",
@@ -214,7 +237,8 @@
             "symbol": "MOCK7",
             "price": 744.2031,
             "fee": 8.0,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "07/03/2018",
@@ -223,7 +247,8 @@
             "symbol": "MOCK9",
             "price": 345.0,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "12/03/2018",
@@ -232,7 +257,8 @@
             "symbol": "MOCK1",
             "price": 1600.0,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "19/03/2018",
@@ -241,7 +267,8 @@
             "symbol": "MOCK7",
             "price": 735.0,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "21/03/2018",
@@ -250,7 +277,8 @@
             "symbol": "MOCK4",
             "price": 605.4814,
             "fee": 8.0,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "21/03/2018",
@@ -259,7 +287,8 @@
             "symbol": "MOCK10",
             "price": 135.5363,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "04/04/2018",
@@ -268,7 +297,8 @@
             "symbol": "MOCK10",
             "price": 114.9,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "13/04/2018",
@@ -277,7 +307,8 @@
             "symbol": "MOCK8",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "20/04/2018",
@@ -286,7 +317,8 @@
             "symbol": "MOCK10",
             "price": 109.8764,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "27/04/2018",
@@ -295,7 +327,8 @@
             "symbol": "MOCK11",
             "price": 64.587,
             "fee": 8.0,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "30/04/2018",
@@ -304,7 +337,8 @@
             "symbol": "MOCK12",
             "price": 17.9,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "30/04/2018",
@@ -313,7 +347,8 @@
             "symbol": "MOCK8",
             "price": 1220.0,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "04/05/2018",
@@ -322,7 +357,8 @@
             "symbol": "MOCK5",
             "price": 90.35,
             "fee": 5.0,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "14/05/2018",
@@ -331,7 +367,8 @@
             "symbol": "MOCK4",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "21/05/2018",
@@ -340,7 +377,8 @@
             "symbol": "MOCK12",
             "price": 12.044,
             "fee": 5.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "08/06/2018",
@@ -349,7 +387,8 @@
             "symbol": "MOCK5",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "18/07/2018",
@@ -358,7 +397,8 @@
             "symbol": "MOCK5",
             "price": 101.98,
             "fee": 8.0,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "16/08/2018",
@@ -367,7 +407,8 @@
             "symbol": "MOCK5",
             "price": 95.12,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "16/08/2018",
@@ -376,7 +417,8 @@
             "symbol": "MOCK11",
             "price": 59.574,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "24/08/2018",
@@ -385,7 +427,8 @@
             "symbol": "",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "07/09/2018",
@@ -394,7 +437,8 @@
             "symbol": "MOCK13",
             "price": 184.2,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "28/09/2018",
@@ -403,7 +447,8 @@
             "symbol": "MOCK11",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "09/11/2018",
@@ -412,7 +457,8 @@
             "symbol": "MOCK13",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "20/11/2018",
@@ -421,7 +467,8 @@
             "symbol": "MOCK13",
             "price": 170.86,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "28/11/2018",
@@ -430,7 +477,8 @@
             "symbol": "MOCK1",
             "price": 1404.0,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "29/11/2018",
@@ -439,7 +487,8 @@
             "symbol": "MOCK1",
             "price": 1494.1818,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "29/11/2018",
@@ -448,7 +497,8 @@
             "symbol": "MOCK4",
             "price": 615.7576,
             "fee": 8.0,
-            "stamp_duty": 0.5
+            "stamp_duty": 0.5,
+            "notes": ""
         },
         {
             "date": "17/12/2018",
@@ -457,7 +507,8 @@
             "symbol": "MOCK4",
             "price": 0.0,
             "fee": 0.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "17/12/2018",
@@ -466,7 +517,8 @@
             "symbol": "MOCK1",
             "price": 1085.56,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "19/12/2018",
@@ -475,7 +527,8 @@
             "symbol": "MOCK1",
             "price": 1104.44,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "21/12/2018",
@@ -484,7 +537,8 @@
             "symbol": "MOCK13",
             "price": 166.984,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "23/01/2019",
@@ -493,7 +547,8 @@
             "symbol": "MOCK1",
             "price": 1153.92,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         },
         {
             "date": "29/01/2019",
@@ -502,7 +557,8 @@
             "symbol": "MOCK1",
             "price": 1338.8323,
             "fee": 8.0,
-            "stamp_duty": 0.0
+            "stamp_duty": 0.0,
+            "notes": ""
         }
     ]
 }

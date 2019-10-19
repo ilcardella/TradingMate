@@ -14,7 +14,7 @@ from Utils.Utils import Actions
 
 
 class Trade():
-    def __init__(self, date_string, action, quantity, symbol, price, fee, sdr):
+    def __init__(self, date_string, action, quantity, symbol, price, fee, sdr, notes):
         try:
             self.date = datetime.datetime.strptime(date_string, '%d/%m/%Y')
             if not isinstance(action, Actions):
@@ -25,6 +25,7 @@ class Trade():
             self.price = price
             self.fee = fee
             self.sdr = sdr
+            self.notes = notes
             self.total = self.__compute_total()
         except Exception as e:
             logging.error(e)
@@ -38,19 +39,21 @@ class Trade():
             'symbol': self.symbol,
             'price': self.price,
             'fee': self.fee,
-            'stamp_duty': self.sdr
+            'stamp_duty': self.sdr,
+            'notes': self.notes
         }
 
     @staticmethod
     def from_dict(item):
-        if any(['date' not in item, 'action' not in item, 'quantity' not in item, 'symbol' not in item, 'price' not in item, 'fee' not in item, 'stamp_duty' not in item]):
+        if any(['date' not in item, 'action' not in item, 'quantity' not in item, 'symbol' not in item, 'price' not in item, 'fee' not in item, 'stamp_duty' not in item, 'notes' not in item]):
             raise ValueError('item not well formatted')
 
         return Trade(item['date'], Actions[item['action']], item['quantity'],
-                     item['symbol'], float(item['price']), float(item['fee']), float(item['stamp_duty']))
+                     item['symbol'], float(item['price']), float(item['fee']),
+                     float(item['stamp_duty']), str(item['notes']))
 
     def __compute_total(self):
-        if self.action in (Actions.DEPOSIT, Actions.WITHDRAW, Actions.DIVIDEND):
+        if self.action in (Actions.DEPOSIT, Actions.WITHDRAW, Actions.DIVIDEND, Actions.FEE):
             return self.quantity
         elif self.action == Actions.BUY:
             cost = (self.price / 100) * self.quantity

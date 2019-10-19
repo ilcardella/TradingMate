@@ -199,6 +199,8 @@ class Portfolio():
                         del self._holdings[trade.symbol]
                     profit = ((trade.price/100) * trade.quantity) - trade.fee
                     self._cash_available += profit
+                elif trade.action == Actions.FEE:
+                    self._cash_available -= trade.quantity
             self.price_getter.set_symbol_list(self.get_holding_symbols())
             for symbol in self._holdings.keys():
                 self._holdings[symbol].set_open_price(self.compute_avg_holding_open_price(symbol, trades_list))
@@ -234,7 +236,7 @@ class Portfolio():
         """
         Validate the new Trade request against the current Portfolio
         """
-        if newTrade.action == Actions.WITHDRAW:
+        if newTrade.action == Actions.WITHDRAW or newTrade.action == Actions.FEE:
             if newTrade.quantity > self.get_cash_available():
                 logging.warning(Messages.INSUF_FUNDING.value)
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
