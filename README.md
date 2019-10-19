@@ -36,17 +36,11 @@ You can install development packages adding the flag `--dev`
 
 After that, to install TradingMate simply run:
 ```
-sudo ./install.py
+./install.py
 ```
 
-All necessary files will be copied in `/opt/TradingMate` by default.
+All necessary files will be copied in `/$HOME/.TradingMate/bin` by default.
 It is recommended to add this path to your `PATH` environment variable.
-
-The last step is to set file permissions for your user on the installed folders with the
-following command:
-```shell
-sudo chown -R $USER: $HOME/.TradingMate
-```
 
 # Setup
 
@@ -56,7 +50,7 @@ TradingMate uses AlphaVantage to fetch markets data online:
 - Request a free api key
 - Insert these info in a file called `.credentials` in `$HOME/.TradingMate/data`
 ```
-touch $HOME/.TradingMate/data
+touch $HOME/.TradingMate/data/.credentials
 ```
 
 This must be in json format and contain:
@@ -86,7 +80,7 @@ These are the descriptions of each parameter:
 
 You can start TradingMate in your current terminal
 ```
-/opt/TradingMate/src/TradingMate.py
+$HOME/.TradingMate/bin/TradingMate.py
 ```
 or you can start it in detached mode, letting it run in the background
 ```

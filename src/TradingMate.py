@@ -22,7 +22,7 @@ class TradingMate():
     Main class that handles the interaction between the User Interface and the
     underlying business logic of the whole application
     """
-    LOG_FILEPATH = '{home}/.TradingMate/log/trading_mate_{timestamp}.log'
+    LOG_FILEPATH = os.path.join("{home}", ".TradingMate", "log", "trading_mate_{timestamp}.log")
 
     def __init__(self):
         self.setup_logging()
@@ -215,3 +215,6 @@ class TradingMate():
         self.portfolio.reload(self.db_handler.get_trades_list())
         self._update_share_trading_view(updateHistory=True)
         logging.info('TradingMate - application reloaded')
+
+if __name__ == "__main__":
+    TradingMate().start()
