@@ -103,6 +103,7 @@ ENV/
 .credentials
 .pytest_cache
 _builds
+_build
 pid.txt
 
 Pipfile.lock
