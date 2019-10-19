@@ -30,7 +30,7 @@ sudo apt-get update && sudo apt-get install python3-tk
 Clone this repo in your workspace and setup the python virtual environment
 by running the following commands in the repository root folder
 ```
-pipenv install --three
+pipenv install
 ```
 You can install development packages adding the flag `--dev`
 

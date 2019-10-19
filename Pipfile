@@ -14,3 +14,6 @@ Sphinx = "==2.0.1"
 [packages]
 requests = "==2.22.0"
 alpha_vantage = "==2.1.0"
+
+[requires]
+python_version = "3.7.5rc1"
