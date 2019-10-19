@@ -22,7 +22,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         self.confirmCallback = confirmCallback
         self.transient(self.master)
         self.title("Add Trade")
-        self.geometry("+%d+%d" % (self.master.winfo_rootx()+400, self.master.winfo_rooty()+100))
+        self.geometry("+{}+{}".format(self.master.winfo_rootx()+400, self.master.winfo_rooty()+100))
         self.protocol("WM_DELETE_WINDOW", self.destroy)
         self.grab_set()
         self.focus_set()
@@ -39,6 +39,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         ttk.Label(self, text="Price [p] :").grid(row=5, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Fee [£] :").grid(row=6, sticky="w", padx=5, pady=5)
         ttk.Label(self, text="Stamp Duty [%] :").grid(row=7, sticky="w", padx=5, pady=5)
+        ttk.Label(self, text="Notes:").grid(row=8, sticky="w", padx=5, pady=5)
 
         # Define the date entry widget
         self.dateSelected = tk.StringVar()
@@ -84,10 +85,15 @@ class AddTradeDialogWindow(tk.Toplevel):
         self.eStampDuty = ttk.Entry(self, textvariable=self.stampDutySelected)
         self.eStampDuty.grid(row=7, column=1, sticky="w", padx=5, pady=5)
 
+        self.notesSelected = tk.StringVar()
+        self.notesSelected.trace_add('write', self.check_data_validity)
+        self.eNotes = ttk.Entry(self, textvariable=self.notesSelected)
+        self.eNotes.grid(row=8, column=1, sticky="w", padx=5, pady=5)
+
         cancelButton = ttk.Button(self, text="Cancel", command=self.destroy)
-        cancelButton.grid(row=8, column=0, sticky="e", padx=5, pady=5)
+        cancelButton.grid(row=9, column=0, sticky="e", padx=5, pady=5)
         self.addButton = ttk.Button(self, text="Add", command=self.add_new_trade)
-        self.addButton.grid(row=8, column=1, sticky="e", padx=5, pady=5)
+        self.addButton.grid(row=9, column=1, sticky="e", padx=5, pady=5)
         self.addButton.config(state="disabled")
 
         # Make the mas ter thread block execution until this window is closed
@@ -103,6 +109,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         self.priceSelected.set("")
         self.feeSelected.set("")
         self.stampDutySelected.set("")
+        self.notesSelected.set("")
         # Change layout
         if selection == Actions.BUY.name:
             self.eMarket.config(state='enabled')
@@ -111,6 +118,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             self.ePrice.config(state='enabled')
             self.eFee.config(state='enabled')
             self.eStampDuty.config(state='enabled')
+            self.eNotes.config(state='enabled')
         elif selection == Actions.SELL.name:
             self.eMarket.config(state='enabled')
             self.eSymbol.config(state='enabled')
@@ -118,6 +126,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             self.ePrice.config(state='enabled')
             self.eFee.config(state='enabled')
             self.eStampDuty.config(state='disabled')
+            self.eNotes.config(state='enabled')
         elif selection == Actions.DEPOSIT.name:
             self.eMarket.config(state='disabled')
             self.eSymbol.config(state='disabled')
@@ -125,6 +134,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             self.ePrice.config(state='disabled')
             self.eFee.config(state='disabled')
             self.eStampDuty.config(state='disabled')
+            self.eNotes.config(state='enabled')
         elif selection == Actions.DIVIDEND.name:
             self.eMarket.config(state='enabled')
             self.eSymbol.config(state='enabled')
@@ -132,6 +142,7 @@ class AddTradeDialogWindow(tk.Toplevel):
             self.ePrice.config(state='disabled')
             self.eFee.config(state='disabled')
             self.eStampDuty.config(state='disabled')
+            self.eNotes.config(state='enabled')
         elif selection == Actions.WITHDRAW.name:
             self.eMarket.config(state='disabled')
             self.eSymbol.config(state='disabled')
@@ -139,6 +150,15 @@ class AddTradeDialogWindow(tk.Toplevel):
             self.ePrice.config(state='disabled')
             self.eFee.config(state='disabled')
             self.eStampDuty.config(state='disabled')
+            self.eNotes.config(state='enabled')
+        elif selection == Actions.FEE.name:
+            self.eMarket.config(state='disabled')
+            self.eSymbol.config(state='disabled')
+            self.e_quantity.config(state='enabled')
+            self.ePrice.config(state='disabled')
+            self.eFee.config(state='disabled')
+            self.eStampDuty.config(state='disabled')
+            self.eNotes.config(state='enabled')
 
     def add_new_trade(self):
         # Get selected data and call callback
@@ -151,6 +171,7 @@ class AddTradeDialogWindow(tk.Toplevel):
         item["price"] = float(self.priceSelected.get()) if self.priceSelected.get() is not "" else 0
         item["fee"] = float(self.feeSelected.get()) if self.feeSelected.get() is not "" else 0
         item["stamp_duty"] = float(self.stampDutySelected.get()) if self.stampDutySelected.get() is not "" else 0
+        item["notes"] = str(self.notesSelected.get())
         newTrade = Trade.from_dict(item)
         result = self.confirmCallback(newTrade)
 
@@ -161,8 +182,13 @@ class AddTradeDialogWindow(tk.Toplevel):
 
     def check_data_validity(self, *args):
         # Check the validity of the Entry widgets data to enable the Add button
-        valid = self.is_date_valid() and self.is_symbol_valid() and self.is_quantity_valid() \
-                and self.is_price_valid() and self.is_fee_valid() and self.is_sd_valid()
+        valid = self.is_date_valid() \
+                and self.is_symbol_valid() \
+                and self.is_quantity_valid() \
+                and self.is_price_valid() \
+                and self.is_fee_valid() \
+                and self.is_sd_valid() \
+                and self.is_notes_valid()
         self.addButton.config(state="normal" if valid else "disabled")
 
     def is_date_valid(self):
@@ -230,3 +256,14 @@ class AddTradeDialogWindow(tk.Toplevel):
             return False
         except Exception:
             return False
+
+    def is_notes_valid(self):
+        # If widget is disabled it should not affect the overall validity
+        if str(self.eNotes.cget("state")) == tk.DISABLED:
+            return True
+        try:
+            test = str(self.notesSelected.get())
+        except Exception as e:
+            return False
+        return True
+
