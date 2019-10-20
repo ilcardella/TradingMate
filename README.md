@@ -5,7 +5,7 @@ TradingMate is a portfolio manager for stocks traders. It lets you record all
 your trades with a simple and basic interface, showing the current status of
 your assets and the overall profit (or loss!)
 
-# Dependencies
+## Dependencies
 
 - Python 3.5+
 - Pipenv
@@ -14,17 +14,19 @@ your assets and the overall profit (or loss!)
 
 View `Pipfile` for the full list of python dependencies.
 
-# Install
+## Install
 
 First install python 3 and pipenv
 ```
-sudo apt-get update && sudo apt-get install python3 python3-pip
+sudo apt-get update
+sudo apt-get install python3 python3-pip
 sudo -H pip3 install -U pipenv
 ```
 
 The UI is based on Tkinter so let's install it
 ```
-sudo apt-get update && sudo apt-get install python3-tk
+sudo apt-get update
+sudo apt-get install python3-tk
 ```
 
 Clone this repo in your workspace and setup the python virtual environment
@@ -39,10 +41,14 @@ After that, to install TradingMate simply run:
 ./install.py
 ```
 
-All necessary files will be copied in `/$HOME/.TradingMate/bin` by default.
-It is recommended to add this path to your `PATH` environment variable.
+All necessary files will be copied in `/$HOME/.TradingMate/bin`.
+It is recommended to add this path to your `PATH` environment variable adding
+the following to your `.bashrc`:
+```
+export PATH="$HOME/.TradingMate/bin:$PATH"
+```
 
-# Setup
+## Setup
 
 TradingMate uses AlphaVantage to fetch markets data online:
 
@@ -76,34 +82,43 @@ These are the descriptions of each parameter:
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
 - **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
 
-# Start TradingMate
+## Start TradingMate
 
 You can start TradingMate in your current terminal
 ```
-$HOME/.TradingMate/bin/TradingMate.py
+$HOME/.TradingMate/bin/TradingMate
 ```
 or you can start it in detached mode, letting it run in the background
 ```
-nohup /opt/TradingMate/src/TradingMate.py >/dev/null 2>&1 &
+nohup $HOME/.TradingMate/bin/TradingMate >/dev/null 2>&1 &
 ```
 
-# Stop TradingMate
+The first time you will run TradingMate after the installation, it will setup
+the pipenv virtual environment automatically.
+
+## Stop TradingMate
 
 To stop a TradingMate instance running in the background
 ```
 ps -ef | grep TradingMate | xargs kill -9
 ```
 
-# Test
+## Development
+
+As mentioned before you can install any development packages with:
+```
+cd /path/to/cloned/repo
+pipenv install --dev
+```
+
+### Test
 
 You can run the test from the workspace with:
 ```
 pipenv run pytest
 ```
 
-NOTE: you must have installed the python dependencies with the `--dev` flag
-
-# Documentation
+### Documentation
 
 The Sphinx documentation contains further details about each TradingMate module
 with source code documentation of each component.
@@ -119,7 +134,7 @@ pipenv run sphinx-build -nWT -b html doc doc/_build/html
 
 The generated html files will be under `doc/_build/html`.
 
-# Contributing
+## Contributing
 
 Any contribution or suggestion is welcome, please follow the suggested workflow.
 

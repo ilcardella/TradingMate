@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+BIN_DIR="$HOME/.TradingMate/bin"
+
+if [[ ! -d $BIN_DIR ]]; then
+    echo "Installation directory not found: $BIN_DIR"
+    exit 1
+fi
+
+# Create virtualenv if it does exist
+if [[ ! -d $( pipenv --venv ) ]]; then
+    echo "Creating pipenv environment..."
+    pipenv install --deploy
+fi
+
+# Run TradingMate in virtualenv
+pipenv run python $BIN_DIR/TradingMate.py "$@"

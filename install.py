@@ -4,6 +4,7 @@ import os
 import shutil
 import time
 
+# Directories paths
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 HOME_DIR = os.path.expanduser("~")
 TRADINGMATE_DIR = os.path.join(HOME_DIR, ".TradingMate")
@@ -11,7 +12,10 @@ LOG_DIR = os.path.join(TRADINGMATE_DIR, "log")
 DATA_DIR = os.path.join(TRADINGMATE_DIR, "data")
 CONFIG_DIR = os.path.join(TRADINGMATE_DIR, "config")
 INSTALL_DIR = os.path.join(TRADINGMATE_DIR, "bin")
+# Files paths
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
+PIPFILE = os.path.join(SCRIPT_DIR, "Pipfile")
+START_SCRIPT = os.path.join(SCRIPT_DIR, "TradingMate")
 
 
 def install():
@@ -27,6 +31,9 @@ def install():
         INSTALL_DIR,
         ignore=shutil.ignore_patterns("*.pc", "__pycache__"),
     )
+    # Copy start script and pipfile to install directory
+    shutil.copy(PIPFILE, INSTALL_DIR)
+    shutil.copy(START_SCRIPT, INSTALL_DIR)
     # Create TradingMate user folder
     print("Creating user folders in {}".format(TRADINGMATE_DIR))
     os.makedirs(TRADINGMATE_DIR, exist_ok=True)

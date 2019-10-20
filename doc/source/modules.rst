@@ -6,7 +6,7 @@ component of TradingMate.
 
 
 TradingMate
-^^^^^^^^^^^
+-----------
 
 .. automodule:: TradingMate
 
@@ -14,14 +14,14 @@ TradingMate
     :members:
 
 Model
-^^^^^
+-----
 
 The ``Model`` module contains the business logic and the data management of
 TradingMate.
 
 
 Holding
-"""""""
+^^^^^^^
 
 .. automodule:: Model.Holding
 
@@ -29,7 +29,7 @@ Holding
     :members:
 
 Portfolio
-"""""""""
+^^^^^^^^^
 
 .. automodule:: Model.Portfolio
 
@@ -37,7 +37,7 @@ Portfolio
     :members:
 
 DatabaseHandler
-"""""""""""""""
+^^^^^^^^^^^^^^^
 
 .. automodule:: Model.DatabaseHandler
 
@@ -45,7 +45,7 @@ DatabaseHandler
     :members:
 
 StockPriceGetter
-""""""""""""""""
+^^^^^^^^^^^^^^^^
 
 .. automodule:: Model.StockPriceGetter
 
@@ -53,13 +53,13 @@ StockPriceGetter
     :members:
 
 UI
-^^^
+---
 
 The ``UI`` module contains the components that compose the User Interface
 of TradingMate.
 
 View
-""""
+^^^^
 
 .. automodule:: UI.View
 
@@ -67,7 +67,7 @@ View
     :members:
 
 ShareTradingFrame
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
 
 .. automodule:: UI.ShareTradingFrame
 
@@ -75,7 +75,7 @@ ShareTradingFrame
     :members:
 
 AddTradeDialogWindow
-""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: UI.AddTradeDialogWindow
 
@@ -83,7 +83,7 @@ AddTradeDialogWindow
     :members:
 
 WarningWindow
-"""""""""""""
+^^^^^^^^^^^^^
 
 .. automodule:: UI.WarningWindow
 
@@ -91,7 +91,7 @@ WarningWindow
     :members:
 
 Widgets
-"""""""
+^^^^^^^
 
 .. automodule:: UI.Widgets
 
@@ -99,7 +99,7 @@ Widgets
     :members:
 
 Utils
-^^^^^
+-----
 
 The ``Utils`` module contains all the utlity components.
 
@@ -121,7 +121,7 @@ TaskThread
     :members:
 
 Trade
-^^^^^^^^^^
+^^^^^
 
 .. automodule:: Utils.Trade
 
