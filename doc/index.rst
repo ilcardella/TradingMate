@@ -2,7 +2,7 @@ TradingMate's documentation
 ===========================
 
 Introduction
-^^^^^^^^^^^^
+------------
 
 TradingMate is an autonomous trading system that uses customised strategies to
 trade in the London Stock Exchange market.
