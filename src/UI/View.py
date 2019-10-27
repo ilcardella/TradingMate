@@ -6,6 +6,7 @@ from tkinter import ttk
 from tkinter import StringVar
 from tkinter import filedialog
 
+assets_dir = os.path.join(os.path.expanduser('~'), '.TradingMate', 'data')
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -30,7 +31,7 @@ class View():
         # Create main window
         self.mainWindow = tk.Tk()
         self.mainWindow.title(APP_NAME)
-        img = tk.Image("photo", file=currentdir + '/assets/trading_mate_icon.png')
+        img = tk.Image("photo", file=assets_dir + '/assets/trading_mate_icon.png')
         self.mainWindow.tk.call('wm','iconphoto',self.mainWindow._w,img)
         self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
         self.mainWindow.geometry("1024x600")
