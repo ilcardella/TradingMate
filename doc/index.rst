@@ -11,11 +11,10 @@ new trading strategies and how to integrate them with TradingMate.
 Explore the next sections for a detailed documentation of each module too.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :numbered:
 
    source/system.rst
    source/modules.rst
    source/changelog.rst
 
-.. mdinclude:: ../README.md

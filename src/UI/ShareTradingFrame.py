@@ -4,6 +4,7 @@ import inspect
 import tkinter as tk
 from tkinter import ttk
 
+assets_dir = os.path.join(os.path.expanduser('~'), '.TradingMate', 'data')
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -30,17 +31,17 @@ class ShareTradingFrame(tk.Frame):
         buttonsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
-        self.open_icon = tk.PhotoImage(file=currentdir + "/assets/open_file_icon.png").subsample(2)
+        self.open_icon = tk.PhotoImage(file=assets_dir + "/assets/open_file_icon.png").subsample(2)
         openButton = ttk.Button(buttonsFrame, text="Open Portfolio...", command=self._open_portfolio)
         openButton.pack(side="left", anchor="n", padx=5, pady=5)
         openButton.config(image=self.open_icon)
 
-        self.save_icon = tk.PhotoImage(file=currentdir + "/assets/save_file_icon.png").subsample(2)
+        self.save_icon = tk.PhotoImage(file=assets_dir + "/assets/save_file_icon.png").subsample(2)
         saveButton = ttk.Button(buttonsFrame, text="Save Portfolio...", command=self._save_portfolio)
         saveButton.pack(side="left", anchor="n", padx=5, pady=5)
         saveButton.config(image=self.save_icon)
 
-        self.add_icon = tk.PhotoImage(file=currentdir + "/assets/add_icon.png").subsample(2)
+        self.add_icon = tk.PhotoImage(file=assets_dir + "/assets/add_icon.png").subsample(2)
         addTradeButton = ttk.Button(buttonsFrame, text="Add Trade...", command=self._display_add_trade_panel)
         addTradeButton.pack(side="left", anchor="n", padx=5, pady=5)
         addTradeButton.config(image=self.add_icon)

@@ -216,5 +216,8 @@ class TradingMate():
         self._update_share_trading_view(updateHistory=True)
         logging.info('TradingMate - application reloaded')
 
-if __name__ == "__main__":
+def main():
     TradingMate().start()
+
+if __name__ == "__main__":
+    main()

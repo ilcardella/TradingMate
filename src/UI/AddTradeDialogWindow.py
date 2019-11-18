@@ -266,4 +266,3 @@ class AddTradeDialogWindow(tk.Toplevel):
         except Exception as e:
             return False
         return True
-
