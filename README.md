@@ -8,11 +8,11 @@ your assets and the overall profit (or loss!)
 ## Dependencies
 
 - Python 3.5+
-- Pipenv
+- Pipenv (optional)
 - Tkinter: https://docs.python.org/3/library/tk.html
 - AlphaVantage: https://www.alphavantage.co/
 
-View `Pipfile` for the full list of python dependencies.
+    View `Pipfile` or `setup.py` for the full list of python dependencies.
 
 ## Install
 
@@ -20,7 +20,6 @@ First install python 3 and pipenv
 ```
 sudo apt-get update
 sudo apt-get install python3 python3-pip
-sudo -H pip3 install -U pipenv
 ```
 
 The UI is based on Tkinter so let's install it
@@ -29,23 +28,9 @@ sudo apt-get update
 sudo apt-get install python3-tk
 ```
 
-Clone this repo in your workspace and setup the python virtual environment
-by running the following commands in the repository root folder
+Clone this repo in your workspace and install `TradingMate` by running the following command in the repository root folder
 ```
-pipenv install
-```
-You can install development packages adding the flag `--dev`
-
-After that, to install TradingMate simply run:
-```
-./install.py
-```
-
-All necessary files will be copied in `/$HOME/.TradingMate/bin`.
-It is recommended to add this path to your `PATH` environment variable adding
-the following to your `.bashrc`:
-```
-export PATH="$HOME/.TradingMate/bin:$PATH"
+python setup.py install
 ```
 
 ## Setup
@@ -55,23 +40,24 @@ TradingMate uses AlphaVantage to fetch markets data online:
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
 - Insert these info in a file called `.credentials` in `$HOME/.TradingMate/data`
-```
-touch $HOME/.TradingMate/data/.credentials
-```
+    ```
+    touch $HOME/.TradingMate/data/.credentials
+    ```
 
-This must be in json format and contain:
-```
-{
+    This must be in json format and contain:
+    ```
+    {
     "av_api_key": "apiKey"
-}
-```
+    }
+    ```
 
 - Revoke permissions to read the file by others
 
-```
-cd $HOME/.TradingMate/data
-sudo chmod 600 .credentials
-```
+    ```
+    cd $HOME/.TradingMate/data
+    sudo chmod 600 .credentials
+    ```
+
 ### Configuration file
 
 The `config.json` file is in the `$HOME/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
@@ -86,28 +72,31 @@ These are the descriptions of each parameter:
 
 You can start TradingMate in your current terminal
 ```
-$HOME/.TradingMate/bin/TradingMate
+trading_mate
 ```
 or you can start it in detached mode, letting it run in the background
 ```
-nohup $HOME/.TradingMate/bin/TradingMate >/dev/null 2>&1 &
+nohup trading_mate >/dev/null 2>&1 &
 ```
-
-The first time you will run TradingMate after the installation, it will setup
-the pipenv virtual environment automatically.
 
 ## Stop TradingMate
 
 To stop a TradingMate instance running in the background
 ```
-ps -ef | grep TradingMate | xargs kill -9
+ps -ef | grep trading_mate | xargs kill -9
 ```
 
 ## Development
 
-As mentioned before you can install any development packages with:
+The `Pipfile` helps you to setup a development virtual environmnet installing the required dependencies.
+Install `pipenv`
 ```
-cd /path/to/cloned/repo
+sudo -H pip3 install -U pipenv
+```
+
+Create the virtual environment
+```
+cd /path/to/repository
 pipenv install --dev
 ```
 
