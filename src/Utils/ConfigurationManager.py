@@ -19,7 +19,7 @@ class ConfigurationManager():
 
     def __init__(self):
         # Define the config filepath
-        self.config_filepath = '{}/.TradingMate/config/config.json'.format(Utils.get_home_path())
+        self.config_filepath = '{}/config/config.json'.format(Utils.get_install_path())
         os.makedirs(os.path.dirname(self.config_filepath), exist_ok=True)
         self.config = Utils.load_json_file(self.config_filepath)
         if self.config is None:
@@ -34,9 +34,8 @@ class ConfigurationManager():
         """
         try:
             credentials_filepath = self.config['general']['credentials_filepath']
-            credentials_filepath = credentials_filepath.replace('{home}', Utils.get_home_path())
         except:
-            credentials_filepath = '{}/.TradingMate/config/.credentials'.format(Utils.get_home_path())
+            credentials_filepath = '{}/config/.credentials'.format(Utils.get_install_path())
             os.makedirs(os.path.dirname(credentials_filepath), exist_ok=True)
             logging.error("credentials filepath parameter not configured! Using default: {}".format(credentials_filepath))
 

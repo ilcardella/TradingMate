@@ -22,7 +22,7 @@ class TradingMate():
     Main class that handles the interaction between the User Interface and the
     underlying business logic of the whole application
     """
-    LOG_FILEPATH = os.path.join("{home}", ".TradingMate", "log", "trading_mate_{timestamp}.log")
+    LOG_FILEPATH = os.path.join(Utils.get_install_path(), "log", "trading_mate_{timestamp}.log")
 
     def __init__(self):
         self.setup_logging()
@@ -44,8 +44,7 @@ class TradingMate():
         """
         time_str = dt.datetime.now().isoformat()
         time_suffix = time_str.replace(':', '_').replace('.', '_')
-        log_filename = self.LOG_FILEPATH.replace(
-            '{timestamp}', time_suffix).replace('{home}', Utils.get_home_path())
+        log_filename = self.LOG_FILEPATH.replace('{timestamp}', time_suffix)
         os.makedirs(os.path.dirname(log_filename), exist_ok=True)
         logging.basicConfig(filename=log_filename,
                             level=logging.INFO,

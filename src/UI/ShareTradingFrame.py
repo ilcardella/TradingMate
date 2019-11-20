@@ -4,16 +4,16 @@ import inspect
 import tkinter as tk
 from tkinter import ttk
 
-assets_dir = os.path.join(os.path.expanduser('~'), '.TradingMate', 'data')
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-from Utils.Utils import Callbacks
+from Utils.Utils import Callbacks, Utils
 from .AddTradeDialogWindow import AddTradeDialogWindow
 from .ConfirmWindow import ConfirmWindow
 
 INVALID_STRING = "-"
+assets_dir = os.path.join(Utils.get_install_path(), 'data')
 
 class ShareTradingFrame(tk.Frame):
 

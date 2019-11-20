@@ -25,10 +25,10 @@ setup(
         'src/UI/assets': ['*.png']
     },
     data_files=[
-        (os.path.join(os.path.expanduser('~'), '.TradingMate', 'config'), ['config/config.json']),
-        (os.path.join(os.path.expanduser('~'), '.TradingMate', 'data'), ['data/trading_log.json']),
+        (os.path.join(os.sep, 'opt', 'TradingMate', 'config'), ['config/config.json']),
+        (os.path.join(os.sep, 'opt', 'TradingMate', 'data'), ['data/trading_log.json']),
 
-        (os.path.join(os.path.expanduser('~'), '.TradingMate', 'data', 'assets'),[
+        (os.path.join(os.sep, 'opt', 'TradingMate', 'data', 'assets'),[
             'src/UI/assets/trading_mate_icon.png',
             'src/UI/assets/add_icon.png',
             'src/UI/assets/open_file_icon.png',

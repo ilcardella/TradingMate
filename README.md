@@ -86,6 +86,12 @@ To stop a TradingMate instance running in the background
 ps -ef | grep trading_mate | xargs kill -9
 ```
 
+## Uninstall
+You can use `pip` to uninstall `TradingMate`:
+```
+sudo pip3 uninstall TradingMate
+```
+
 ## Development
 
 The `Pipfile` helps you to setup a development virtual environmnet installing the required dependencies.

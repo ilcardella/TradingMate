@@ -86,10 +86,8 @@ class Utils():
         return False
 
     @staticmethod
-    def get_home_path():
+    def get_install_path():
         """
-        Returns the user home folder path as string
+        Returns the installation path of TradingMate
         """
-        if sys.version_info < (3,5):
-            return str(os.path.expanduser("~"))
-        return str(Path.home())
+        return os.path.join(os.sep, 'opt', 'TradingMate')

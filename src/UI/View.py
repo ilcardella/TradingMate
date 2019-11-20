@@ -6,7 +6,6 @@ from tkinter import ttk
 from tkinter import StringVar
 from tkinter import filedialog
 
-assets_dir = os.path.join(os.path.expanduser('~'), '.TradingMate', 'data')
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -17,6 +16,7 @@ from .ShareTradingFrame import ShareTradingFrame
 from .SettingsWindow import SettingsWindow
 
 APP_NAME = "TradingMate"
+assets_dir = os.path.join(Utils.get_install_path(), 'data')
 
 class View():
 
@@ -121,7 +121,7 @@ class View():
 
     def on_open_portfolio_event(self):
         try:
-            filename = filedialog.askopenfilename(initialdir=Utils.get_home_path(
+            filename = filedialog.askopenfilename(initialdir=Utils.get_install_path(
             ), title="Select file", filetypes=(("json files", "*.json"), ("all files", "*.*")))
             if filename is not None and len(filename) > 0:
                 self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
@@ -130,7 +130,7 @@ class View():
 
     def on_save_portfolio_event(self):
         try:
-            filename =  filedialog.asksaveasfilename(initialdir=Utils.get_home_path(
+            filename =  filedialog.asksaveasfilename(initialdir=Utils.get_install_path(
             ),title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
             if filename is not None and len(filename) > 0:
                 self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
