@@ -17,18 +17,22 @@ class ConfigurationManager():
     static methods to provide the configurable parameters
     """
 
-    def __init__(self):
-        # Define the config filepath
-        self.config_filepath = '{}/config/config.json'.format(Utils.get_install_path())
-        os.makedirs(os.path.dirname(self.config_filepath), exist_ok=True)
+    def __init__(self, config_path):
+        self._load_config(config_path)
+        self._load_credentials()
+        logging.info('ConfigurationManager initialised')
+
+    def _load_config(self, config_path):
+        """
+        Load the configuration file
+        """
+        self.config_filepath = config_path
         self.config = Utils.load_json_file(self.config_filepath)
         if self.config is None:
             logging.error("Please configure TradingMate: {}".format(self.config_filepath))
             raise RuntimeError("Empty configuration file")
-        self.load_credentials()
-        logging.info('ConfigurationManager initialised')
 
-    def load_credentials(self):
+    def _load_credentials(self):
         """
         Load the credentials file
         """
@@ -89,7 +93,7 @@ class ConfigurationManager():
         """
         # Overwrite settings
         self.config = config
-        self.load_credentials()
+        self._load_credentials()
         # Remove credentials part
         del config['credentials']
         # Write into file

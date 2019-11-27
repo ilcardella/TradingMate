@@ -23,11 +23,12 @@ class TradingMate():
     underlying business logic of the whole application
     """
     LOG_FILEPATH = os.path.join(Utils.get_install_path(), "log", "trading_mate_{timestamp}.log")
+    CONFIG_FILEPATH = os.path.join(Utils.get_install_path(), 'config', 'config.json')
 
     def __init__(self):
         self.setup_logging()
         # Init the configuration manager
-        self.configurationManager = ConfigurationManager()
+        self.configurationManager = ConfigurationManager(CONFIG_FILEPATH)
         # Database handler
         self.db_handler = DatabaseHandler(self.configurationManager)
         # Init the portfolio

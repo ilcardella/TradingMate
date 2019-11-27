@@ -1,0 +1,14 @@
+{
+    "trading_logs": [
+        "test/test_data/trading_log.json",
+        "test/test_data/trading_log.json",
+        "test/test_data/trading_log.json"
+    ],
+    "general": {
+        "credentials_filepath": "test/test_data/.credentials"
+    },
+    "alpha_vantage": {
+        "api_base_uri": "https://www.alphavantage.co/query",
+        "polling_period_sec": 1
+    }
+}
