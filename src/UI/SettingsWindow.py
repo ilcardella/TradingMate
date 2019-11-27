@@ -41,7 +41,7 @@ class SettingsWindow(tk.Toplevel):
         self.e_cred_path = ttk.Entry(self, width=50, textvariable=self.credentials_string)
         self.e_cred_path.grid(row=1, column=1, sticky="e", padx=5, pady=5)
 
-        self.trading_log_string.set(self.config['general']['trading_log_path'])
+        self.trading_log_string.set(self.config['trading_logs'][0])
         self.credentials_string.set(self.config['general']['credentials_filepath'])
 
         cancelButton = ttk.Button(self, text="Cancel", command=self.destroy)
@@ -50,7 +50,7 @@ class SettingsWindow(tk.Toplevel):
         addButton.grid(row=2, column=1, sticky="e", padx=5, pady=5)
 
     def save(self):
-        self.config['general']['trading_log_path'] = self.trading_log_string.get()
+        self.config['trading_logs'] = list(self.trading_log_string.get())
         self.config['general']['credentials_filepath'] = self.credentials_string.get()
         try:
             self.save_cb(self.config)

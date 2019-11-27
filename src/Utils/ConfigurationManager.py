@@ -51,7 +51,7 @@ class ConfigurationManager():
         """
         Get the filepath of the trading log file
         """
-        return self.config['general']['trading_log_path']
+        return self.config['trading_logs']
 
     def get_credentials_path(self):
         """
