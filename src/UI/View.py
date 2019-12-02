@@ -8,142 +8,233 @@ from tkinter import filedialog
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
+sys.path.insert(0, parentdir)
 
 from Utils.Utils import Callbacks, Messages, Utils
 from .WarningWindow import WarningWindow
 from .ShareTradingFrame import ShareTradingFrame
 from .SettingsWindow import SettingsWindow
+from .TradingMateClient import TradingMateClient
 
 APP_NAME = "TradingMate"
-assets_dir = os.path.join(Utils.get_install_path(), 'data')
+assets_dir = os.path.join(Utils.get_install_path(), "data")
 
-class View():
 
-    def __init__(self):
+class View:
+    def __init__(self, server):
         # Local data initialisation
-        self.callbacks = {}
-        self.create_UI()
+        self._client = TradingMateClient(self, server)
+        self._portfolio_tabs = {}
+        # Create the user interface
+        self._create_UI()
 
-# GRAPHICAL DEFINITIONS
-
-    def create_UI(self):
+    def _create_UI(self):
         # Create main window
         self.mainWindow = tk.Tk()
         self.mainWindow.title(APP_NAME)
-        img = tk.Image("photo", file=assets_dir + '/assets/trading_mate_icon.png')
-        self.mainWindow.tk.call('wm','iconphoto',self.mainWindow._w,img)
-        self.mainWindow.protocol("WM_DELETE_WINDOW", self.on_close_event)
+        img = tk.Image("photo", file=assets_dir + "/assets/trading_mate_icon.png")
+        self.mainWindow.tk.call("wm", "iconphoto", self.mainWindow._w, img)
+        self.mainWindow.protocol("WM_DELETE_WINDOW", self._on_close_main_window_event)
         self.mainWindow.geometry("1024x600")
-        # Define the app menu
-        self.create_menu()
+        # Create the application main menu
+        self._create_menu()
         # Create the tab format window
         self.noteBook = ttk.Notebook(self.mainWindow)
         self.noteBook.pack(expand=1, fill="both")
-        # Create Share trading Tab
-        self.create_share_trading_tab()
 
-    def create_menu(self):
+    def _create_menu(self):
         self.menubar = tk.Menu(self.mainWindow)
         # Menu File
         filemenu = tk.Menu(self.menubar, tearoff=0)
         filemenu.add_command(label="Open...", command=self.on_open_portfolio_event)
         filemenu.add_command(label="Export...", command=self.on_save_portfolio_event)
         filemenu.add_command(label="Settings...", command=self.on_show_settings)
-        filemenu.add_command(label="Exit", command=self.on_close_event)
+        filemenu.add_command(label="Exit", command=self._on_close_main_window_event)
         self.menubar.add_cascade(label="File", menu=filemenu)
         # Menu About
         helpmenu = tk.Menu(self.menubar, tearoff=0)
-        helpmenu.add_command(label="About", command=self.show_about_popup)
+        helpmenu.add_command(label="About", command=self._show_about_popup)
         self.menubar.add_cascade(label="Help", menu=helpmenu)
         # Display the menu
         self.mainWindow.config(menu=self.menubar)
 
-    def create_share_trading_tab(self):
-        # Create the main frame container and add it to the notebook as a tab
-        self.shareTradingFrame = ShareTradingFrame(self.noteBook)
-        self.shareTradingFrame.pack(expand=True)
-        self.noteBook.add(self.shareTradingFrame, text="Shares Trading")
-        self.shareTradingFrame.set_callback(Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event)
-        self.shareTradingFrame.set_callback(Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
-        self.shareTradingFrame.set_callback(Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.set_auto_refresh_event)
-        self.shareTradingFrame.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
-        self.shareTradingFrame.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
-        self.shareTradingFrame.set_callback(Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event)
+    def _create_portfolio_tab(self, portfolio):
+        tab = ShareTradingFrame(self.noteBook, portfolio.get_id())
+        tab.pack(expand=True)
+        # TODO uncomment
+        # tab.set_auto_refresh()
+        tab.set_callback(
+            Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event
+        )
+        tab.set_callback(Callbacks.ON_NEW_TRADE_EVENT, self.on_new_trade_event)
+        tab.set_callback(
+            Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.set_auto_refresh_event
+        )
+        tab.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
+        tab.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
+        tab.set_callback(
+            Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event
+        )
+        self.noteBook.add(tab, text=portfolio.get_name())
+        self._portfolio_tabs[portfolio.get_id()] = tab
 
-    def start(self):
-        self.shareTradingFrame.set_auto_refresh()
-        # Start the view thread
-        self.mainWindow.mainloop()
+    def _update_share_trading_history_log(self, portfolio_id, log_list):
+        self._portfolio_tabs[portfolio_id].reset_view(True)
+        for entry in log_list:
+            self._portfolio_tabs[portfolio_id].add_entry_to_log_table(entry)
 
-    def set_callback(self, id, callback):
-        self.callbacks[id] = callback
+    def _update_share_trading_portfolio_balances(
+        self,
+        portfolio_id,
+        cash,
+        holdingsValue,
+        totalValue,
+        pl,
+        pl_perc,
+        holdingPL,
+        holdingPLPC,
+        validity,
+    ):
+        self._portfolio_tabs[portfolio_id].update_portfolio_balances(
+            cash,
+            holdingsValue,
+            totalValue,
+            pl,
+            pl_perc,
+            holdingPL,
+            holdingPLPC,
+            validity,
+        )
 
-# ******* MAIN WINDOW ***********
+    def _update_share_trading_holding(
+        self,
+        portfolio_id,
+        symbol,
+        quantity,
+        openPrice,
+        lastPrice,
+        cost,
+        value,
+        pl,
+        plPc,
+        validity,
+    ):
+        self._portfolio_tabs[portfolio_id].update_share_trading_holding(
+            symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity
+        )
 
-    def on_close_event(self):
-        # Notify the Controller and close the main window
-        self.callbacks[Callbacks.ON_CLOSE_VIEW_EVENT]()
+    # ******* MAIN WINDOW ***********
+
+    def _on_close_main_window_event(self):
+        self._client.stop()
         self.mainWindow.destroy()
 
-    def show_about_popup(self):
-        # Show the about panel
+    def _show_about_popup(self):
         WarningWindow(self.mainWindow, "About", Messages.ABOUT_MESSAGE.value)
 
-# ******* SHARE TRADING FRAME ************
+    def start(self):
+        """Start the User Interface"""
+        # Start thread to fetch data from the server
+        self._client.start()
+        # Start the user interface thread
+        self.mainWindow.mainloop()
 
-    def on_new_trade_event(self, newTrade):
+    # ******* SHARE TRADING FRAMES ************
+
+    def update_portfolio_tab(self, portfolio):
+        """Update the portfolio tab with the recent data"""
+        if portfolio.get_id() not in self._portfolio_tabs.keys():
+            self._create_portfolio_tab(portfolio)
+        # TODO Find a way to reset only if necessary
+        self.reset_view(portfolio.get_id())
+        # Update history table
+        self._update_share_trading_history_log(
+            portfolio.get_id(), portfolio.get_trade_history()[::-1]
+        )
+        # get the balances from the portfolio
+        cash = portfolio.get_cash_available()
+        holdingsValue = portfolio.get_holdings_value()
+        totalValue = portfolio.get_total_value()
+        pl = portfolio.get_portfolio_pl()
+        pl_perc = portfolio.get_portfolio_pl_perc()
+        holdingPL = portfolio.get_open_positions_pl()
+        holdingPLPC = portfolio.get_open_positions_pl_perc()
+        validity = True
+        for h in portfolio.get_holding_list():
+            self._update_share_trading_holding(
+                portfolio.get_id(),
+                h.get_symbol(),
+                h.get_quantity(),
+                h.get_open_price(),
+                h.get_last_price(),
+                h.get_cost(),
+                h.get_value(),
+                h.get_profit_loss(),
+                h.get_profit_loss_perc(),
+                h.get_last_price_valid(),
+            )
+            validity = validity and h.get_last_price_valid()
+        self._update_share_trading_portfolio_balances(
+            portfolio.get_id(),
+            cash,
+            holdingsValue,
+            totalValue,
+            pl,
+            pl_perc,
+            holdingPL,
+            holdingPLPC,
+            validity,
+        )
+
+    def reset_view(self, portfolio_id, reset_history=False):
+        # TODO check if need to remove reset_history
+        self._portfolio_tabs[portfolio_id].reset_view(reset_history)
+
+    def on_new_trade_event(self, new_trade, portfolio_id):
         try:
-            self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](newTrade)
-            return {'success': True, 'message': 'ok'}
+            self._client.new_trade_event(new_trade, portfolio_id)
+            return {"success": True, "message": "ok"}
         except RuntimeError as e:
-            return {'success': False, 'message': e}
+            return {"success": False, "message": e}
 
-    def on_manual_refresh_event(self):
-        # Notify the Controller to request new data
-        self.callbacks[Callbacks.ON_MANUAL_REFRESH_EVENT]()
+    def on_manual_refresh_event(self, portfolio_id):
+        self._client.manual_refresh_event(portfolio_id)
 
-    def reset_view(self, resetHistory=False):
-        self.shareTradingFrame.reset_view(resetHistory)
-
-    def update_share_trading_history_log(self, logList):
-        for entry in logList:
-            self.shareTradingFrame.add_entry_to_log_table(entry)
-
-    def update_share_trading_portfolio_balances(self, cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity):
-        self.shareTradingFrame.update_portfolio_balances(cash, holdingsValue, totalValue, pl, pl_perc, holdingPL, holdingPLPC, validity)
-
-    def update_share_trading_holding(self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity):
-        self.shareTradingFrame.update_share_trading_holding(symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity)
-
-    def set_auto_refresh_event(self, value):
-        self.callbacks[Callbacks.ON_SET_AUTO_REFRESH_EVENT](value)
+    def set_auto_refresh_event(self, value, portfolio_id):
+        self._client.set_auto_refresh_event(value, portfolio_id)
 
     def on_open_portfolio_event(self):
         try:
-            filename = filedialog.askopenfilename(initialdir=Utils.get_install_path(
-            ), title="Select file", filetypes=(("json files", "*.json"), ("all files", "*.*")))
+            filename = filedialog.askopenfilename(
+                initialdir=Utils.get_install_path(),
+                title="Select file",
+                filetypes=(("json files", "*.json"), ("all files", "*.*")),
+            )
             if filename is not None and len(filename) > 0:
                 self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
         except RuntimeError as e:
             WarningWindow(self.parent, "Warning", e)
 
-    def on_save_portfolio_event(self):
+    def on_save_portfolio_event(self, portfolio_id):
         try:
-            filename =  filedialog.asksaveasfilename(initialdir=Utils.get_install_path(
-            ),title="Select file",filetypes=(("json files","*.json"),("all files","*.*")))
+            filename = filedialog.asksaveasfilename(
+                initialdir=Utils.get_install_path(),
+                title="Select file",
+                filetypes=(("json files", "*.json"), ("all files", "*.*")),
+            )
             if filename is not None and len(filename) > 0:
-                self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](filename)
+                self._client.save_portfolio_event(portfolio_id, filename)
         except RuntimeError as e:
             WarningWindow(self.parent, "Warning", e)
 
-    def on_delete_last_trade_event(self):
+    def on_delete_last_trade_event(self, portfolio_id):
         try:
-            self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT]()
-            return {'success': True, 'message': 'ok'}
+            self._client.delete_last_trade_event(portfolio_id)
+            return {"success": True, "message": "ok"}
         except RuntimeError as e:
-            return {'success': False, 'message': e}
+            return {"success": False, "message": e}
 
     def on_show_settings(self):
-        config = self.callbacks[Callbacks.ON_SHOW_SETTINGS_EVENT]()
-        SettingsWindow(self.mainWindow, config, self.callbacks[Callbacks.ON_SAVE_SETTINGS_EVENT])
+        config = self._client.get_settings_event()
+        SettingsWindow(self.mainWindow, config, self._client.save_settings_event)
+

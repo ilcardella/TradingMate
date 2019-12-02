@@ -42,6 +42,7 @@ class StockPriceGetter(TaskThread):
             self.onNewPriceDataCallback()  # Notify the model
 
     def _fetch_price_data(self, symbol):
+        # TODO use alpha_vantage lib instead of manual request
         try:
             url = self._build_url("TIME_SERIES_DAILY",
                                   symbol, "5min", self.config.get_alpha_vantage_api_key())

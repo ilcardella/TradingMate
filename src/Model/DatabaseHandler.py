@@ -15,14 +15,12 @@ class DatabaseHandler():
     """
     Handles the IO operation with the database to handle persistent data
     """
-    def __init__(self, config):
+    def __init__(self, config, trading_log_path):
         """
         Initialise
         """
-        # By default use the configured filepath
-        self.db_filepath = config.get_trading_database_path()
-        os.makedirs(os.path.dirname(self.db_filepath), exist_ok=True)
-        # Create an empty list to store trades from database
+        self.db_filepath = trading_log_path
+        self.db_name = "unknown"
         self.trading_history = []
         logging.info('DatabaseHandler initialised')
 
@@ -36,12 +34,13 @@ class DatabaseHandler():
         logging.info('DatabaseHandler - reading data from {}'.format(path))
         self.db_filepath = path
         json_obj = Utils.load_json_file(path)
+        # Store the database name
+        self.db_name = json_obj['name']
+        # Create a list of all the trades in the json file
         self.trading_history.clear()
         if json_obj is not None:
-            # Create a list of all the trades in the json file
             for item in json_obj['trades']:
                 trade = Trade.from_dict(item)
-                # Store the list internally
                 self.trading_history.append(trade)
 
 
@@ -53,6 +52,7 @@ class DatabaseHandler():
         logging.info('DatabaseHandler - writing data to {}'.format(path))
         # Create a json object and store the trade history into it
         json_obj = {
+            'name': self.db_name,
             'trades': []
         }
         for t in self.trading_history:
@@ -65,6 +65,12 @@ class DatabaseHandler():
         Return the database filepath
         """
         return self.db_filepath
+
+    def get_trading_log_name(self):
+        """
+        Return the trading log database name
+        """
+        return self.db_name
 
     def get_trades_list(self):
         """

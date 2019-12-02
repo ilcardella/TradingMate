@@ -10,15 +10,15 @@ sys.path.insert(0, '{}/src'.format(parentdir))
 
 from Model.DatabaseHandler import DatabaseHandler
 from Utils.Trade import Trade
-from common.MockConfigurationManager import MockConfigurationManager
+from Utils.ConfigurationManager import ConfigurationManager
 
 @pytest.fixture
 def configuration():
-    return MockConfigurationManager()
+    return ConfigurationManager('test/test_data/config.json')
 
 @pytest.fixture
 def dbh(configuration):
-    return DatabaseHandler(configuration)
+    return DatabaseHandler(configuration, 'test/test_data/trading_log.json')
 
 def test_read_data(dbh):
     """
@@ -84,3 +84,7 @@ def test_remove_last_trade(dbh):
     assert len(dbh.trading_history) == 1
     dbh.remove_last_trade()
     assert len(dbh.trading_history) == 0
+
+def test_get_trading_log_name(dbh):
+    """Test the db name is read"""
+    assert dbh.get_trading_log_name() == 'mock1'

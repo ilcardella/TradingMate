@@ -12,7 +12,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, '{}/src'.format(parentdir))
 
 from Model.Portfolio import Portfolio
-from common.MockConfigurationManager import MockConfigurationManager
+from Utils.ConfigurationManager import ConfigurationManager
 from Utils.Utils import Callbacks
 from Utils.Trade import Trade
 
@@ -47,18 +47,20 @@ def portfolio(requests_mock):
     requests_mock.get(URL_13, status_code=200, json=data_13)
     requests_mock.get(URL_4, status_code=200, json=data_4)
 
-    config = MockConfigurationManager()
-    p = Portfolio('mock', config)
+    # Use test configuration file
+    config = ConfigurationManager('test/test_data/config.json')
+    p = Portfolio(config)
     p.set_callback(Callbacks.UPDATE_LIVE_PRICES, mock_callback)
     return p
 
 def test_start_stop(portfolio):
-    portfolio.start([])
+    portfolio.start()
     portfolio.stop()
     assert True
 
 def test_get_name(portfolio):
-    assert portfolio.get_name() == 'mock'
+    # name read from the test trading_log.json
+    assert portfolio.get_name() == 'mock1'
 
 def test_get_cash_available(portfolio, trades):
     assert portfolio.get_cash_available() == 0
