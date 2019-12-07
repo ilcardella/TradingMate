@@ -30,7 +30,7 @@ sudo apt-get install python3-tk
 
 Clone this repo in your workspace and install `TradingMate` by running the following command in the repository root folder
 ```
-python setup.py install
+sudo python3 setup.py install
 ```
 
 ## Setup
