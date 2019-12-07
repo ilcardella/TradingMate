@@ -12,6 +12,7 @@ sys.path.insert(0, parentdir)
 
 from Utils.Utils import Callbacks, Messages, Utils
 from .WarningWindow import WarningWindow
+from .ConfirmWindow import ConfirmWindow
 from .ShareTradingFrame import ShareTradingFrame
 from .SettingsWindow import SettingsWindow
 from .TradingMateClient import TradingMateClient
@@ -79,6 +80,16 @@ class View:
     # ******* MAIN WINDOW ***********
 
     def _on_close_main_window_event(self):
+        # Check if there are unsaved chnages before closing the app
+        if self._client.unsaved_changes():
+            ConfirmWindow(
+                self.mainWindow,
+                "Warning",
+                Messages.UNSAVED_CHANGES.value,
+                self._confirmed_close_window,
+            )
+
+    def _confirmed_close_window(self):
         self._client.stop()
         self.mainWindow.destroy()
 

@@ -28,6 +28,8 @@ class Portfolio:
         self._cash_deposited = 0
         # Data structure to store stock holdings: {"symbol": Holding}
         self._holdings = {}
+        # Track unsaved changes
+        self._unsaved_changes = False
         # Work thread that fetches stocks live prices
         self.price_getter = StockPriceGetter(config, self.on_new_price_data)
         self.price_getter.start()
@@ -38,8 +40,6 @@ class Portfolio:
     def stop(self):
         self.price_getter.shutdown()
         self.price_getter.join()
-        # TODO remove this and replace with warning window about unsaved changes
-        self.db_handler.write_data()
         logging.info("Portfolio {} closed".format(self._name))
 
     # GETTERS
@@ -162,6 +162,10 @@ class Portfolio:
             logging.error(e)
             raise RuntimeError("Unable to compute holdings profit/loss percentage")
 
+    def has_unsaved_changes(self):
+        """Return True if the portfolio has unsaved changes, False othersise"""
+        return self._unsaved_changes
+
     # FUNCTIONS
 
     def clear(self):
@@ -278,15 +282,18 @@ class Portfolio:
             raise RuntimeError("Trade is invalid")
         self.db_handler.add_trade(trade)
         self.reload()
+        self._unsaved_changes = True
 
     def remove_last_trade(self):
         """Remove the last trade from the Portfolio"""
         self.db_handler.remove_last_trade()
         self.reload()
+        self._unsaved_changes = True
 
     def save_portfolio(self, filepath):
         """Save the portfolio at the given filepath"""
         self.db_handler.write_data(filepath)
+        self._unsaved_changes = False
 
     # PRICE GETTER WORK THREAD
 

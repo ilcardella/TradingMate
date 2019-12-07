@@ -64,3 +64,10 @@ class TradingMateClient:
     def save_settings_event(self, settings):
         """Request server to save the settings"""
         self._server.save_settings_event(settings)
+
+    def unsaved_changes(self):
+        """Request if open portfolios have unsaved changes and return True"""
+        for pf in self._server.get_portfolios():
+            if pf.has_unsaved_changes():
+                return True
+        return False
