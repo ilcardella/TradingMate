@@ -67,8 +67,8 @@ class View:
         tab.set_callback(
             Callbacks.ON_SET_AUTO_REFRESH_EVENT, self.set_auto_refresh_event
         )
-        tab.set_callback(Callbacks.ON_OPEN_LOG_FILE_EVENT, self.on_open_portfolio_event)
         tab.set_callback(Callbacks.ON_SAVE_LOG_FILE_EVENT, self.on_save_portfolio_event)
+        tab.set_callback(Callbacks.ON_SAVE_AS_EVENT, self.on_save_portfolio_as_event)
         tab.set_callback(
             Callbacks.ON_DELETE_LAST_TRADE_EVENT, self.on_delete_last_trade_event
         )
@@ -155,6 +155,10 @@ class View:
             WarningWindow(self.parent, "Warning", e)
 
     def on_save_portfolio_event(self, portfolio_id):
+        # None forces to save portfolio in its current filepath
+        self._client.save_portfolio_event(portfolio_id, None)
+
+    def on_save_portfolio_as_event(self, portfolio_id):
         try:
             filename = filedialog.asksaveasfilename(
                 initialdir=Utils.get_install_path(),
