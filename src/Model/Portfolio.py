@@ -18,8 +18,6 @@ class Portfolio:
     def __init__(self, config, trading_log_path):
         # Database handler
         self.db_handler = DatabaseHandler(config, trading_log_path)
-        # Read the configured database
-        self.db_handler.read_data()
         # Create an unique id for this portfolio
         self._id = self._create_id(trading_log_path)
         # Portfolio name

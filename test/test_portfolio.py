@@ -46,15 +46,11 @@ def portfolio(requests_mock):
     data_4 = read_json('test/test_data/mock_av_daily.json', 'MOCK4')
     requests_mock.get(URL_13, status_code=200, json=data_13)
     requests_mock.get(URL_4, status_code=200, json=data_4)
-
     # Use test configuration file
     config = ConfigurationManager('test/test_data/config.json')
-    p = Portfolio(config)
-    p.set_callback(Callbacks.UPDATE_LIVE_PRICES, mock_callback)
-    return p
+    return Portfolio(config, config.get_trading_database_path()[0])
 
-def test_start_stop(portfolio):
-    portfolio.start()
+def test_stop(portfolio):
     portfolio.stop()
     assert True
 
@@ -62,49 +58,23 @@ def test_get_name(portfolio):
     # name read from the test trading_log.json
     assert portfolio.get_name() == 'mock1'
 
-def test_get_cash_available(portfolio, trades):
-    assert portfolio.get_cash_available() == 0
-
-    portfolio.start([])
-    assert portfolio.get_cash_available() == 0
-
-    portfolio.reload(trades)
+def test_get_cash_available(portfolio):
     assert portfolio.get_cash_available() == 2379.3144236000016
 
-def test_get_cash_deposited(portfolio, trades):
-    assert portfolio.get_cash_deposited() == 0
-
-    portfolio.start([])
-    assert portfolio.get_cash_deposited() == 0
-
-    portfolio.reload(trades)
+def test_get_cash_deposited(portfolio):
     assert portfolio.get_cash_deposited() == 7700
 
-def test_get_holding_list(portfolio, trades):
-    assert len(portfolio.get_holding_list()) == 0
-
-    portfolio.start([])
-    assert len(portfolio.get_holding_list()) == 0
-
-    portfolio.reload(trades)
+def test_get_holding_list(portfolio):
     assert len(portfolio.get_holding_list()) == 2
     assert portfolio.get_holding_list()[0]._symbol == 'MOCK13'
     assert portfolio.get_holding_list()[1]._symbol == 'MOCK4'
 
-def test_get_holding_symbol(portfolio, trades):
-    assert len(portfolio.get_holding_symbols()) == 0
-
-    portfolio.start([])
-    assert len(portfolio.get_holding_symbols()) == 0
-
-    portfolio.reload(trades)
+def test_get_holding_symbol(portfolio):
     assert len(portfolio.get_holding_symbols()) == 2
     assert portfolio.get_holding_symbols()[0] == 'MOCK13'
     assert portfolio.get_holding_symbols()[1] == 'MOCK4'
 
-def test_get_holding_quantity(portfolio, trades):
-    portfolio.start(trades)
-
+def test_get_holding_quantity(portfolio):
     assert portfolio.get_holding_quantity('MOCK13') == 1192
     assert portfolio.get_holding_quantity('MOCK4') == 438
 
@@ -117,12 +87,9 @@ def test_get_holding_quantity(portfolio, trades):
 #     assert portfolio.get_holding_last_price('MOCK13') == 105.6700
 #     assert portfolio.get_holding_last_price('MOCK4') == 105.6700
 
-def test_get_holding_open_price(portfolio, trades):
-    portfolio.start(trades)
-
+def test_get_holding_open_price(portfolio):
     with pytest.raises(ValueError) as e:
         assert portfolio.get_holding_open_price('MOCK') is None
-
     assert portfolio.get_holding_open_price('MOCK13') == 166.984
     assert portfolio.get_holding_open_price('MOCK4') == 582.9117
 
@@ -132,17 +99,15 @@ def test_get_holding_open_price(portfolio, trades):
 
 #     assert portfolio.get_total_value() == 0
 
-def test_clear(portfolio, trades):
-    portfolio.start(trades)
+def test_clear(portfolio):
     portfolio.clear()
     assert portfolio.get_cash_available() == 0
     assert portfolio.get_cash_deposited() == 0
     assert len(portfolio.get_holding_list()) == 0
 
-def test_reload(portfolio, trades):
-    portfolio.start(trades)
-    portfolio.clear()
-    portfolio.reload(trades)
+def test_reload(portfolio):
+    test_clear(portfolio)
+    portfolio.reload()
     assert portfolio.get_cash_available() == 2379.3144236000016
     assert portfolio.get_cash_deposited() == 7700
     assert len(portfolio.get_holding_list()) == 2
@@ -153,7 +118,6 @@ def test_reload(portfolio, trades):
     assert portfolio.get_holding_quantity('MOCK4') == 438
 
 def test_compute_avg_holding_open_price(portfolio, trades):
-    portfolio.start(trades)
     price = portfolio.compute_avg_holding_open_price('MOCK13', trades)
     assert price == 166.984
     price = portfolio.compute_avg_holding_open_price('MOCK4', trades)
@@ -161,9 +125,7 @@ def test_compute_avg_holding_open_price(portfolio, trades):
     price = portfolio.compute_avg_holding_open_price('MOCK', trades)
     assert price is None
 
-def test_is_trade_valid(portfolio, trades):
-    portfolio.start(trades)
-
+def test_is_trade_valid(portfolio):
     # Valid buy
     item = {'date':'01/01/0001','action':'BUY','quantity':1,'symbol':'MOCK','price':1.0,'fee':1.0,'stamp_duty':1.0,'notes':'mock'}
     assert portfolio.is_trade_valid(Trade.from_dict(item))

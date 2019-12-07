@@ -22,6 +22,7 @@ class DatabaseHandler():
         self.db_filepath = trading_log_path
         self.db_name = "unknown"
         self.trading_history = []
+        self.read_data(self.db_filepath)
         logging.info('DatabaseHandler initialised')
 
     def read_data(self, filepath=None):
