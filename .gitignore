@@ -100,7 +100,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-.credentials
+data/.credentials
 .pytest_cache
 _builds
 _build

@@ -63,7 +63,7 @@ TradingMate uses AlphaVantage to fetch markets data online:
 The `config.json` file is in the `$HOME/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
-- **general/trading_log_path**: The absolute path of the trading log where the history of your trades are saved
+- **trading_logs**: The absolute path of the trading logs to automatically load on startup
 - **general/credentials_filepath**: File path of the .credentials file
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
 - **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices

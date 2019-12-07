@@ -1,6 +1,8 @@
 {
+    "trading_logs": [
+        "/opt/TradingMate/data/trading_log.json"
+    ],
     "general": {
-        "trading_log_path": "/opt/TradingMate/data/trading_log.json",
         "credentials_filepath": "/opt/TradingMate/data/.credentials"
     },
     "alpha_vantage": {

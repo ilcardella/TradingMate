@@ -6,12 +6,12 @@ import json
 import logging
 from pathlib import Path
 
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 # Enumerations
+
 
 class Callbacks(Enum):
     UPDATE_LIVE_PRICES = 1
@@ -27,6 +27,7 @@ class Callbacks(Enum):
     ON_SHOW_SETTINGS_EVENT = 11
     ON_SAVE_SETTINGS_EVENT = 12
 
+
 class Actions(Enum):
     BUY = 1
     SELL = 2
@@ -34,6 +35,7 @@ class Actions(Enum):
     DIVIDEND = 4
     WITHDRAW = 5
     FEE = 6
+
 
 class Messages(Enum):
     INSUF_FUNDING = "ERROR: Insufficient funding available"
@@ -43,13 +45,16 @@ class Messages(Enum):
     ERROR_SAVE_FILE = "Error saving the log. Try again."
     ERROR_OPEN_FILE = "Error opening the file. Try again."
 
+
 class Markets(Enum):
     LSE = "LON"
 
-class Utils():
+
+class Utils:
     """
     Class that provides utility functions
     """
+
     def __init__(self):
         pass
 
@@ -62,7 +67,7 @@ class Utils():
             - Return a dictionary of the loaded json
         """
         try:
-            with open(filepath, 'r') as file:
+            with open(filepath, "r") as file:
                 return json.load(file)
         except Exception as e:
             logging.error("Unable to load JSON file {}".format(e))
@@ -78,8 +83,8 @@ class Utils():
             - Return True if succed, False otherwise
         """
         try:
-            with open(filepath, 'w') as file:
-                json.dump(data, file, indent=4, separators=(',', ': '))
+            with open(filepath, "w") as file:
+                json.dump(data, file, indent=4, separators=(",", ": "))
                 return True
         except Exception as e:
             logging.error("Unable to write JSON file: ".format(e))
@@ -90,4 +95,4 @@ class Utils():
         """
         Returns the installation path of TradingMate
         """
-        return os.path.join(os.sep, 'opt', 'TradingMate')
+        return os.path.join(os.sep, "opt", "TradingMate")

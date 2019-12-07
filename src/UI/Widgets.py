@@ -6,10 +6,10 @@ from tkinter import ttk
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
+sys.path.insert(0, parentdir)
+
 
 class DatePicker(tk.Frame):
-
     def __init__(self, master, dateSelected):
         tk.Frame.__init__(self, master)
         self.parent = master
@@ -19,28 +19,48 @@ class DatePicker(tk.Frame):
     def create_UI(self):
         tk.Label(self, text="dd").grid(row=0, column=0, sticky="w")
         self.day = tk.StringVar()
-        self.day.trace_add('write', self.on_day_change_event)
-        self.eDay = ttk.Entry(self, width=3, textvariable=self.day, validate="focusout", validatecommand=self.set_date)
+        self.day.trace_add("write", self.on_day_change_event)
+        self.eDay = ttk.Entry(
+            self,
+            width=3,
+            textvariable=self.day,
+            validate="focusout",
+            validatecommand=self.set_date,
+        )
         self.eDay.grid(row=1, column=0, sticky="w")
 
         tk.Label(self, text="/").grid(row=1, column=1, sticky="w")
 
         tk.Label(self, text="mm").grid(row=0, column=2, sticky="w")
         self.month = tk.StringVar()
-        self.month.trace_add('write', self.on_month_change_event)
-        self.eMonth = ttk.Entry(self, width=3, textvariable=self.month, validate="focusout", validatecommand=self.set_date)
+        self.month.trace_add("write", self.on_month_change_event)
+        self.eMonth = ttk.Entry(
+            self,
+            width=3,
+            textvariable=self.month,
+            validate="focusout",
+            validatecommand=self.set_date,
+        )
         self.eMonth.grid(row=1, column=2, sticky="w")
 
         tk.Label(self, text="/").grid(row=1, column=3, sticky="w")
 
         tk.Label(self, text="yyyy").grid(row=0, column=4, sticky="w")
         self.year = tk.StringVar()
-        self.year.trace_add('write', self.on_year_change_event)
-        self.eYear = ttk.Entry(self, width=5, textvariable=self.year, validate="focusout", validatecommand=self.set_date)
+        self.year.trace_add("write", self.on_year_change_event)
+        self.eYear = ttk.Entry(
+            self,
+            width=5,
+            textvariable=self.year,
+            validate="focusout",
+            validatecommand=self.set_date,
+        )
         self.eYear.grid(row=1, column=4, sticky="w")
 
     def set_date(self):
-        self.dateSelected.set(self.build_date(self.day.get(), self.month.get(), self.year.get()))
+        self.dateSelected.set(
+            self.build_date(self.day.get(), self.month.get(), self.year.get())
+        )
 
     def build_date(self, day, month, year):
         return "{0}/{1}/{2}".format(day, month, year)
