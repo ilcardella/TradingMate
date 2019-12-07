@@ -3,17 +3,18 @@ import sys
 import inspect
 import pytest
 
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, '{}/src'.format(parentdir))
+sys.path.insert(0, "{}/src".format(parentdir))
 
 from Utils.ConfigurationManager import ConfigurationManager
 from Utils.Trade import Trade
 
+
 @pytest.fixture
 def cm():
     return ConfigurationManager("test/test_data/config.json")
+
 
 def test_config_values(cm):
     config = cm.get_trading_database_path()
@@ -44,6 +45,4 @@ def test_config_values(cm):
     assert len(config) > 0
 
     # Do not test save_settings() to not overwrite the test config.json
-
-
 

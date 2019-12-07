@@ -5,10 +5,10 @@ import os
 import sys
 import inspect
 
-currentdir = os.path.dirname(os.path.abspath(
-    inspect.getfile(inspect.currentframe())))
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
@@ -20,7 +20,7 @@ class TaskThread(threading.Thread):
         self._finished = threading.Event()
         self._enabled = threading.Event()
         self._enabled.set()
-        self._interval = 1 # default value
+        self._interval = 1  # default value
         self._singleRun = False
 
     def setInterval(self, interval):

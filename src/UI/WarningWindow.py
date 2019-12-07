@@ -6,17 +6,19 @@ from tkinter import ttk
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
+sys.path.insert(0, parentdir)
+
 
 class WarningWindow(tk.Toplevel):
-
     def __init__(self, master, title, message):
         tk.Toplevel.__init__(self)
         self.parent = master
         self.message = message
         self.transient(self.parent)
         self.title(title)
-        self.geometry("+%d+%d" % (self.parent.winfo_rootx()+10, self.parent.winfo_rooty()+10))
+        self.geometry(
+            "+%d+%d" % (self.parent.winfo_rootx() + 10, self.parent.winfo_rooty() + 10)
+        )
         self.protocol("WM_DELETE_WINDOW", self.destroy)
         self.grab_set()
         self.focus_set()

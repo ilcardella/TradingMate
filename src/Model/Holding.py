@@ -5,17 +5,17 @@ import logging
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
+sys.path.insert(0, parentdir)
 
-class Holding():
 
+class Holding:
     def __init__(self, symbol, quantity, open_price=None):
         if quantity is None or quantity < 1:
-            logging.error('Holding - init: Invalid quantity')
+            logging.error("Holding - init: Invalid quantity")
             raise ValueError("Invalid quantity")
         if open_price is not None and open_price < 0:
-            logging.error('Holding - init: Invalid open_price')
-            raise ValueError('Invalid open_price')
+            logging.error("Holding - init: Invalid open_price")
+            raise ValueError("Invalid open_price")
         self._symbol = symbol
         self._quantity = quantity
         self._openPrice = open_price
@@ -24,20 +24,20 @@ class Holding():
 
     def set_last_price(self, price):
         if price is None or price < 0:
-            logging.error('Holding - set_last_price: Invalid price')
+            logging.error("Holding - set_last_price: Invalid price")
             raise ValueError("Invalid price")
         self._lastPrice = price
         self._lastPriceValid = True
 
     def set_open_price(self, price):
         if price is None or price < 0:
-            logging.error('Holding - set_open_price: Invalid price')
+            logging.error("Holding - set_open_price: Invalid price")
             raise ValueError("Invalid price")
         self._openPrice = price
 
     def set_quantity(self, value):
         if value is None or value < 1:
-            logging.error('Holding - set_quantity: Invalid quantity')
+            logging.error("Holding - set_quantity: Invalid quantity")
             raise ValueError("Invalid quantity")
         self._quantity = value
 
@@ -65,12 +65,12 @@ class Holding():
     def get_cost(self):
         if self._openPrice is None:
             return None
-        return self._quantity * (self._openPrice/100) # £
+        return self._quantity * (self._openPrice / 100)  # £
 
     def get_value(self):
         if self._lastPrice is None:
             return None
-        return self._quantity * (self._lastPrice/100) # £
+        return self._quantity * (self._lastPrice / 100)  # £
 
     def get_profit_loss(self):
         value = self.get_value()
