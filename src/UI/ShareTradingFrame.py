@@ -22,6 +22,7 @@ class ShareTradingFrame(tk.Frame):
         self.parent = parent
         self._portfolio_id = portfolio_id
         self.callbacks = {}
+        self.trades_cache = []
         self._create_UI()
 
     def set_callback(self, id, callback):
@@ -256,8 +257,11 @@ class ShareTradingFrame(tk.Frame):
             self.parent,
             "Confirm",
             "Are you sure?",
-            self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT](self._portfolio_id),
+            self._on_confirmed_delete_last_trade,
         )
+
+    def _on_confirmed_delete_last_trade(self):
+        self.callbacks[Callbacks.ON_DELETE_LAST_TRADE_EVENT](self._portfolio_id)
 
     def _on_add_new_trade_event(self, new_trade):
         return self.callbacks[Callbacks.ON_NEW_TRADE_EVENT](
@@ -321,6 +325,13 @@ class ShareTradingFrame(tk.Frame):
         value = self.autoRefresh.get()
         self.refreshButton.config(state="disabled" if value == 1 else "enabled")
 
+    def _logtreeview_changed(self, trades):
+        """Return True if the logTreeView contains exactly the same
+        trades in the given list. Otherwise returns False"""
+        if trades == self.trades_cache:
+            return False
+        return True
+
     def set_auto_refresh(self):
         self._update_refresh_button_state()
         value = self.autoRefresh.get()
@@ -345,6 +356,13 @@ class ShareTradingFrame(tk.Frame):
             values=(v_act, v_sym, v_am, v_pri, v_fee, v_sd, v_tot),
             tags=(tag,),
         )
+        self.trades_cache.append(trade)
+
+    def update_trades_log(self, trades):
+        if self._logtreeview_changed(trades):
+            self.reset_view(True)
+            for trade in trades:
+                self.add_entry_to_log_table(trade)
 
     def update_share_trading_holding(
         self, symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity
@@ -431,3 +449,4 @@ class ShareTradingFrame(tk.Frame):
         self.currentDataTreeView.delete(*self.currentDataTreeView.get_children())
         if resetHistory:
             self.logTreeView.delete(*self.logTreeView.get_children())
+            self.trades_cache = []

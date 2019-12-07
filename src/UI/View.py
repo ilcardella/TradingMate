@@ -47,7 +47,6 @@ class View:
         # Menu File
         filemenu = tk.Menu(self.menubar, tearoff=0)
         filemenu.add_command(label="Open...", command=self.on_open_portfolio_event)
-        filemenu.add_command(label="Export...", command=self.on_save_portfolio_event)
         filemenu.add_command(label="Settings...", command=self.on_show_settings)
         filemenu.add_command(label="Exit", command=self._on_close_main_window_event)
         self.menubar.add_cascade(label="File", menu=filemenu)
@@ -61,8 +60,6 @@ class View:
     def _create_portfolio_tab(self, portfolio):
         tab = ShareTradingFrame(self.noteBook, portfolio.get_id())
         tab.pack(expand=True)
-        # TODO uncomment
-        # tab.set_auto_refresh()
         tab.set_callback(
             Callbacks.ON_MANUAL_REFRESH_EVENT, self.on_manual_refresh_event
         )
@@ -77,51 +74,7 @@ class View:
         )
         self.noteBook.add(tab, text=portfolio.get_name())
         self._portfolio_tabs[portfolio.get_id()] = tab
-
-    def _update_share_trading_history_log(self, portfolio_id, log_list):
-        self._portfolio_tabs[portfolio_id].reset_view(True)
-        for entry in log_list:
-            self._portfolio_tabs[portfolio_id].add_entry_to_log_table(entry)
-
-    def _update_share_trading_portfolio_balances(
-        self,
-        portfolio_id,
-        cash,
-        holdingsValue,
-        totalValue,
-        pl,
-        pl_perc,
-        holdingPL,
-        holdingPLPC,
-        validity,
-    ):
-        self._portfolio_tabs[portfolio_id].update_portfolio_balances(
-            cash,
-            holdingsValue,
-            totalValue,
-            pl,
-            pl_perc,
-            holdingPL,
-            holdingPLPC,
-            validity,
-        )
-
-    def _update_share_trading_holding(
-        self,
-        portfolio_id,
-        symbol,
-        quantity,
-        openPrice,
-        lastPrice,
-        cost,
-        value,
-        pl,
-        plPc,
-        validity,
-    ):
-        self._portfolio_tabs[portfolio_id].update_share_trading_holding(
-            symbol, quantity, openPrice, lastPrice, cost, value, pl, plPc, validity
-        )
+        tab.set_auto_refresh()
 
     # ******* MAIN WINDOW ***********
 
@@ -145,24 +98,14 @@ class View:
         """Update the portfolio tab with the recent data"""
         if portfolio.get_id() not in self._portfolio_tabs.keys():
             self._create_portfolio_tab(portfolio)
-        # TODO Find a way to reset only if necessary
-        self.reset_view(portfolio.get_id())
         # Update history table
-        self._update_share_trading_history_log(
-            portfolio.get_id(), portfolio.get_trade_history()[::-1]
+        self._portfolio_tabs[portfolio.get_id()].update_trades_log(
+            portfolio.get_trade_history()[::-1]
         )
-        # get the balances from the portfolio
-        cash = portfolio.get_cash_available()
-        holdingsValue = portfolio.get_holdings_value()
-        totalValue = portfolio.get_total_value()
-        pl = portfolio.get_portfolio_pl()
-        pl_perc = portfolio.get_portfolio_pl_perc()
-        holdingPL = portfolio.get_open_positions_pl()
-        holdingPLPC = portfolio.get_open_positions_pl_perc()
+        # Update the current positions
         validity = True
         for h in portfolio.get_holding_list():
-            self._update_share_trading_holding(
-                portfolio.get_id(),
+            self._portfolio_tabs[portfolio.get_id()].update_share_trading_holding(
                 h.get_symbol(),
                 h.get_quantity(),
                 h.get_open_price(),
@@ -174,28 +117,24 @@ class View:
                 h.get_last_price_valid(),
             )
             validity = validity and h.get_last_price_valid()
-        self._update_share_trading_portfolio_balances(
-            portfolio.get_id(),
-            cash,
-            holdingsValue,
-            totalValue,
-            pl,
-            pl_perc,
-            holdingPL,
-            holdingPLPC,
+        # Update the balances
+        self._portfolio_tabs[portfolio.get_id()].update_portfolio_balances(
+            portfolio.get_cash_available(),
+            portfolio.get_holdings_value(),
+            portfolio.get_total_value(),
+            portfolio.get_portfolio_pl(),
+            portfolio.get_portfolio_pl_perc(),
+            portfolio.get_open_positions_pl(),
+            portfolio.get_open_positions_pl_perc(),
             validity,
         )
-
-    def reset_view(self, portfolio_id, reset_history=False):
-        # TODO check if need to remove reset_history
-        self._portfolio_tabs[portfolio_id].reset_view(reset_history)
 
     def on_new_trade_event(self, new_trade, portfolio_id):
         try:
             self._client.new_trade_event(new_trade, portfolio_id)
-            return {"success": True, "message": "ok"}
         except RuntimeError as e:
             return {"success": False, "message": e}
+        return {"success": True, "message": "ok"}
 
     def on_manual_refresh_event(self, portfolio_id):
         self._client.manual_refresh_event(portfolio_id)
@@ -211,7 +150,7 @@ class View:
                 filetypes=(("json files", "*.json"), ("all files", "*.*")),
             )
             if filename is not None and len(filename) > 0:
-                self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT](filename)
+                self._client.open_portfolio_event(filename)
         except RuntimeError as e:
             WarningWindow(self.parent, "Warning", e)
 
@@ -230,9 +169,9 @@ class View:
     def on_delete_last_trade_event(self, portfolio_id):
         try:
             self._client.delete_last_trade_event(portfolio_id)
-            return {"success": True, "message": "ok"}
         except RuntimeError as e:
             return {"success": False, "message": e}
+        return {"success": True, "message": "ok"}
 
     def on_show_settings(self):
         config = self._client.get_settings_event()
