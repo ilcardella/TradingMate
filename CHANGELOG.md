@@ -8,12 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Issue37 - Improved installation process and dependencies setup
 - Updated default .credentials configured path
+- Re-design of system architecture and API
 
 ### Added
 - Added Pipfile to manage python dependencies
 - Added `FEE` action
 - Added `notes` field in trade
-- Added bash script to start TradingMate
+- Support load of multiple portfolios
 
 ## [1.0.0] 2019-05-03
 ### Added
