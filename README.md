@@ -143,3 +143,6 @@ Eventually push your branch and create a Pull Request against `develop`.
 
 If you instead find problems or you have ideas and suggestions for future
 improvements, please open an Issue. Thanks for the support!
+
+## Credits
+Icons by <a target="_blank" href="https://icons8.com">Icons8</a>

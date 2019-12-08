@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `FEE` action
 - Added `notes` field in trade
 - Support load of multiple portfolios
+- Save As and Save buttons per portfolio
 
 ## [1.0.0] 2019-05-03
 ### Added

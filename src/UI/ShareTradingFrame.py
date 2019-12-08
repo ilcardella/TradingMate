@@ -33,23 +33,23 @@ class ShareTradingFrame(tk.Frame):
         buttonsFrame = ttk.Frame(self, relief="groove", borderwidth=1)
         buttonsFrame.pack(fill="x", expand=True, anchor="n")
         # Add buttons for the share trading page
-        self.open_icon = tk.PhotoImage(
-            file=assets_dir + "/assets/open_file_icon.png"
-        ).subsample(2)
-        openButton = ttk.Button(
-            buttonsFrame, text="Open Portfolio...", command=self._open_portfolio
-        )
-        openButton.pack(side="left", anchor="n", padx=5, pady=5)
-        openButton.config(image=self.open_icon)
-
         self.save_icon = tk.PhotoImage(
             file=assets_dir + "/assets/save_file_icon.png"
         ).subsample(2)
         saveButton = ttk.Button(
-            buttonsFrame, text="Save Portfolio...", command=self._save_portfolio
+            buttonsFrame, text="Save Portfolio", command=self._save_portfolio
         )
         saveButton.pack(side="left", anchor="n", padx=5, pady=5)
         saveButton.config(image=self.save_icon)
+
+        self.save_as_icon = tk.PhotoImage(
+            file=assets_dir + "/assets/save_as_file_icon.png"
+        ).subsample(2)
+        save_as_btn = ttk.Button(
+            buttonsFrame, text="Save as...", command=self._save_as_portfolio
+        )
+        save_as_btn.pack(side="left", anchor="n", padx=5, pady=5)
+        save_as_btn.config(image=self.save_as_icon)
 
         self.add_icon = tk.PhotoImage(
             file=assets_dir + "/assets/add_icon.png"
@@ -313,11 +313,11 @@ class ShareTradingFrame(tk.Frame):
         except:
             pass
 
-    def _open_portfolio(self):
-        self.callbacks[Callbacks.ON_OPEN_LOG_FILE_EVENT]()
-
     def _save_portfolio(self):
         self.callbacks[Callbacks.ON_SAVE_LOG_FILE_EVENT](self._portfolio_id)
+
+    def _save_as_portfolio(self):
+        self.callbacks[Callbacks.ON_SAVE_AS_EVENT](self._portfolio_id)
 
     def _update_refresh_button_state(self):
         # Disable the Refresh button when AutoRefresh is active
