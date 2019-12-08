@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue37 - Improved installation process and dependencies setup
 - Updated default .credentials configured path
 - Re-design of system architecture and API
+- Edited Portfolios are not saved automatically and a warning is displayed
 
 ### Added
 - Added Pipfile to manage python dependencies
