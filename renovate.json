@@ -2,7 +2,7 @@
   "extends": [
     "config:base"
   ],
-  "baseBranches": ["develop"],
+  "baseBranches": ["master"],
   "pipenv": {
     "enabled": true
   },
