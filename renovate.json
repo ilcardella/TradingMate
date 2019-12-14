@@ -6,7 +6,7 @@
   "pipenv": {
     "enabled": true
   },
-  "setup.py": {
+  "pip_setup": {
       "enabled": true
   }
 }
