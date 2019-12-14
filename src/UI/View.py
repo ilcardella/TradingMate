@@ -88,6 +88,8 @@ class View:
                 Messages.UNSAVED_CHANGES.value,
                 self._confirmed_close_window,
             )
+        else:
+            self._confirmed_close_window()
 
     def _confirmed_close_window(self):
         self._client.stop()
@@ -191,4 +193,3 @@ class View:
     def on_show_settings(self):
         config = self._client.get_settings_event()
         SettingsWindow(self.mainWindow, config, self._client.save_settings_event)
-
