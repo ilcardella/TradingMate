@@ -1,7 +1,9 @@
 {
+    "trading_logs": [
+        "/opt/TradingMate/data/trading_log.json"
+    ],
     "general": {
-        "trading_log_path": "{home}/.TradingMate/trading_log.json",
-        "credentials_filepath": "{home}/.TradingMate/config/.credentials"
+        "credentials_filepath": "/opt/TradingMate/data/.credentials"
     },
     "alpha_vantage": {
         "api_base_uri": "https://www.alphavantage.co/query",

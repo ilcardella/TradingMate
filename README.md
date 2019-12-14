@@ -5,85 +5,115 @@ TradingMate is a portfolio manager for stocks traders. It lets you record all
 your trades with a simple and basic interface, showing the current status of
 your assets and the overall profit (or loss!)
 
-# Dependencies
+## Dependencies
 
-- Python 3.4+
+- Python 3.5+
+- Pipenv (optional)
 - Tkinter: https://docs.python.org/3/library/tk.html
 - AlphaVantage: https://www.alphavantage.co/
 
-View file `requirements.txt` for the full list of python dependencies.
+    View `Pipfile` or `setup.py` for the full list of python dependencies.
 
-# Install
+## Install
 
-After cloning this repo, to install TradingMate simply run:
+First install python 3 and pipenv
 ```
-./trading_mate_ctrl install
+sudo apt-get update
+sudo apt-get install python3 python3-pip
 ```
-(This will require super-user access)
 
-The required dependencies will be installed and all necessary files installed in /opt/TradingMate by default. It is recommended to add this path to your PATH environment variable.
+The UI is based on Tkinter so let's install it
+```
+sudo apt-get update
+sudo apt-get install python3-tk
+```
 
-# Setup
+Clone this repo in your workspace and install `TradingMate` by running the following command in the repository root folder
+```
+sudo python3 setup.py install
+```
+
+## Setup
 
 TradingMate uses AlphaVantage to fetch markets data online:
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
-- Insert these info in a file called `.credentials`
-This must be in json format
-```
-{
+- Insert these info in a file called `.credentials` in `$HOME/.TradingMate/data`
+    ```
+    touch $HOME/.TradingMate/data/.credentials
+    ```
+
+    This must be in json format and contain:
+    ```
+    {
     "av_api_key": "apiKey"
-}
-```
-- Copy the `.credentials` file in the `$HOME/.TradingMate/data` folder
+    }
+    ```
+
 - Revoke permissions to read the file by others
-```
-cd $HOME/.TradingMate/data
-sudo chmod 600 .credentials
-```
+
+    ```
+    cd $HOME/.TradingMate/data
+    sudo chmod 600 .credentials
+    ```
+
 ### Configuration file
 
 The `config.json` file is in the `$HOME/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
-- **general/trading_log_path**: The absolute path of the trading log where the history
-of your trades are saved
+- **trading_logs**: The absolute path of the trading logs to automatically load on startup
 - **general/credentials_filepath**: File path of the .credentials file
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
 - **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
 
-# Run
+## Start TradingMate
 
-TradingMate can be controlled by the `trading_mate_ctrl` shell script.
-The script provides commands to perform different actions:
-
-### Start TradingMate
+You can start TradingMate in your current terminal
 ```
-./trading_mate_ctrl start
+trading_mate
 ```
-
-### Stop TradingMate
-
-Closing the main window will stop the whole application.
-You can also use the command:
+or you can start it in detached mode, letting it run in the background
 ```
-./trading_mate_ctrl stop
+nohup trading_mate >/dev/null 2>&1 &
 ```
 
-# Test
+## Stop TradingMate
 
-Test can't run with the installed script.
-You can run the test from a "workspace" environment with:
+To stop a TradingMate instance running in the background
 ```
-./trading_mate_ctrl test
-```
-You can run the test in Docker containers against different python versions:
-```
-./trading_mate_ctrl test_docker
+ps -ef | grep trading_mate | xargs kill -9
 ```
 
-# Documentation
+## Uninstall
+You can use `pip` to uninstall `TradingMate`:
+```
+sudo pip3 uninstall TradingMate
+```
+
+## Development
+
+The `Pipfile` helps you to setup a development virtual environmnet installing the required dependencies.
+Install `pipenv`
+```
+sudo -H pip3 install -U pipenv
+```
+
+Create the virtual environment
+```
+cd /path/to/repository
+pipenv install --dev
+```
+
+### Test
+
+You can run the test from the workspace with:
+```
+pipenv run pytest
+```
+
+### Documentation
 
 The Sphinx documentation contains further details about each TradingMate module
 with source code documentation of each component.
@@ -94,13 +124,25 @@ https://tradingmate.readthedocs.io
 
 You can build it locally from the "workspace" root folder:
 ```
-./trading_mate_ctrl docs
+pipenv run sphinx-build -nWT -b html doc doc/_build/html
 ```
 
 The generated html files will be under `doc/_build/html`.
 
-# Contributing
+## Contributing
 
-I appreciate any help so if you have suggestions or issues open an Issue for discussion.
-If you can contribute please just open a pull request with your changes.
-Thanks for all the support!
+Any contribution or suggestion is welcome, please follow the suggested workflow.
+
+### Pull Requests
+
+To add a new feature or to resolve a bug, create a feature branch from the
+`develop` branch.
+
+Commit your changes and if possible add unit/integration test cases.
+Eventually push your branch and create a Pull Request against `develop`.
+
+If you instead find problems or you have ideas and suggestions for future
+improvements, please open an Issue. Thanks for the support!
+
+## Credits
+Icons by <a target="_blank" href="https://icons8.com">Icons8</a>
