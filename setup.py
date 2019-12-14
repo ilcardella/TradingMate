@@ -4,38 +4,27 @@ import os
 setup(
     name="TradingMate",
     version="1.0.0",
-    python_requires='>=3',
-
-    package_dir={'': 'src'},
-    packages=find_namespace_packages(where='src'),
-    scripts=['src/TradingMate.py'],
-    entry_points={
-        'console_scripts': [
-            'trading_mate = TradingMate:main'
-        ],
-    },
-
-    install_requires=[
-        'alpha-vantage==2.1.0',
-    ],
-
-    package_data={
-        'config': ['*.json'],
-        'data': ['*.json'],
-        'src/UI/assets': ['*.png']
-    },
+    python_requires=">=3",
+    package_dir={"": "src"},
+    packages=find_namespace_packages(where="src"),
+    scripts=["src/TradingMate.py"],
+    entry_points={"console_scripts": ["trading_mate = TradingMate:main"]},
+    install_requires=["alpha-vantage==2.1.0"],
+    package_data={"config": ["*.json"], "data": ["*.json"], "src/UI/assets": ["*.png"]},
     data_files=[
-        (os.path.join(os.sep, 'opt', 'TradingMate', 'config'), ['config/config.json']),
-        (os.path.join(os.sep, 'opt', 'TradingMate', 'data'), ['data/trading_log.json']),
-
-        (os.path.join(os.sep, 'opt', 'TradingMate', 'data', 'assets'),[
-            'src/UI/assets/trading_mate_icon.png',
-            'src/UI/assets/add_icon.png',
-            'src/UI/assets/open_file_icon.png',
-            'src/UI/assets/save_file_icon.png'
-        ])
+        (os.path.join(os.sep, "opt", "TradingMate", "config"), ["config/config.json"]),
+        (os.path.join(os.sep, "opt", "TradingMate", "data"), ["data/trading_log.json"]),
+        (
+            os.path.join(os.sep, "opt", "TradingMate", "data", "assets"),
+            [
+                "src/UI/assets/trading_mate_icon.png",
+                "src/UI/assets/add_icon.png",
+                "src/UI/assets/open_file_icon.png",
+                "src/UI/assets/save_file_icon.png",
+                "src/UI/assets/save_as_file_icon.png",
+            ],
+        ),
     ],
-
     # metadata to display on PyPI
     author="Alberto Cardellini",
     author_email="",
@@ -47,7 +36,5 @@ setup(
         "Documentation": "https://tradingmate.readthedocs.io",
         "Source Code": "https://github.com/ilcardella/TradingMate",
     },
-    classifiers=[
-        'License :: OSI Approved :: MIT License'
-    ]
+    classifiers=["License :: OSI Approved :: MIT License"],
 )
