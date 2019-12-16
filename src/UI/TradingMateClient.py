@@ -13,24 +13,11 @@ from .DataInterface import DataInterface
 class TradingMateClient:
     """Client interface to the TradingMate business logic"""
 
-    def __init__(self, parent, server):
-        self._parent = parent
+    def __init__(self, server):
         self._server = server
-        self.data_interface = DataInterface(server, self._on_portfolio_update)
-
-    def _on_portfolio_update(self, portfolio):
-        """Handle new incoming portfolio update"""
-        # Call the parent view to update the portfolio tab
-        self._parent.update_portfolio_tab(portfolio)
-
-    def start(self):
-        """Handle start event"""
-        self.data_interface.start()
 
     def stop(self):
         """Handle stop event"""
-        self.data_interface.shutdown()
-        self.data_interface.join()
         self._server.close_view_event()
 
     def new_trade_event(self, new_trade, portfolio_id):
