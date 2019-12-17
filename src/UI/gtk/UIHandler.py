@@ -27,13 +27,16 @@ MAIN_WINDOW = "main_window"
 NOTEBOOK = "notebook"
 OPEN_BUTTON = "open_button"
 SETTINGS_BUTTON = "settings_button"
+ABOUT_BUTTON = "about_button"
 
 
 class UIHandler:
     def __init__(self, server):
         self._portfolio_tabs = {}
         self._client = TradingMateClient(server)
-        self._data_worker = DataInterface(self._client, self._create_update_portfolio_tab)
+        self._data_worker = DataInterface(
+            self._client, self._create_update_portfolio_tab
+        )
         self._create_UI()
 
     def _create_UI(self):
@@ -47,7 +50,8 @@ class UIHandler:
         open_button.connect("clicked", self._on_open_portfolio_event)
         settings_button = builder.get_object(SETTINGS_BUTTON)
         settings_button.connect("clicked", self._on_open_settings_event)
-        # TODO add about button
+        about_button = builder.get_object(ABOUT_BUTTON)
+        about_button.connect("clicked", self._on_show_about_event)
         self.notebook = builder.get_object(NOTEBOOK)
         # Manually create required notebook pages
         for pf in self._client.get_portfolios():
@@ -69,6 +73,14 @@ class UIHandler:
         self._data_worker.join()
         self._client.stop()
         gtk.main_quit()
+
+    def _on_show_about_event(self, widget):
+        MessageDialog(
+            self._main_window,
+            "About",
+            Messages.ABOUT_MESSAGE.value,
+            gtk.MessageType.INFO,
+        ).show()
 
     def _create_update_portfolio_tab(self, portfolio):
         if portfolio.get_id() not in self._portfolio_tabs.keys():

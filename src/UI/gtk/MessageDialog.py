@@ -24,6 +24,7 @@ class MessageDialog:
             parent_window, 0, dialog_type, gtk.ButtonsType.OK, title
         )
         self._dialog.format_secondary_text(message)
+        self._dialog.set_modal(True)
 
     def show(self):
         self._dialog.run()

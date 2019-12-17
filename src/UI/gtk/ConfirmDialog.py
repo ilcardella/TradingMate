@@ -17,7 +17,7 @@ class ConfirmDialog:
         self._cancel_callback = cancel_callback
 
         self._dialog = gtk.Dialog(
-            message,
+            "Message",
             parent_window,
             0,
             (
@@ -28,6 +28,8 @@ class ConfirmDialog:
             ),
         )
         self._dialog.set_modal(True)
+        self._dialog.get_content_area().add(gtk.Label(message))
+        self._dialog.show_all()
 
     def show(self):
         response = self._dialog.run()

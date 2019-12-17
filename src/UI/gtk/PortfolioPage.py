@@ -90,7 +90,7 @@ class PortfolioPage:
                 (
                     gtk.STOCK_CANCEL,
                     gtk.ResponseType.CANCEL,
-                    gtk.STOCK_OPEN,
+                    gtk.STOCK_SAVE,
                     gtk.ResponseType.OK,
                 ),
             )

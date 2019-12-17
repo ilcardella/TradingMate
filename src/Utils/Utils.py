@@ -42,7 +42,7 @@ class Messages(Enum):
     INSUF_FUNDING = "ERROR: Insufficient funding available"
     INSUF_HOLDINGS = "ERROR: Insufficient holdings available"
     INVALID_OPERATION = "ERROR: Invalid operation"
-    ABOUT_MESSAGE = "Creator: Alberto Cardellini\nEmail: albe.carde@gmail.com"
+    ABOUT_MESSAGE = "Creator: Alberto Cardellini\nSource: https://github.com/ilcardella/TradingMate"
     ERROR_SAVE_FILE = "Error saving the log. Try again."
     ERROR_OPEN_FILE = "Error opening the file. Try again."
     UNSAVED_CHANGES = "There are unsaved changes, are you sure?"
