@@ -10,10 +10,12 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from Utils.Utils import Utils
+from Utils.Utils import Utils, Messages
 from UI.TradingMateClient import TradingMateClient
 from UI.DataInterface import DataInterface
 from .PortfolioPage import PortfolioPage
+from .MessageDialog import MessageDialog
+from .ConfirmDialog import ConfirmDialog
 
 # Application constants
 APP_NAME = "TradingMate"
@@ -31,7 +33,7 @@ class UIHandler:
     def __init__(self, server):
         self._portfolio_tabs = {}
         self._client = TradingMateClient(server)
-        self._data_worker = DataInterface(server, self._create_update_portfolio_tab)
+        self._data_worker = DataInterface(self._client, self._create_update_portfolio_tab)
         self._create_UI()
 
     def _create_UI(self):
@@ -47,18 +49,18 @@ class UIHandler:
         settings_button.connect("clicked", self._on_open_settings_event)
         # TODO add about button
         self.notebook = builder.get_object(NOTEBOOK)
+        # Manually create required notebook pages
+        for pf in self._client.get_portfolios():
+            self._create_update_portfolio_tab(pf)
 
     def _on_close_main_window_event(self, widget):
-        # Check if there are unsaved chnages before closing the app
+        # Check if there are unsaved changes before closing the app
         if self._client.unsaved_changes():
-            # TODO create GTK confirm window
-            raise NotImplementedError()
-            # ConfirmWindow(
-            #     self.mainWindow,
-            #     "Warning",
-            #     Messages.UNSAVED_CHANGES.value,
-            #     self._close_application,
-            # )
+            ConfirmDialog(
+                self._main_window,
+                Messages.UNSAVED_CHANGES.value,
+                self._close_application,
+            ).show()
         else:
             self._close_application()
 
@@ -77,7 +79,6 @@ class UIHandler:
         # Create a new PortfolioPage and add it to the notebook
         page = PortfolioPage(self._main_window, portfolio.get_id(), self._client)
         self.notebook.append_page(page.get_top_level(), gtk.Label(portfolio.get_name()))
-        # TODO can this be just a set() containing the ids?
         self._portfolio_tabs[portfolio.get_id()] = page
 
     def _on_open_portfolio_event(self, widget):
@@ -105,9 +106,7 @@ class UIHandler:
                     self._client.open_portfolio_event(filename)
             dialog.destroy()
         except RuntimeError as e:
-            # TODO Create GTK Warning Window
-            # WarningWindow(self.parent, "Warning", e)
-            print("WarningWindow")
+            MessageDialog(self._parent_window, "Error", e, gtk.MessageType.ERROR).show()
 
     def _on_open_settings_event(self, widget):
         config = self._client.get_settings_event()

@@ -20,6 +20,10 @@ class TradingMateClient:
         """Handle stop event"""
         self._server.close_view_event()
 
+    def get_portfolios(self):
+        """Get the loaded portfolios"""
+        return self._server.get_portfolios()
+
     def new_trade_event(self, new_trade, portfolio_id):
         """Push new trade notification to the server"""
         self._server.new_trade_event(new_trade, portfolio_id)

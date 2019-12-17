@@ -12,6 +12,7 @@ sys.path.insert(0, parentdir)
 
 from Utils.Utils import Utils
 from .AddTradeWindow import AddTradeWindow
+from .MessageDialog import MessageDialog
 
 INVALID_STRING = "-"
 
@@ -106,9 +107,7 @@ class PortfolioPage:
                     self._client.save_portfolio_event(self._id, filename)
             dialog.destroy()
         except RuntimeError as e:
-            # TODO Use GTK warning window
-            # WarningWindow(self.parent, "Warning", e)
-            print("save as exception")
+            MessageDialog(self._parent_window, "Error", e, gtk.MessageType.ERROR).show()
 
     def _on_add_event(self, widget):
         print("add event")
