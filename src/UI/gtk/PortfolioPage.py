@@ -25,6 +25,8 @@ NOTEBOOK_PAGE = "notebook_page_box"
 SAVE_BUTTON = "save_button"
 SAVE_AS_BUTTON = "save_as_button"
 ADD_BUTTON = "add_button"
+REFRESH_BUTTON = "refresh_button"
+REFRESH_SWITCH = "auto_refresh_switch"
 BALANCES_ACCOUNT_VALUE = "balances_account_value"
 BALANCES_CASH_VALUE = "balances_cash_value"
 BALANCES_POSITIONS_VALUE = "balances_positions_value"
@@ -54,21 +56,27 @@ class PortfolioPage:
         save_button = builder.get_object(SAVE_BUTTON)
         save_as_button = builder.get_object(SAVE_AS_BUTTON)
         add_button = builder.get_object(ADD_BUTTON)
+        self._refresh_button = builder.get_object(REFRESH_BUTTON)
+        self._refresh_switch = builder.get_object(REFRESH_SWITCH)
         # TODO add manual refresh button and auto refresh toggle
         # Get the labels references
-        self.label_account = builder.get_object(BALANCES_ACCOUNT_VALUE)
-        self.label_cash = builder.get_object(BALANCES_CASH_VALUE)
-        self.label_positions = builder.get_object(BALANCES_POSITIONS_VALUE)
-        self.label_invested = builder.get_object(BALANCES_INVESTED_VALUE)
-        self.label_pl = builder.get_object(BALANCES_PL_VALUE)
-        self.label_pl_pc = builder.get_object(BALANCES_PL_PC_VALUE)
+        self._label_account = builder.get_object(BALANCES_ACCOUNT_VALUE)
+        self._label_cash = builder.get_object(BALANCES_CASH_VALUE)
+        self._label_positions = builder.get_object(BALANCES_POSITIONS_VALUE)
+        self._label_invested = builder.get_object(BALANCES_INVESTED_VALUE)
+        self._label_pl = builder.get_object(BALANCES_PL_VALUE)
+        self._label_pl_pc = builder.get_object(BALANCES_PL_PC_VALUE)
         # Get the positions tree model reference
-        self.positions_tree_model = builder.get_object(TREE_POSITIONS_MODEL)
-        self.history_tree_model = builder.get_object(TREE_TRADING_HISTORY_MODEL)
+        self._positions_tree_model = builder.get_object(TREE_POSITIONS_MODEL)
+        self._history_tree_model = builder.get_object(TREE_TRADING_HISTORY_MODEL)
         # Link callbacks to widgets
         save_button.connect("clicked", self._on_save_event)
         save_as_button.connect("clicked", self._on_save_as_event)
         add_button.connect("clicked", self._on_add_event)
+        self._refresh_button.connect("clicked", self._on_refresh_event)
+        self._refresh_switch.connect("state-set", self._auto_refresh_switch_set_event)
+        # Set initial status of refresh switch and button based on portfolio status
+        self._update_refresh_box()
         # Return the top level container
         return top_level
 
@@ -127,25 +135,25 @@ class PortfolioPage:
         return str(value)
 
     def _update_portfolio_balances(self, portfolio):
-        self.label_account.set_text(self._validate_value(portfolio.get_total_value()))
-        self.label_cash.set_text(self._validate_value(portfolio.get_cash_available()))
-        self.label_positions.set_text(
+        self._label_account.set_text(self._validate_value(portfolio.get_total_value()))
+        self._label_cash.set_text(self._validate_value(portfolio.get_cash_available()))
+        self._label_positions.set_text(
             self._validate_value(portfolio.get_holdings_value())
         )
-        self.label_invested.set_text(
+        self._label_invested.set_text(
             self._validate_value(portfolio.get_cash_deposited())
         )
-        self.label_pl.set_text(
+        self._label_pl.set_text(
             self._validate_value(portfolio.get_portfolio_pl(), negative_ok=True)
         )
-        self.label_pl_pc.set_text(
+        self._label_pl_pc.set_text(
             self._validate_value(portfolio.get_portfolio_pl_perc(), negative_ok=True)
         )
 
     def _update_positions_treeview(self, positions_list):
-        self.positions_tree_model.clear()
+        self._positions_tree_model.clear()
         for h in positions_list:
-            self.positions_tree_model.append(
+            self._positions_tree_model.append(
                 [
                     self._validate_value(h.get_symbol()),
                     self._validate_value(h.get_quantity()),
@@ -161,9 +169,9 @@ class PortfolioPage:
     def _update_trading_history_treeview(self, trade_list):
         if self._trade_history_changed(trade_list):
             self._cache["trade_history"] = trade_list
-            self.history_tree_model.clear()
+            self._history_tree_model.clear()
             for t in trade_list:
-                self.history_tree_model.append(
+                self._history_tree_model.append(
                     [
                         self._validate_value(t.date.strftime("%d/%m/%Y")),
                         self._validate_value(t.action.name),
@@ -175,6 +183,23 @@ class PortfolioPage:
                         self._validate_value(t.total, negative_ok=True),
                     ]
                 )
+
+    def _on_refresh_event(self, widget):
+        # Temporary disable the refresh button
+        self._refresh_button.set_sensitive(False)
+        self._server.manual_refresh_event(self._id)
+
+    def _auto_refresh_switch_set_event(self, widget, switch_is_on):
+        self._server.set_auto_refresh_event(switch_is_on, self._id)
+        self._update_refresh_box()
+
+    def _update_refresh_box(self):
+        if self._server.is_portfolio_auto_refreshing(self._id):
+            self._refresh_switch.set_active(True)
+            self._refresh_button.set_sensitive(False)
+        else:
+            self._refresh_switch.set_active(False)
+            self._refresh_button.set_sensitive(True)
 
     ### Public API
 
@@ -188,3 +213,5 @@ class PortfolioPage:
         self._update_positions_treeview(portfolio.get_holding_list())
         # Update history tree
         self._update_trading_history_treeview(portfolio.get_trade_history()[::-1])
+        # Restore refresh box status
+        self._update_refresh_box()

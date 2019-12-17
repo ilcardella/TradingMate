@@ -62,3 +62,13 @@ class TradingMateClient:
             if pf.has_unsaved_changes():
                 return True
         return False
+
+    def is_portfolio_auto_refreshing(self, portfolio_id):
+        """Return True if portfolio has data auto refresh enabled, False otherwise"""
+        pf = list(
+            filter(lambda p: p.get_id() == portfolio_id, self._server.get_portfolios())
+        )
+        if pf is not None and len(pf) == 1:
+            return pf[0].get_auto_refresh_enabled()
+        else:
+            raise ValueError(f"Portfolio {portfolio_id} does not exists")

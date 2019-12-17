@@ -19,7 +19,7 @@ class DataInterface(TaskThread):
         self.client = client
         self._data_callback = data_callback
         # This interval determines how often the UI is updated
-        self._interval = 5
+        self._interval = 10
 
     def task(self):
         # Get the portfolios and for each of them update their UI
