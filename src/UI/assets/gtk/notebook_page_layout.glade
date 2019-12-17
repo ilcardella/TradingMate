@@ -2,6 +2,46 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkListStore" id="positions_tree_model">
+    <columns>
+      <!-- column-name Symbol -->
+      <column type="gchararray"/>
+      <!-- column-name Quantity -->
+      <column type="gchararray"/>
+      <!-- column-name Open -->
+      <column type="gchararray"/>
+      <!-- column-name Current -->
+      <column type="gchararray"/>
+      <!-- column-name Cost -->
+      <column type="gchararray"/>
+      <!-- column-name Value -->
+      <column type="gchararray"/>
+      <!-- column-name PL -->
+      <column type="gchararray"/>
+      <!-- column-name PL_PC -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="trading_history_tree_model">
+    <columns>
+      <!-- column-name Date -->
+      <column type="gchararray"/>
+      <!-- column-name Action -->
+      <column type="gchararray"/>
+      <!-- column-name Symbol -->
+      <column type="gchararray"/>
+      <!-- column-name Quantity -->
+      <column type="gchararray"/>
+      <!-- column-name Price -->
+      <column type="gchararray"/>
+      <!-- column-name Fee -->
+      <column type="gchararray"/>
+      <!-- column-name Stamp -->
+      <column type="gchararray"/>
+      <!-- column-name Total -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkBox" id="notebook_page_box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -10,6 +50,7 @@
       <object class="GtkBox" id="page_buttons_hbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">center</property>
         <child>
           <object class="GtkButton" id="save_button">
             <property name="label">gtk-save</property>
@@ -22,6 +63,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">10</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -37,6 +79,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">10</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -52,6 +95,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">10</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -301,38 +345,265 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
+        <property name="padding">5</property>
         <property name="position">1</property>
       </packing>
     </child>
     <child>
-      <object class="GtkTreeView" id="positions_tree">
+      <object class="GtkScrolledWindow" id="positions_tree_window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="model">positions_tree_model</property>
-        <property name="reorderable">True</property>
-        <property name="enable_search">False</property>
-        <property name="search_column">0</property>
-        <property name="fixed_height_mode">True</property>
-        <property name="show_expanders">False</property>
-        <child internal-child="selection">
-          <object class="GtkTreeSelection"/>
+        <property name="shadow_type">in</property>
+        <child>
+          <object class="GtkViewport" id="positions_tree_viewport">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkTreeView" id="positions_tree">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">positions_tree_model</property>
+                <property name="reorderable">True</property>
+                <property name="enable_search">False</property>
+                <property name="search_column">0</property>
+                <property name="fixed_height_mode">True</property>
+                <property name="show_expanders">False</property>
+                <property name="enable_grid_lines">horizontal</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="positions_tree_selection"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_symbol">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Symbol</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_quantity">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Quantity</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_open_price">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Open price</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_current_price">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Current price</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_cost">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Cost</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_value">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Value</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">5</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_pl">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">PL [£]</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">6</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_pl_pc">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">PL [%]</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">7</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
         </child>
       </object>
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="padding">4</property>
         <property name="position">2</property>
       </packing>
     </child>
     <child>
-      <object class="GtkTreeView" id="trading_history_tree">
+      <object class="GtkScrolledWindow" id="trading_history_tree_window">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="model">trading_history_tree_model</property>
-        <property name="search_column">0</property>
-        <child internal-child="selection">
-          <object class="GtkTreeSelection"/>
+        <property name="shadow_type">in</property>
+        <child>
+          <object class="GtkViewport" id="trading_history_tree_viewport">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkTreeView" id="trading_history_tree">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">trading_history_tree_model</property>
+                <property name="search_column">0</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="trading_history_tree_selection"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_date">
+                    <property name="title" translatable="yes">Date</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_action">
+                    <property name="title" translatable="yes">Action</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_symbol1">
+                    <property name="title" translatable="yes">Symbol</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_quantity1">
+                    <property name="title" translatable="yes">Quantity</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_price">
+                    <property name="title" translatable="yes">Price</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_fee">
+                    <property name="title" translatable="yes">Fee</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">5</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_sdr">
+                    <property name="title" translatable="yes">Sdr</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">6</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column_total">
+                    <property name="title" translatable="yes">Total</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">7</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
         </child>
       </object>
       <packing>
@@ -341,45 +612,5 @@
         <property name="position">3</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkListStore" id="positions_tree_model">
-    <columns>
-      <!-- column-name Symbol -->
-      <column type="gchararray"/>
-      <!-- column-name Quantity -->
-      <column type="gfloat"/>
-      <!-- column-name Open -->
-      <column type="gfloat"/>
-      <!-- column-name Current -->
-      <column type="gfloat"/>
-      <!-- column-name Cost -->
-      <column type="gfloat"/>
-      <!-- column-name Value -->
-      <column type="gfloat"/>
-      <!-- column-name PL -->
-      <column type="gfloat"/>
-      <!-- column-name PL_PC -->
-      <column type="gfloat"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="trading_history_tree_model">
-    <columns>
-      <!-- column-name Date -->
-      <column type="gchararray"/>
-      <!-- column-name Action -->
-      <column type="gchararray"/>
-      <!-- column-name Symbol -->
-      <column type="gchararray"/>
-      <!-- column-name Quantity -->
-      <column type="gfloat"/>
-      <!-- column-name Price -->
-      <column type="gfloat"/>
-      <!-- column-name Fee -->
-      <column type="gfloat"/>
-      <!-- column-name Stamp -->
-      <column type="gfloat"/>
-      <!-- column-name Total -->
-      <column type="gfloat"/>
-    </columns>
   </object>
 </interface>

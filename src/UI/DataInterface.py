@@ -25,4 +25,3 @@ class DataInterface(TaskThread):
         # Get the portfolios and for each of them update their UI
         for pf in self._server.get_portfolios():
             self._data_callback(pf)
-

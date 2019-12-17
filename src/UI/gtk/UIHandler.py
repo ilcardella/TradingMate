@@ -1,7 +1,6 @@
 import os
 import sys
 import inspect
-from enum import Enum
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -14,35 +13,42 @@ sys.path.insert(0, parentdir)
 from Utils.Utils import Utils
 from UI.TradingMateClient import TradingMateClient
 from UI.DataInterface import DataInterface
+from .PortfolioPage import PortfolioPage
 
+# Application constants
 APP_NAME = "TradingMate"
-assets_dir = os.path.join(Utils.get_install_path(), "data", "assets")
-GLADE_MAIN_WINDOW_FILE = os.path.join(assets_dir, "main_window_layout.glade")
-GLADE_NOTEBOOK_PAGE_FILE = os.path.join(assets_dir, "notebook_page_layout.glade")
-
-
-class Widgets_ID(Enum):
-    MAIN_WINDOW = "main_window"
-    NOTEBOOK = "notebook"
-    NOTEBOOK_PAGE = "notebook_page_box"
+# Filepaths
+ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
+GLADE_MAIN_WINDOW_FILE = os.path.join(ASSETS_DIR, "main_window_layout.glade")
+# GTK Widget IDs
+MAIN_WINDOW = "main_window"
+NOTEBOOK = "notebook"
+OPEN_BUTTON = "open_button"
+SETTINGS_BUTTON = "settings_button"
 
 
 class UIHandler:
     def __init__(self, server):
         self._portfolio_tabs = {}
         self._client = TradingMateClient(server)
-        self._data_worker = DataInterface(server, self._update_portfolio_tab)
+        self._data_worker = DataInterface(server, self._create_update_portfolio_tab)
         self._create_UI()
 
     def _create_UI(self):
-        # Build GTK layout from file
+        # Load GTK layout from file
         builder = gtk.Builder()
         builder.add_from_file(GLADE_MAIN_WINDOW_FILE)
-        self.main_window = builder.get_object(Widgets_ID.MAIN_WINDOW.value)
+        # Get reference of each widget in the main window and link their callbacks
+        self.main_window = builder.get_object(MAIN_WINDOW)
         self.main_window.connect("destroy", self._on_close_main_window_event)
-        self.notebook = builder.get_object(Widgets_ID.NOTEBOOK.value)
+        open_button = builder.get_object(OPEN_BUTTON)
+        open_button.connect("clicked", self._on_open_portfolio_event)
+        settings_button = builder.get_object(SETTINGS_BUTTON)
+        settings_button.connect("clicked", self._on_open_settings_event)
+        # TODO add about button
+        self.notebook = builder.get_object(NOTEBOOK)
 
-    def _on_close_main_window_event(self, event):
+    def _on_close_main_window_event(self, widget):
         # Check if there are unsaved chnages before closing the app
         if self._client.unsaved_changes():
             # TODO create GTK confirm window
@@ -51,29 +57,50 @@ class UIHandler:
             #     self.mainWindow,
             #     "Warning",
             #     Messages.UNSAVED_CHANGES.value,
-            #     self._confirmed_close_window,
+            #     self._close_application,
             # )
         else:
-            self._confirmed_close_window()
+            self._close_application()
 
-    def _confirmed_close_window(self):
+    def _close_application(self):
         self._data_worker.shutdown()
         self._data_worker.join()
         self._client.stop()
         gtk.main_quit()
 
-    def _update_portfolio_tab(self, portfolio):
+    def _create_update_portfolio_tab(self, portfolio):
         if portfolio.get_id() not in self._portfolio_tabs.keys():
             self._create_portfolio_tab(portfolio)
-        # TODO update the portfolio tab
-        print(f"Portfolio {portfolio.get_id()} updated")
+        self._portfolio_tabs[portfolio.get_id()].update_data(portfolio)
 
     def _create_portfolio_tab(self, portfolio):
-        page_builder = gtk.Builder()
-        page_builder.add_from_file(GLADE_NOTEBOOK_PAGE_FILE)
-        page = page_builder.get_object(Widgets_ID.NOTEBOOK_PAGE.value)
-        self.notebook.append_page(page, gtk.Label(portfolio.get_name()))
+        # Create a new PortfolioPage and add it to the notebook
+        page = PortfolioPage(portfolio.get_id(), self._client)
+        self.notebook.append_page(page.get_top_level(), gtk.Label(portfolio.get_name()))
+        # TODO can this be just a set() containing the ids?
         self._portfolio_tabs[portfolio.get_id()] = page
+
+    def _on_open_portfolio_event(self, widget):
+        try:
+            # TODO use GTK file selector
+            print("Open button clicked")
+            # filename = filedialog.askopenfilename(
+            #     initialdir=Utils.get_install_path(),
+            #     title="Select file",
+            #     filetypes=(("json files", "*.json"), ("all files", "*.*")),
+            # )
+            # if filename is not None and len(filename) > 0:
+            #     self._client.open_portfolio_event(filename)
+        except RuntimeError as e:
+            # TODO Create GTK Warning Window
+            # WarningWindow(self.parent, "Warning", e)
+            print("WarningWindow")
+
+    def _on_open_settings_event(self, widget):
+        config = self._client.get_settings_event()
+        print("Settings window")
+        # TODO Use GTK Settings Window
+        # SettingsWindow(self.mainWindow, config, self._client.save_settings_event)
 
     ### Public API
 
