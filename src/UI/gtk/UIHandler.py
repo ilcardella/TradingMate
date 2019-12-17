@@ -39,8 +39,8 @@ class UIHandler:
         builder = gtk.Builder()
         builder.add_from_file(GLADE_MAIN_WINDOW_FILE)
         # Get reference of each widget in the main window and link their callbacks
-        self.main_window = builder.get_object(MAIN_WINDOW)
-        self.main_window.connect("destroy", self._on_close_main_window_event)
+        self._main_window = builder.get_object(MAIN_WINDOW)
+        self._main_window.connect("destroy", self._on_close_main_window_event)
         open_button = builder.get_object(OPEN_BUTTON)
         open_button.connect("clicked", self._on_open_portfolio_event)
         settings_button = builder.get_object(SETTINGS_BUTTON)
@@ -75,22 +75,35 @@ class UIHandler:
 
     def _create_portfolio_tab(self, portfolio):
         # Create a new PortfolioPage and add it to the notebook
-        page = PortfolioPage(portfolio.get_id(), self._client)
+        page = PortfolioPage(self._main_window, portfolio.get_id(), self._client)
         self.notebook.append_page(page.get_top_level(), gtk.Label(portfolio.get_name()))
         # TODO can this be just a set() containing the ids?
         self._portfolio_tabs[portfolio.get_id()] = page
 
     def _on_open_portfolio_event(self, widget):
         try:
-            # TODO use GTK file selector
-            print("Open button clicked")
-            # filename = filedialog.askopenfilename(
-            #     initialdir=Utils.get_install_path(),
-            #     title="Select file",
-            #     filetypes=(("json files", "*.json"), ("all files", "*.*")),
-            # )
-            # if filename is not None and len(filename) > 0:
-            #     self._client.open_portfolio_event(filename)
+            dialog = gtk.FileChooserDialog(
+                "Select file",
+                self._main_window,
+                gtk.FileChooserAction.OPEN,
+                (
+                    gtk.STOCK_CANCEL,
+                    gtk.ResponseType.CANCEL,
+                    gtk.STOCK_OPEN,
+                    gtk.ResponseType.OK,
+                ),
+            )
+            filter_json = gtk.FileFilter()
+            filter_json.set_name("JSON files")
+            filter_json.add_mime_type("application/json")
+            dialog.add_filter(filter_json)
+            response = dialog.run()
+
+            if response == gtk.ResponseType.OK:
+                filename = dialog.get_filename()
+                if filename is not None and len(filename) > 0:
+                    self._client.open_portfolio_event(filename)
+            dialog.destroy()
         except RuntimeError as e:
             # TODO Create GTK Warning Window
             # WarningWindow(self.parent, "Warning", e)
@@ -105,6 +118,6 @@ class UIHandler:
     ### Public API
 
     def start(self):
-        self._data_worker.start()
-        self.main_window.show_all()
+        self._data_worker.start_delayed(2)
+        self._main_window.show_all()
         gtk.main()

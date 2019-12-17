@@ -37,7 +37,8 @@ TREE_TRADING_HISTORY_MODEL = "trading_history_tree_model"
 class PortfolioPage:
     """GTK Notebook page that display information of a user portfolio"""
 
-    def __init__(self, portfolio_id, server):
+    def __init__(self, parent_window, portfolio_id, server):
+        self._parent_window = parent_window
         self._id = portfolio_id
         self._server = server
         self._widget = self._load_UI(GLADE_NOTEBOOK_PAGE_FILE)
@@ -81,15 +82,29 @@ class PortfolioPage:
 
     def _on_save_as_event(self, widget):
         try:
-            print(f"save as portfolio {self._id}")
-            # TODO use GTK file selector
-            # filename = filedialog.asksaveasfilename(
-            #     initialdir=Utils.get_install_path(),
-            #     title="Select file",
-            #     filetypes=(("json files", "*.json"), ("all files", "*.*")),
-            # )
-            # if filename is not None and len(filename) > 0:
-            #     self._client.save_portfolio_event(portfolio_id, filename)
+            dialog = gtk.FileChooserDialog(
+                "Select file",
+                self._parent_window,
+                gtk.FileChooserAction.SAVE,
+                (
+                    gtk.STOCK_CANCEL,
+                    gtk.ResponseType.CANCEL,
+                    gtk.STOCK_OPEN,
+                    gtk.ResponseType.OK,
+                ),
+            )
+            filter_json = gtk.FileFilter()
+            filter_json.set_name("JSON files")
+            filter_json.add_mime_type("application/json")
+            dialog.add_filter(filter_json)
+            dialog.set_do_overwrite_confirmation(True)
+            response = dialog.run()
+
+            if response == gtk.ResponseType.OK:
+                filename = dialog.get_filename()
+                if filename is not None and len(filename) > 0:
+                    self._client.save_portfolio_event(self._id, filename)
+            dialog.destroy()
         except RuntimeError as e:
             # TODO Use GTK warning window
             # WarningWindow(self.parent, "Warning", e)
