@@ -58,7 +58,6 @@ class PortfolioPage:
         add_button = builder.get_object(ADD_BUTTON)
         self._refresh_button = builder.get_object(REFRESH_BUTTON)
         self._refresh_switch = builder.get_object(REFRESH_SWITCH)
-        # TODO add manual refresh button and auto refresh toggle
         # Get the labels references
         self._label_account = builder.get_object(BALANCES_ACCOUNT_VALUE)
         self._label_cash = builder.get_object(BALANCES_CASH_VALUE)
