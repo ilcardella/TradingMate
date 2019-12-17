@@ -121,9 +121,11 @@ class PortfolioPage:
         self.label_invested.set_text(
             self._validate_value(portfolio.get_cash_deposited())
         )
-        self.label_pl.set_text(self._validate_value(portfolio.get_portfolio_pl()))
+        self.label_pl.set_text(
+            self._validate_value(portfolio.get_portfolio_pl(), negative_ok=True)
+        )
         self.label_pl_pc.set_text(
-            self._validate_value(portfolio.get_portfolio_pl_perc())
+            self._validate_value(portfolio.get_portfolio_pl_perc(), negative_ok=True)
         )
 
     def _update_positions_treeview(self, positions_list):
@@ -137,8 +139,8 @@ class PortfolioPage:
                     self._validate_value(h.get_last_price()),
                     self._validate_value(h.get_cost()),
                     self._validate_value(h.get_value()),
-                    self._validate_value(h.get_profit_loss()),
-                    self._validate_value(h.get_profit_loss_perc()),
+                    self._validate_value(h.get_profit_loss(), negative_ok=True),
+                    self._validate_value(h.get_profit_loss_perc(), negative_ok=True),
                 ]
             )
 
@@ -156,7 +158,7 @@ class PortfolioPage:
                         self._validate_value(t.price),
                         self._validate_value(t.fee),
                         self._validate_value(t.sdr),
-                        self._validate_value(t.total),
+                        self._validate_value(t.total, negative_ok=True),
                     ]
                 )
 
