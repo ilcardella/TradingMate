@@ -21,9 +21,9 @@ class MessageDialog:
          - gtk.MessageType.QUESTION
         """
         self._dialog = gtk.MessageDialog(
-            parent_window, 0, dialog_type, gtk.ButtonsType.OK, title
+            parent_window, 0, dialog_type, gtk.ButtonsType.OK, str(title)
         )
-        self._dialog.format_secondary_text(message)
+        self._dialog.format_secondary_text(str(message))
         self._dialog.set_modal(True)
 
     def show(self):

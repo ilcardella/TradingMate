@@ -119,7 +119,7 @@ class UIHandler:
                     self._client.open_portfolio_event(filename)
             dialog.destroy()
         except RuntimeError as e:
-            MessageDialog(self._parent_window, "Error", e, gtk.MessageType.ERROR).show()
+            MessageDialog(self._parent_window, "Error", str(e), gtk.MessageType.ERROR).show()
 
     def _on_open_settings_event(self, widget):
         SettingsWindow(self._main_window, self._client).show()

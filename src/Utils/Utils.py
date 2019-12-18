@@ -47,6 +47,7 @@ class Messages(Enum):
     ERROR_OPEN_FILE = "Error opening the file. Try again."
     UNSAVED_CHANGES = "There are unsaved changes, are you sure?"
     ERROR_SAVE_SETTINGS = "Unable to save the settings"
+    WINDOW_UNSUPPORTED_ACTION = "This window does not support the selected action"
 
 
 class Markets(Enum):
