@@ -46,6 +46,7 @@ class Messages(Enum):
     ERROR_SAVE_FILE = "Error saving the log. Try again."
     ERROR_OPEN_FILE = "Error opening the file. Try again."
     UNSAVED_CHANGES = "There are unsaved changes, are you sure?"
+    ERROR_SAVE_SETTINGS = "Unable to save the settings"
 
 
 class Markets(Enum):

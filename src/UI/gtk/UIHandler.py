@@ -16,6 +16,7 @@ from UI.DataInterface import DataInterface
 from .PortfolioPage import PortfolioPage
 from .MessageDialog import MessageDialog
 from .ConfirmDialog import ConfirmDialog
+from .SettingsWindow import SettingsWindow
 
 # Application constants
 APP_NAME = "TradingMate"
@@ -121,10 +122,7 @@ class UIHandler:
             MessageDialog(self._parent_window, "Error", e, gtk.MessageType.ERROR).show()
 
     def _on_open_settings_event(self, widget):
-        config = self._client.get_settings_event()
-        print("Settings window")
-        # TODO Use GTK Settings Window
-        # SettingsWindow(self.mainWindow, config, self._client.save_settings_event)
+        SettingsWindow(self._main_window, self._client).show()
 
     ### Public API
 
