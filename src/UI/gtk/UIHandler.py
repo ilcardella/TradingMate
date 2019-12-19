@@ -4,7 +4,7 @@ import inspect
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk as gtk
+from gi.repository import Gtk as gtk, GLib
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -35,9 +35,7 @@ class UIHandler:
     def __init__(self, server):
         self._portfolio_tabs = {}
         self._client = TradingMateClient(server)
-        self._data_worker = DataInterface(
-            self._client, self._create_update_portfolio_tab
-        )
+        self._data_worker = DataInterface(self._client, self._on_data_worker_timeout)
         self._create_UI()
 
     def _create_UI(self):
@@ -83,6 +81,9 @@ class UIHandler:
             gtk.MessageType.INFO,
         ).show()
 
+    def _on_data_worker_timeout(self, portfolio):
+        GLib.idle_add(self._create_update_portfolio_tab, portfolio)
+
     def _create_update_portfolio_tab(self, portfolio):
         if portfolio.get_id() not in self._portfolio_tabs.keys():
             self._create_portfolio_tab(portfolio)
@@ -119,7 +120,9 @@ class UIHandler:
                     self._client.open_portfolio_event(filename)
             dialog.destroy()
         except RuntimeError as e:
-            MessageDialog(self._parent_window, "Error", str(e), gtk.MessageType.ERROR).show()
+            MessageDialog(
+                self._parent_window, "Error", str(e), gtk.MessageType.ERROR
+            ).show()
 
     def _on_open_settings_event(self, widget):
         SettingsWindow(self._main_window, self._client).show()
