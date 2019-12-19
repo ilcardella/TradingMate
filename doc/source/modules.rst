@@ -58,44 +58,66 @@ UI
 The ``UI`` module contains the components that compose the User Interface
 of TradingMate.
 
-View
-^^^^
-
-.. automodule:: UI.View
-
-.. autoclass:: View
-    :members:
-
-ShareTradingFrame
-^^^^^^^^^^^^^^^^^
-
-.. automodule:: UI.ShareTradingFrame
-
-.. autoclass:: ShareTradingFrame
-    :members:
-
-AddTradeDialogWindow
-^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: UI.AddTradeDialogWindow
-
-.. autoclass:: AddTradeDialogWindow
-    :members:
-
-WarningWindow
+DataInterface
 ^^^^^^^^^^^^^
 
-.. automodule:: UI.WarningWindow
+.. automodule:: UI.DataInterface
 
-.. autoclass:: WarningWindow
+.. autoclass:: DataInterface
     :members:
 
-Widgets
-^^^^^^^
+TradingMateClient
+^^^^^^^^^^^^^^^^^
 
-.. automodule:: UI.Widgets
+.. automodule:: UI.TradingMateClient
 
-.. autoclass:: DatePicker
+.. autoclass:: TradingMateClient
+    :members:
+
+GTK
+^^^
+
+The ``gtk`` module contains the gtk components and widgets of the
+graphical interface
+
+UIHandler
+"""""""""
+
+.. automodule:: UI.gtk.UIHandler
+
+.. autoclass:: UIHandler
+    :members:
+
+ConfirmDialog
+"""""""""""""
+
+.. automodule:: UI.gtk.ConfirmDialog
+
+.. autoclass:: ConfirmDialog
+    :members:
+
+MessageDialog
+"""""""""""""
+
+.. automodule:: UI.gtk.MessageDialog
+
+.. autoclass:: MessageDialog
+    :members:
+
+PortfolioPage
+"""""""""""""
+
+.. automodule:: UI.gtk.PortfolioPage
+
+.. autoclass:: PortfolioPage
+    :members:
+
+SettingsWindow
+""""""""""""""
+
+.. automodule:: UI.gtk.SettingsWindow
+
+.. autoclass:: SettingsWindow
     :members:
 
 Utils
@@ -132,9 +154,6 @@ Utils
 ^^^^^
 
 .. automodule:: Utils.Utils
-
-.. autoclass:: Callbacks
-    :members:
 
 .. autoclass:: Actions
     :members:
