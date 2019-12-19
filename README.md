@@ -7,7 +7,7 @@ your assets and the overall profit (or loss!)
 
 ## Dependencies
 
-- Python 3.5+
+- Python 3.6+
 - Pipenv (for development)
 - PyGObject: https://pygobject.readthedocs.io/en/latest/index.html
 - AlphaVantage: https://www.alphavantage.co/
