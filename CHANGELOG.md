@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## []
 ### Changed
-- Replaced TK user interface with GTK+
+- Replaced TK user interface with GTK+ 3
 
 ## [2.0.0] - 2019-12-14
 ### Changed
