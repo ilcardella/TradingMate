@@ -9,7 +9,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from .Holding import Holding
-from Utils.Utils import Actions, Messages, Callbacks
+from Utils.Utils import Actions, Messages
 from .StockPriceGetter import StockPriceGetter
 from .DatabaseHandler import DatabaseHandler
 
