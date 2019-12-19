@@ -46,6 +46,8 @@ class AddTradeWindow:
         builder.add_from_file(filepath)
         # Get widget references
         top_level = builder.get_object(ADD_TRADE_WINDOW)
+        top_level.set_transient_for(self._parent_window)
+        top_level.set_modal(True)
         self._calendar = builder.get_object(DATE_CALENDAR)
         self._action_combo = builder.get_object(ACTION_COMBO)
         self._market_combo = builder.get_object(MARKET_COMBO)
@@ -59,12 +61,12 @@ class AddTradeWindow:
         self._add_button = builder.get_object(ADD_BUTTON)
         # Register callbacks
         self._calendar.connect("day-selected", self._on_date_selected)
-        self._symbol_entry.connect("preedit-changed", self._on_entry_changed)
-        self._quantity_entry.connect("preedit-changed", self._on_entry_changed)
-        self._price_entry.connect("preedit-changed", self._on_entry_changed)
-        self._fee_entry.connect("preedit-changed", self._on_entry_changed)
-        self._sdr_entry.connect("preedit-changed", self._on_entry_changed)
-        self._notes_entry.connect("preedit-changed", self._on_entry_changed)
+        self._symbol_entry.connect("changed", self._on_entry_changed)
+        self._quantity_entry.connect("changed", self._on_entry_changed)
+        self._price_entry.connect("changed", self._on_entry_changed)
+        self._fee_entry.connect("changed", self._on_entry_changed)
+        self._sdr_entry.connect("changed", self._on_entry_changed)
+        self._notes_entry.connect("changed", self._on_entry_changed)
         self._action_combo.connect("changed", self._on_action_change_event)
         self._cancel_button.connect("clicked", self._on_cancel_event)
         self._add_button.connect("clicked", self._on_add_event)
@@ -76,18 +78,33 @@ class AddTradeWindow:
         self.destroy()
 
     def _on_add_event(self, widget):
-        # Create a Trade instance from widget content
+        # Normalise widgets content with default values if necessary
         year, month, day = self._calendar.get_date()
-        t = Trade(
-            f"{day}/{month+1}/{year}",
-            Actions[self._action_combo.get_active_text()],
-            float(self._quantity_entry.get_text()),
-            f"{Markets[self._market_combo.get_active_text()].name}:{self._symbol_entry.get_text()}",
-            float(self._price_entry.get_text()),
-            float(self._fee_entry.get_text()),
-            float(self._sdr_entry.get_text()),
-            str(self._notes_entry.get_text()),
+        date_string = f"{day}/{month+1}/{year}"
+        action = Actions[self._action_combo.get_active_text()]
+        quantity = float(
+            self._quantity_entry.get_text()
+            if len(self._quantity_entry.get_text()) > 0
+            else 0
         )
+        market = (
+            f"{Markets[self._market_combo.get_active_text()].name}:{self._symbol_entry.get_text()}"
+            if self._market_combo.get_active_text()
+            else ""
+        )
+        price = float(
+            self._price_entry.get_text() if len(self._price_entry.get_text()) else 0
+        )
+        fee = float(
+            self._fee_entry.get_text() if len(self._fee_entry.get_text()) else 0
+        )
+        sdr = float(
+            self._sdr_entry.get_text() if len(self._sdr_entry.get_text()) else 0
+        )
+        notes = str(self._notes_entry.get_text())
+        # Create a Trade instance from the widgets content
+        t = Trade(date_string, action, quantity, market, price, fee, sdr, notes)
+        # Call server and handle errors
         try:
             self._client.new_trade_event(t, self._portfolio_id)
             self.destroy()
@@ -98,7 +115,7 @@ class AddTradeWindow:
 
     def _on_action_change_event(self, widget):
         # Clear widget content
-        self._clear_content()
+        self._clear_content(clear_calendar=False)
         # Enable/disable widgets
         action = Actions[self._action_combo.get_active_text()]
         if action == Actions.BUY:
@@ -167,7 +184,7 @@ class AddTradeWindow:
     def _on_date_selected(self, widget):
         self._check_data_validity()
 
-    def _on_entry_changed(self, widget, string):
+    def _on_entry_changed(self, widget):
         if widget is self._symbol_entry:
             self._symbol_entry.set_text(self._symbol_entry.get_text().upper())
         self._check_data_validity()
@@ -186,9 +203,10 @@ class AddTradeWindow:
         for m in Markets:
             self._market_combo.append_text(m.name)
 
-    def _clear_content(self):
+    def _clear_content(self, clear_calendar=True):
         # Clear day selection in calendar
-        self._calendar.select_day(0)
+        if clear_calendar:
+            self._calendar.select_day(0)
         # Reset entries
         self._symbol_entry.set_text("")
         self._quantity_entry.set_text("")
@@ -216,7 +234,6 @@ class AddTradeWindow:
                 or self._is_string_valid(self._notes_entry.get_text(), empty_ok=True),
             ]
         )
-        print(valid)
         self._add_button.set_sensitive(valid)
 
     def _is_string_valid(self, string_value, empty_ok=False):
@@ -229,7 +246,7 @@ class AddTradeWindow:
     def _is_float_valid(self, string_value):
         try:
             f = float(string_value)
-            return True if len(f) > 0.0 else False
+            return True if f > 0.0 else False
         except:
             return False
 

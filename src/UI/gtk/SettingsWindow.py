@@ -36,6 +36,8 @@ class SettingsWindow:
         builder.add_from_file(filepath)
         # Get widget references and link callbacks
         top_level = builder.get_object(SETTINGS_WINDOW)
+        top_level.set_transient_for(self._parent_window)
+        top_level.set_modal(True)
         self._portfolio_path_buffer = builder.get_object(PORTFOLIO_PATH_BUFFER)
         self._credentials_path_entry = builder.get_object(CREDENTIALS_PATH_ENTRY)
         self._cancel_button = builder.get_object(CANCEL_BUTTON)
