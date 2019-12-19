@@ -56,7 +56,7 @@ class ConfigurationManager:
             logging.warning(
                 "Credentials not configured: {}".format(credentials_filepath)
             )
-            credentials_json = {"av_api_key": ""}
+            credentials_json = {"av_api_key": "unconfigured"}
 
         self.config["credentials"] = credentials_json
 

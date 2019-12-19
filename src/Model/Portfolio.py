@@ -9,7 +9,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from .Holding import Holding
-from Utils.Utils import Actions, Messages, Callbacks
+from Utils.Utils import Actions, Messages
 from .StockPriceGetter import StockPriceGetter
 from .DatabaseHandler import DatabaseHandler
 
@@ -315,9 +315,11 @@ class Portfolio:
         logging.info("Portfolio - live price auto refresh: {}".format(enabled))
         self.price_getter.enable(enabled)
 
+    def get_auto_refresh_enabled(self):
+        return self.price_getter.is_enabled()
+
     # INTERNAL
 
     def _create_id(self, seed):
         """Create and return an unique id from the seed"""
         return hashlib.sha1(seed.encode("utf-8")).hexdigest()
-

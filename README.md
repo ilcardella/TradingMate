@@ -7,12 +7,12 @@ your assets and the overall profit (or loss!)
 
 ## Dependencies
 
-- Python 3.5+
-- Pipenv (optional)
-- Tkinter: https://docs.python.org/3/library/tk.html
+- Python 3.6+
+- Pipenv (for development)
+- PyGObject: https://pygobject.readthedocs.io/en/latest/index.html
 - AlphaVantage: https://www.alphavantage.co/
 
-    View `Pipfile` or `setup.py` for the full list of python dependencies.
+View `Pipfile` or `setup.py` for the full list of python dependencies.
 
 ## Install
 
@@ -22,11 +22,7 @@ sudo apt-get update
 sudo apt-get install python3 python3-pip
 ```
 
-The UI is based on Tkinter so let's install it
-```
-sudo apt-get update
-sudo apt-get install python3-tk
-```
+The UI is based on Python GTK+ 3 so follow the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html) to install the required packages.
 
 Clone this repo in your workspace and install `TradingMate` by running the following command in the repository root folder
 ```

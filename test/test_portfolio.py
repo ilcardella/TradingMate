@@ -12,7 +12,6 @@ sys.path.insert(0, "{}/src".format(parentdir))
 
 from Model.Portfolio import Portfolio
 from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Utils import Callbacks
 from Utils.Trade import Trade
 
 
@@ -264,4 +263,3 @@ def test_is_trade_valid(portfolio):
     }
     with pytest.raises(RuntimeError):
         assert not portfolio.is_trade_valid(Trade.from_dict(item))
-

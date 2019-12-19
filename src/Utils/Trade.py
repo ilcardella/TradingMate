@@ -79,9 +79,10 @@ class Trade:
             return self.quantity
         elif self.action == Actions.BUY:
             cost = (self.price / 100) * self.quantity
-            return cost + self.fee + ((cost * self.sdr) / 100)
+            total = cost + self.fee + ((cost * self.sdr) / 100)
+            return total * -1
         elif self.action == Actions.SELL:
             cost = (self.price / 100) * self.quantity
             total = cost + self.fee + ((cost * self.sdr) / 100)
-            return total * -1
+            return total
         return 0

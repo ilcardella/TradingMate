@@ -9,11 +9,11 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from Model.DatabaseHandler import DatabaseHandler
-from Utils.Utils import Callbacks
-from UI.View import View
 from Model.Portfolio import Portfolio
 from Utils.ConfigurationManager import ConfigurationManager
 from Utils.Utils import Utils
+
+from UI.gtk.UIHandler import UIHandler
 
 
 class TradingMate:
@@ -148,7 +148,7 @@ def main():
     # Initialise the business logic
     tm = TradingMate()
     # Initialise the user interface
-    View(tm).start()
+    UIHandler(tm).start()
 
 
 if __name__ == "__main__":

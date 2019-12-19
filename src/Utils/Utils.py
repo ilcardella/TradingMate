@@ -10,24 +10,6 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-# Enumerations
-
-
-class Callbacks(Enum):
-    UPDATE_LIVE_PRICES = 1
-    ON_CLOSE_VIEW_EVENT = 2
-    ON_MANUAL_REFRESH_EVENT = 3
-    ON_NEW_TRADE_EVENT = 4
-    ON_SET_AUTO_REFRESH_EVENT = 5
-    ON_OPEN_LOG_FILE_EVENT = 6
-    ON_SAVE_LOG_FILE_EVENT = 7
-    ON_SAVE_AS_EVENT = 8
-    ON_DELETE_LAST_TRADE_EVENT = 9
-    ON_START_AUTOTRADING = 10
-    ON_STOP_AUTOTRADING = 11
-    ON_SHOW_SETTINGS_EVENT = 12
-    ON_SAVE_SETTINGS_EVENT = 13
-
 
 class Actions(Enum):
     BUY = 1
@@ -42,10 +24,14 @@ class Messages(Enum):
     INSUF_FUNDING = "ERROR: Insufficient funding available"
     INSUF_HOLDINGS = "ERROR: Insufficient holdings available"
     INVALID_OPERATION = "ERROR: Invalid operation"
-    ABOUT_MESSAGE = "Creator: Alberto Cardellini\nEmail: albe.carde@gmail.com"
+    ABOUT_MESSAGE = (
+        "Creator: Alberto Cardellini\nSource: https://github.com/ilcardella/TradingMate"
+    )
     ERROR_SAVE_FILE = "Error saving the log. Try again."
     ERROR_OPEN_FILE = "Error opening the file. Try again."
     UNSAVED_CHANGES = "There are unsaved changes, are you sure?"
+    ERROR_SAVE_SETTINGS = "Unable to save the settings"
+    WINDOW_UNSUPPORTED_ACTION = "This window does not support the selected action"
 
 
 class Markets(Enum):

@@ -14,15 +14,14 @@ class DataInterface(TaskThread):
     """Thread that periodically requests the most recent data from TradingMate
     server notify the parent object through a callback function"""
 
-    def __init__(self, server, data_callback):
+    def __init__(self, client, data_callback):
         TaskThread.__init__(self)
-        self._server = server
+        self.client = client
         self._data_callback = data_callback
         # This interval determines how often the UI is updated
-        self._interval = 5
+        self._interval = 10
 
     def task(self):
         # Get the portfolios and for each of them update their UI
-        for pf in self._server.get_portfolios():
+        for pf in self.client.get_portfolios():
             self._data_callback(pf)
-

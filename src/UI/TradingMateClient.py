@@ -13,25 +13,16 @@ from .DataInterface import DataInterface
 class TradingMateClient:
     """Client interface to the TradingMate business logic"""
 
-    def __init__(self, parent, server):
-        self._parent = parent
+    def __init__(self, server):
         self._server = server
-        self.data_interface = DataInterface(server, self._on_portfolio_update)
-
-    def _on_portfolio_update(self, portfolio):
-        """Handle new incoming portfolio update"""
-        # Call the parent view to update the portfolio tab
-        self._parent.update_portfolio_tab(portfolio)
-
-    def start(self):
-        """Handle start event"""
-        self.data_interface.start()
 
     def stop(self):
         """Handle stop event"""
-        self.data_interface.shutdown()
-        self.data_interface.join()
         self._server.close_view_event()
+
+    def get_portfolios(self):
+        """Get the loaded portfolios"""
+        return self._server.get_portfolios()
 
     def new_trade_event(self, new_trade, portfolio_id):
         """Push new trade notification to the server"""
@@ -71,3 +62,13 @@ class TradingMateClient:
             if pf.has_unsaved_changes():
                 return True
         return False
+
+    def is_portfolio_auto_refreshing(self, portfolio_id):
+        """Return True if portfolio has data auto refresh enabled, False otherwise"""
+        pf = list(
+            filter(lambda p: p.get_id() == portfolio_id, self._server.get_portfolios())
+        )
+        if pf is not None and len(pf) == 1:
+            return pf[0].get_auto_refresh_enabled()
+        else:
+            raise ValueError(f"Portfolio {portfolio_id} does not exists")

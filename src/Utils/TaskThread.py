@@ -4,6 +4,7 @@ import threading
 import os
 import sys
 import inspect
+import time
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -22,6 +23,7 @@ class TaskThread(threading.Thread):
         self._enabled.set()
         self._interval = 1  # default value
         self._singleRun = False
+        self._start_delay = 0
 
     def setInterval(self, interval):
         """Set the number of seconds we sleep between executing our task"""
@@ -50,6 +52,7 @@ class TaskThread(threading.Thread):
         self.cancel_timeout()
 
     def run(self):
+        time.sleep(self._start_delay)
         while 1:
             # reset timeout
             self._timeout.clear()
@@ -70,3 +73,7 @@ class TaskThread(threading.Thread):
     def task(self):
         """The task done by this thread - override in subclasses"""
         raise Exception("TaskThread: task function not overridden by children class!")
+
+    def start_delayed(self, delay_s):
+        self._start_delay = delay_s
+        self.start()
