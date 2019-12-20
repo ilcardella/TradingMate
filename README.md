@@ -140,5 +140,7 @@ Eventually push your branch and create a Pull Request against `master`.
 If you instead find problems or you have ideas and suggestions for future
 improvements, please open an Issue. Thanks for the support!
 
+Python GTK+ 3 reference: [here](https://lazka.github.io/pgi-docs/index.html#Gtk-3.0)
+
 ## Credits
 Icons by <a target="_blank" href="https://icons8.com">Icons8</a>
