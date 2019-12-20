@@ -17,7 +17,9 @@ from .MessageDialog import MessageDialog
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
-GLADE_ADD_TRADE_WINDOW_FILE = os.path.join(ASSETS_DIR, "add_trade_window_layout.glade")
+GLADE_ADD_TRADE_WINDOW_FILE = os.path.join(
+    ASSETS_DIR, "gtk", "add_trade_window_layout.glade"
+)
 
 # GTK Widget IDs
 ADD_TRADE_WINDOW = "add_trade_window"

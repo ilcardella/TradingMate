@@ -18,7 +18,7 @@ INVALID_STRING = "-"
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
-GLADE_NOTEBOOK_PAGE_FILE = os.path.join(ASSETS_DIR, "notebook_page_layout.glade")
+GLADE_NOTEBOOK_PAGE_FILE = os.path.join(ASSETS_DIR, "gtk", "notebook_page_layout.glade")
 
 # GTK Widget IDs
 NOTEBOOK_PAGE = "notebook_page_box"
@@ -114,7 +114,9 @@ class PortfolioPage:
                     self._client.save_portfolio_event(self._id, filename)
             dialog.destroy()
         except RuntimeError as e:
-            MessageDialog(self._parent_window, "Error", str(e), gtk.MessageType.ERROR).show()
+            MessageDialog(
+                self._parent_window, "Error", str(e), gtk.MessageType.ERROR
+            ).show()
 
     def _on_add_event(self, widget):
         AddTradeWindow(self._parent_window, self._server, self._id).show()

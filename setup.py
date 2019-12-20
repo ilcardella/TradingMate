@@ -24,6 +24,15 @@ setup(
                 "src/UI/assets/save_as_file_icon.png",
             ],
         ),
+        (
+            os.path.join(os.sep, "opt", "TradingMate", "data", "assets", "gtk"),
+            [
+                "src/UI/assets/gtk/add_trade_window_layout.glade",
+                "src/UI/assets/gtk/main_window_layout.glade",
+                "src/UI/assets/gtk/notebook_page_layout.glade",
+                "src/UI/assets/gtk/settings_window_layout.glade",
+            ],
+        ),
     ],
     # metadata to display on PyPI
     author="Alberto Cardellini",

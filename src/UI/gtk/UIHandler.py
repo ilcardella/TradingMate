@@ -22,7 +22,7 @@ from .SettingsWindow import SettingsWindow
 APP_NAME = "TradingMate"
 # Filepaths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
-GLADE_MAIN_WINDOW_FILE = os.path.join(ASSETS_DIR, "main_window_layout.glade")
+GLADE_MAIN_WINDOW_FILE = os.path.join(ASSETS_DIR, "gtk", "main_window_layout.glade")
 # GTK Widget IDs
 MAIN_WINDOW = "main_window"
 NOTEBOOK = "notebook"

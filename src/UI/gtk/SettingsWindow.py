@@ -15,7 +15,9 @@ from .MessageDialog import MessageDialog
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
-GLADE_SETTINGS_WINDOW_FILE = os.path.join(ASSETS_DIR, "settings_window_layout.glade")
+GLADE_SETTINGS_WINDOW_FILE = os.path.join(
+    ASSETS_DIR, "gtk", "settings_window_layout.glade"
+)
 
 # GTK Widget IDs
 SETTINGS_WINDOW = "settings_window"
