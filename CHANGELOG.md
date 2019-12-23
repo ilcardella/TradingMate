@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replaced TK user interface with GTK+ 3
 
+### Added
+- Status bar showing portfolio filepath
+
 ## [2.0.0] - 2019-12-14
 ### Changed
 - Issue37 - Improved installation process and dependencies setup
