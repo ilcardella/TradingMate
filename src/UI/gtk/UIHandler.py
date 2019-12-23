@@ -29,6 +29,7 @@ NOTEBOOK = "notebook"
 OPEN_BUTTON = "open_button"
 SETTINGS_BUTTON = "settings_button"
 ABOUT_BUTTON = "about_button"
+PORTFOLIO_PATH_LABEL = "portfolio_path_label"
 
 
 class UIHandler:
@@ -42,16 +43,19 @@ class UIHandler:
         # Load GTK layout from file
         builder = gtk.Builder()
         builder.add_from_file(GLADE_MAIN_WINDOW_FILE)
-        # Get reference of each widget in the main window and link their callbacks
+        # Get reference of each widget in the main window
         self._main_window = builder.get_object(MAIN_WINDOW)
-        self._main_window.connect("destroy", self._on_close_main_window_event)
+        self._notebook = builder.get_object(NOTEBOOK)
         open_button = builder.get_object(OPEN_BUTTON)
-        open_button.connect("clicked", self._on_open_portfolio_event)
         settings_button = builder.get_object(SETTINGS_BUTTON)
-        settings_button.connect("clicked", self._on_open_settings_event)
         about_button = builder.get_object(ABOUT_BUTTON)
+        self._portfolio_path_label = builder.get_object(PORTFOLIO_PATH_LABEL)
+        # and link their callbacks
+        self._main_window.connect("destroy", self._on_close_main_window_event)
+        open_button.connect("clicked", self._on_open_portfolio_event)
+        settings_button.connect("clicked", self._on_open_settings_event)
         about_button.connect("clicked", self._on_show_about_event)
-        self.notebook = builder.get_object(NOTEBOOK)
+        self._notebook.connect("switch-page", self._on_change_notebook_page)
         # Manually create required notebook pages
         for pf in self._client.get_portfolios():
             self._create_update_portfolio_tab(pf)
@@ -91,8 +95,13 @@ class UIHandler:
 
     def _create_portfolio_tab(self, portfolio):
         # Create a new PortfolioPage and add it to the notebook
-        page = PortfolioPage(self._main_window, portfolio.get_id(), self._client)
-        self.notebook.append_page(page.get_top_level(), gtk.Label(portfolio.get_name()))
+        page = PortfolioPage(
+            self._main_window,
+            self._client,
+            portfolio.get_id(),
+            portfolio.get_portfolio_path(),
+        )
+        self._notebook.append_page(page, gtk.Label(portfolio.get_name()))
         self._portfolio_tabs[portfolio.get_id()] = page
 
     def _on_open_portfolio_event(self, widget):
@@ -125,7 +134,11 @@ class UIHandler:
             ).show()
 
     def _on_open_settings_event(self, widget):
+        # FIXME changes are not applied immediately, it would be good to force a UI refresh
         SettingsWindow(self._main_window, self._client).show()
+
+    def _on_change_notebook_page(self, widget, page_toplevel, page_index):
+        self._portfolio_path_label.set_text(page_toplevel.get_portfolio_path())
 
     ### Public API
 

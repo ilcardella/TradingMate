@@ -52,6 +52,10 @@ class Portfolio:
         """Return the portfolio name [string]"""
         return self._name
 
+    def get_portfolio_path(self):
+        """Return the complete filepath of the portfolio"""
+        return self.db_handler.get_db_filepath()
+
     def get_cash_available(self):
         """Return the available cash quantity in the portfolio [int]"""
         return self._cash_available
