@@ -37,14 +37,16 @@ TREE_POSITIONS_MODEL = "positions_tree_model"
 TREE_TRADING_HISTORY_MODEL = "trading_history_tree_model"
 
 
-class PortfolioPage:
+class PortfolioPage(gtk.Box):
     """GTK Notebook page that display information of a user portfolio"""
 
-    def __init__(self, parent_window, portfolio_id, server):
+    def __init__(self, parent_window, server, portfolio_id, portfolio_path):
+        super(PortfolioPage, self).__init__()
         self._parent_window = parent_window
         self._id = portfolio_id
+        self._portfolio_path = portfolio_path
         self._server = server
-        self._widget = self._load_UI(GLADE_NOTEBOOK_PAGE_FILE)
+        self._load_UI(GLADE_NOTEBOOK_PAGE_FILE)
         self._reset_cache()
 
     def _load_UI(self, filepath):
@@ -76,8 +78,10 @@ class PortfolioPage:
         self._refresh_switch.connect("state-set", self._auto_refresh_switch_set_event)
         # Set initial status of refresh switch and button based on portfolio status
         self._update_refresh_box()
-        # Return the top level container
-        return top_level
+        # Add the top level container to self
+        self.set_hexpand(True)
+        self.set_homogeneous(True)
+        self.add(top_level)
 
     def _reset_cache(self):
         self._cache = {"trade_history": []}
@@ -202,9 +206,6 @@ class PortfolioPage:
 
     ### Public API
 
-    def get_top_level(self):
-        return self._widget
-
     def update_data(self, portfolio):
         # Update account balances labels
         self._update_portfolio_balances(portfolio)
@@ -214,3 +215,6 @@ class PortfolioPage:
         self._update_trading_history_treeview(portfolio.get_trade_history()[::-1])
         # Restore refresh box status
         self._update_refresh_box()
+
+    def get_portfolio_path(self):
+        return str(self._portfolio_path)
