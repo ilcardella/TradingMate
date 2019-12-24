@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## []
 ### Changed
 - Replaced TK user interface with GTK+ 3
+- Tickers prices are fetched using `alpha-vantage` Python module
 
 ### Added
 - Status bar showing portfolio filepath
