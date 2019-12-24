@@ -12,7 +12,6 @@ m2r = "*"
 Sphinx = "*"
 
 [packages]
-requests = "*"
 alpha_vantage = "*"
 
 [requires]
