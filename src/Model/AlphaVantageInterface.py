@@ -14,9 +14,6 @@ sys.path.insert(0, parentdir)
 
 from Utils.Utils import Markets
 
-# Seconds to wait between each http call
-API_TIMEOUT = 5
-
 
 class AVInterval(Enum):
     """
@@ -85,9 +82,9 @@ class AlphaVantageInterface:
             Wait between API calls to not overload the server
             """
             while (dt.datetime.now() - self._last_call_ts) <= dt.timedelta(
-                seconds=API_TIMEOUT
+                seconds=self._config.get_alpha_vantage_polling_period()
             ):
-                time.sleep(0.5)
+                time.sleep(0.2)
             self._last_call_ts = dt.datetime.now()
 
     # Single instance of the inner class

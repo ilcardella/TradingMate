@@ -20,10 +20,6 @@ class StockPriceGetter(TaskThread):
         self.reset()
         self._av = AlphaVantageInterface(config)
 
-    def _read_configuration(self):
-        # Override the parent class default value
-        self._interval = self._config.get_alpha_vantage_polling_period()
-
     def task(self):
         priceDict = {}
         for symbol in self.symbolList:
@@ -38,6 +34,7 @@ class StockPriceGetter(TaskThread):
     def _fetch_price_data(self, symbol):
         try:
             data = self._av.get_prices(symbol)
+            assert data is not None
             last = next(iter(data.values()))
             value = float(last["4. close"])
         except Exception as e:
@@ -54,6 +51,5 @@ class StockPriceGetter(TaskThread):
         self.symbolList = aList
 
     def reset(self):
-        self._read_configuration()
         self.lastData = {}
         self.symbolList = []

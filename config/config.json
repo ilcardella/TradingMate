@@ -7,6 +7,6 @@
     },
     "alpha_vantage": {
         "api_base_uri": "https://www.alphavantage.co/query",
-        "polling_period_sec": 30
+        "polling_period_sec": 12
     }
 }

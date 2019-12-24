@@ -62,7 +62,7 @@ These are the descriptions of each parameter:
 - **trading_logs**: The absolute path of the trading logs to automatically load on startup
 - **general/credentials_filepath**: File path of the .credentials file
 - **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
-- **alpha_vantage/polling_period_sec**: The polling period to query AlphaVantage for stock prices
+- **alpha_vantage/polling_period_sec**: The period of time (in seconds) between each AlphaVantage query for stock prices
 
 ## Start TradingMate
 
