@@ -227,7 +227,7 @@ class Portfolio:
                 )
             for symbol, price in self.price_getter.get_last_data().items():
                 self._holdings[symbol].set_last_price(price)
-            logging.info("Portfolio reloaded successfully")
+            logging.info("Portfolio {} reloaded successfully".format(self._name))
         except Exception as e:
             logging.error(e)
             raise RuntimeError("Unable to reload the portfolio")
@@ -259,7 +259,9 @@ class Portfolio:
         """
         if newTrade.action == Actions.WITHDRAW or newTrade.action == Actions.FEE:
             if newTrade.quantity > self.get_cash_available():
-                logging.warning(Messages.INSUF_FUNDING.value)
+                logging.warning(
+                    "Portfolio {}: {}".format(self._name, Messages.INSUF_FUNDING.value)
+                )
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.BUY:
             cost = (newTrade.price * newTrade.quantity) / 100  # in £
@@ -267,13 +269,17 @@ class Portfolio:
             tax = (newTrade.sdr * cost) / 100
             totalCost = cost + fee + tax
             if totalCost > self.get_cash_available():
-                logging.warning(Messages.INSUF_FUNDING.value)
+                logging.warning(
+                    "Portfolio {}: {}".format(self._name, Messages.INSUF_FUNDING.value)
+                )
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
         elif newTrade.action == Actions.SELL:
             if newTrade.quantity > self.get_holding_quantity(newTrade.symbol):
-                logging.warning(Messages.INSUF_HOLDINGS.value)
+                logging.warning(
+                    "Portfolio {}: {}".format(self._name, Messages.INSUF_HOLDINGS.value)
+                )
                 raise RuntimeError(Messages.INSUF_HOLDINGS.value)
-        logging.info("Portfolio - trade validated")
+        logging.info("Portfolio {}: new trade validated".format(self._name))
         return True
 
     def get_trade_history(self):
@@ -302,21 +308,22 @@ class Portfolio:
     # PRICE GETTER WORK THREAD
 
     def on_new_price_data(self):
-        logging.info("Portfolio - new live price available")
         priceDict = self.price_getter.get_last_data()
         for symbol, price in priceDict.items():
             if symbol in self._holdings:
                 self._holdings[symbol].set_last_price(price)
 
     def on_manual_refresh_live_data(self):
-        logging.info("Portfolio - manual refresh live price")
+        logging.info("Portfolio {}: manual refresh of data".format(self._name))
         if self.price_getter.is_enabled():
             self.price_getter.cancel_timeout()
         else:
             self.price_getter.force_single_run()
 
     def set_auto_refresh(self, enabled):
-        logging.info("Portfolio - live price auto refresh: {}".format(enabled))
+        logging.info(
+            "Portfolio {}: price auto refresh set to {}".format(self._name, enabled)
+        )
         self.price_getter.enable(enabled)
 
     def get_auto_refresh_enabled(self):

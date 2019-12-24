@@ -24,7 +24,6 @@ class DatabaseHandler:
         self.db_name = "unknown"
         self.trading_history = []
         self.read_data(self.db_filepath)
-        logging.info("DatabaseHandler initialised")
 
     def read_data(self, filepath=None):
         """
@@ -82,7 +81,6 @@ class DatabaseHandler:
         """
         try:
             self.trading_history.append(trade)
-            logging.info("DatabaseHandler - adding trade {}".format(trade))
         except Exception as e:
             logging.error(e)
             raise RuntimeError("Unable to add trade to the database")
@@ -93,7 +91,6 @@ class DatabaseHandler:
         """
         try:
             del self.trading_history[-1]
-            logging.info("DatabaseHandler - removed last trade")
         except Exception as e:
             logging.error(e)
             raise RuntimeError("Unable to delete last trade")
