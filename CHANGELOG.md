@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced TK user interface with GTK+ 3
 - Tickers prices are fetched using `alpha-vantage` Python module
 - **alpha_vantage_polling_period** configuration parameter is used to wait between each AV call
+- AlphaVantage http requests are thread safe
 
 ### Added
 - Status bar showing portfolio filepath
