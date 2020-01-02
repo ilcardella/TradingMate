@@ -41,10 +41,10 @@ class TradingMate:
         """
         time_str = dt.datetime.now().isoformat()
         time_suffix = time_str.replace(":", "_").replace(".", "_")
-        log_filename = self.LOG_FILEPATH.replace("{timestamp}", time_suffix)
-        os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+        self._app_log_filepath = self.LOG_FILEPATH.replace("{timestamp}", time_suffix)
+        os.makedirs(os.path.dirname(self._app_log_filepath), exist_ok=True)
         logging.basicConfig(
-            filename=log_filename,
+            filename=self._app_log_filepath,
             level=logging.INFO,
             format="[%(asctime)s] %(levelname)s: %(message)s",
         )
@@ -142,6 +142,10 @@ class TradingMate:
         self.configurationManager.save_settings(config)
         self._create_portfolios()
         logging.info("TradingMate - portfolios reloaded after settings update")
+
+    def get_app_log_filepath(self):
+        """Return the full filepath of the log file of application current session"""
+        return self._app_log_filepath
 
 
 def main():
