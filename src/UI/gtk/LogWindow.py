@@ -53,8 +53,12 @@ class LogWindow:
         self._stop_tail_worker()
 
     def _on_text_view_changed(self, widget, event):
-        adj = self._scrolled_window.get_vadjustment()
-        adj.set_value(adj.get_upper() - adj.get_page_size())
+        # Move the vertical adjustment of the exceeding amount
+        v_adj = self._scrolled_window.get_vadjustment()
+        v_adj.set_value(v_adj.get_upper() - v_adj.get_page_size())
+        # Resize the window to fit the longest line plus a buffer
+        h_adj = self._scrolled_window.get_hadjustment()
+        self._window.resize(h_adj.get_upper() + 10, v_adj.get_page_size())
 
     def _tail_lines(self, filepath):
         tail = Pygtail(filepath)
