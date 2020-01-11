@@ -12,7 +12,6 @@ sys.path.insert(0, parentdir)
 
 from Utils.Utils import Utils, Messages
 from .MessageDialog import MessageDialog
-from .LogWindow import LogWindow
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
@@ -26,7 +25,6 @@ PORTFOLIO_PATH_BUFFER = "portfolio_path_text_buffer"
 CREDENTIALS_PATH_ENTRY = "credentials_path_entry"
 CANCEL_BUTTON = "cancel_button"
 SAVE_BUTTON = "save_button"
-SHOW_LOG_BUTTON = "show_log_button"
 
 
 class SettingsWindow:
@@ -44,12 +42,10 @@ class SettingsWindow:
         top_level.set_modal(True)
         self._portfolio_path_buffer = builder.get_object(PORTFOLIO_PATH_BUFFER)
         self._credentials_path_entry = builder.get_object(CREDENTIALS_PATH_ENTRY)
-        self._show_log_button = builder.get_object(SHOW_LOG_BUTTON)
         self._cancel_button = builder.get_object(CANCEL_BUTTON)
         self._save_button = builder.get_object(SAVE_BUTTON)
         self._cancel_button.connect("clicked", self._on_cancel_event)
         self._save_button.connect("clicked", self._on_save_event)
-        self._show_log_button.connect("clicked", self._on_show_log_event)
         # Return main container
         return top_level
 
@@ -79,9 +75,6 @@ class SettingsWindow:
                 gtk.MessageType.ERROR,
             )
         self.destroy()
-
-    def _on_show_log_event(self, widget):
-        LogWindow(self._parent_window, self._client).show()
 
     ### Public API
 

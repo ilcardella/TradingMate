@@ -2,11 +2,6 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkImage" id="log_button_image">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-file</property>
-  </object>
   <object class="GtkTextBuffer" id="portfolio_path_text_buffer"/>
   <object class="GtkWindow" id="settings_window">
     <property name="can_focus">False</property>
@@ -107,36 +102,6 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="show_log_button_box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="margin_left">10</property>
-            <property name="homogeneous">True</property>
-            <child>
-              <object class="GtkButton" id="show_log_button">
-                <property name="label" translatable="yes">Show Log</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="image">log_button_image</property>
-                <property name="always_show_image">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="padding">5</property>
-            <property name="position">2</property>
           </packing>
         </child>
         <child>
