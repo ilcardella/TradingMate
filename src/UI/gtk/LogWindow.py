@@ -22,6 +22,8 @@ GLADE_FILE = os.path.join(ASSETS_DIR, "gtk", "log_window_layout.glade")
 # GTK widgets ids
 LOG_WINDOW = "log_window"
 LOG_BUFFER = "log_buffer"
+LOG_TEXT_VIEW = "log_textview"
+LOG_SCROLL_WINDOW = "log_window_scroll"
 
 
 class LogWindow:
@@ -38,13 +40,21 @@ class LogWindow:
         builder = gtk.Builder()
         builder.add_from_file(filepath)
         top_level = builder.get_object(LOG_WINDOW)
+        self._log_buffer = builder.get_object(LOG_BUFFER)
+        text_view = builder.get_object(LOG_TEXT_VIEW)
+        self._scrolled_window = builder.get_object(LOG_SCROLL_WINDOW)
+        # Edit widgets and connect callbacks
         top_level.set_transient_for(self._parent_window)
         top_level.connect("destroy", self._on_window_destroy)
-        self._log_buffer = builder.get_object(LOG_BUFFER)
+        text_view.connect("size-allocate", self._on_text_view_changed)
         return top_level
 
     def _on_window_destroy(self, widget):
         self._stop_tail_worker()
+
+    def _on_text_view_changed(self, widget, event):
+        adj = self._scrolled_window.get_vadjustment()
+        adj.set_value(adj.get_upper() - adj.get_page_size())
 
     def _tail_lines(self, filepath):
         tail = Pygtail(filepath)
