@@ -40,6 +40,7 @@ class UIHandler:
         self._client = TradingMateClient(server)
         self._data_worker = DataInterface(self._client, self._on_data_worker_timeout)
         self._create_UI()
+        self._log_window = LogWindow(self._main_window, self._client)
 
     def _create_UI(self):
         # Load GTK layout from file
@@ -76,6 +77,8 @@ class UIHandler:
             self._close_application()
 
     def _close_application(self):
+        if self._log_window:
+            self._log_window.destroy()
         self._data_worker.shutdown()
         self._data_worker.join()
         self._client.stop()
@@ -90,7 +93,7 @@ class UIHandler:
         ).show()
 
     def _on_show_log_event(self, widget):
-        LogWindow(self._main_window, self._client).show()
+        self._log_window.show()
 
     def _on_data_worker_timeout(self, portfolio):
         GLib.idle_add(self._create_update_portfolio_tab, portfolio)
