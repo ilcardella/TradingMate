@@ -35,7 +35,6 @@ class LogWindow:
         self._tail_worker = None
         self._tail_worker_enabled = threading.Event()
         self._tail_worker_kill = threading.Event()
-        self._log_buffer_cache = ""
 
     def _load_UI(self, filepath):
         # Load GTK layout from glade file
@@ -54,9 +53,6 @@ class LogWindow:
 
     def _on_close_button_event(self, widget):
         self._pause_tail_worker()
-        self._log_buffer_cache = self._log_buffer.get_text(
-            self._log_buffer.get_start_iter(), self._log_buffer.get_end_iter(), False
-        )
         self._window.hide()
 
     def _on_text_view_changed(self, widget, event):
@@ -114,7 +110,6 @@ class LogWindow:
     ### Public API
 
     def show(self):
-        self._log_buffer.set_text(self._log_buffer_cache)
         self._start_tail_worker()
         self._window.show_all()
 
