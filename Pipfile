@@ -13,6 +13,7 @@ Sphinx = "*"
 
 [packages]
 alpha_vantage = "*"
+pygtail = "*"
 
 [requires]
 python_version = "3"

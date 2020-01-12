@@ -17,6 +17,7 @@ from .PortfolioPage import PortfolioPage
 from .MessageDialog import MessageDialog
 from .ConfirmDialog import ConfirmDialog
 from .SettingsWindow import SettingsWindow
+from .LogWindow import LogWindow
 
 # Application constants
 APP_NAME = "TradingMate"
@@ -30,6 +31,7 @@ OPEN_BUTTON = "open_button"
 SETTINGS_BUTTON = "settings_button"
 ABOUT_BUTTON = "about_button"
 PORTFOLIO_PATH_LABEL = "portfolio_path_label"
+SHOW_LOG_BUTTON = "show_log_button"
 
 
 class UIHandler:
@@ -38,6 +40,7 @@ class UIHandler:
         self._client = TradingMateClient(server)
         self._data_worker = DataInterface(self._client, self._on_data_worker_timeout)
         self._create_UI()
+        self._log_window = LogWindow(self._main_window, self._client)
 
     def _create_UI(self):
         # Load GTK layout from file
@@ -49,12 +52,14 @@ class UIHandler:
         open_button = builder.get_object(OPEN_BUTTON)
         settings_button = builder.get_object(SETTINGS_BUTTON)
         about_button = builder.get_object(ABOUT_BUTTON)
+        show_log_button = builder.get_object(SHOW_LOG_BUTTON)
         self._portfolio_path_label = builder.get_object(PORTFOLIO_PATH_LABEL)
         # and link their callbacks
         self._main_window.connect("destroy", self._on_close_main_window_event)
         open_button.connect("clicked", self._on_open_portfolio_event)
         settings_button.connect("clicked", self._on_open_settings_event)
         about_button.connect("clicked", self._on_show_about_event)
+        show_log_button.connect("clicked", self._on_show_log_event)
         self._notebook.connect("switch-page", self._on_change_notebook_page)
         # Manually create required notebook pages
         for pf in self._client.get_portfolios():
@@ -72,6 +77,8 @@ class UIHandler:
             self._close_application()
 
     def _close_application(self):
+        if self._log_window:
+            self._log_window.destroy()
         self._data_worker.shutdown()
         self._data_worker.join()
         self._client.stop()
@@ -84,6 +91,9 @@ class UIHandler:
             Messages.ABOUT_MESSAGE.value,
             gtk.MessageType.INFO,
         ).show()
+
+    def _on_show_log_event(self, widget):
+        self._log_window.show()
 
     def _on_data_worker_timeout(self, portfolio):
         GLib.idle_add(self._create_update_portfolio_tab, portfolio)

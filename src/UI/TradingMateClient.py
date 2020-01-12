@@ -72,3 +72,6 @@ class TradingMateClient:
             return pf[0].get_auto_refresh_enabled()
         else:
             raise ValueError(f"Portfolio {portfolio_id} does not exists")
+
+    def get_app_log_filepath(self):
+        return self._server.get_app_log_filepath()

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Status bar showing portfolio filepath
+- Button to open a new window tailing the current application log file
 
 ## [2.0.0] - 2019-12-14
 ### Changed
