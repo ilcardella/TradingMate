@@ -8,7 +8,7 @@ your assets and the overall profit (or loss!)
 ## Dependencies
 
 - Python 3.6+
-- Pipenv (for development)
+- Pipenv (only for development)
 - PyGObject: https://pygobject.readthedocs.io/en/latest/index.html
 - AlphaVantage: https://www.alphavantage.co/
 
@@ -35,28 +35,27 @@ TradingMate uses AlphaVantage to fetch markets data online:
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
-- Insert these info in a file called `.credentials` in `$HOME/.TradingMate/data`
+- Insert these info in a file called `.credentials` in `/opt/TradingMate/data`
     ```
-    touch $HOME/.TradingMate/data/.credentials
+    touch /opt/TradingMate/data/.credentials
     ```
 
     This must be in json format and contain:
     ```
     {
-    "av_api_key": "apiKey"
+        "av_api_key": "key_from_alphavantage"
     }
     ```
 
 - Revoke permissions to read the file by others
 
     ```
-    cd $HOME/.TradingMate/data
-    sudo chmod 600 .credentials
+    sudo chmod 600 /opt/TradingMate/data/.credentials
     ```
 
 ### Configuration file
 
-The `config.json` file is in the `$HOME/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
+The `config.json` file is in the `/opt/TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
 - **trading_logs**: The absolute path of the trading logs to automatically load on startup
@@ -66,20 +65,18 @@ These are the descriptions of each parameter:
 
 ## Start TradingMate
 
-You can start TradingMate in your current terminal
+You can start TradingMate with
+```
+sudo trading_mate
+```
+
+Otherwise you can change ownership of the `/opt/TradingMate` folder:
+```
+sudo chown -R $USER: /opt/TradingMate
+```
+and then run `TradingMate` without sudo
 ```
 trading_mate
-```
-or you can start it in detached mode, letting it run in the background
-```
-nohup trading_mate >/dev/null 2>&1 &
-```
-
-## Stop TradingMate
-
-To stop a TradingMate instance running in the background
-```
-ps -ef | grep trading_mate | xargs kill -9
 ```
 
 ## Uninstall
@@ -111,14 +108,12 @@ pipenv run pytest
 
 ### Documentation
 
-The Sphinx documentation contains further details about each TradingMate module
-with source code documentation of each component.
-
+The Sphinx documentation contains further details about each TradingMate module.
 Read the documentation at:
 
 https://tradingmate.readthedocs.io
 
-You can build it locally from the "workspace" root folder:
+You can build it locally from the repo root folder:
 ```
 pipenv run sphinx-build -nWT -b html doc doc/_build/html
 ```
@@ -141,6 +136,3 @@ If you instead find problems or you have ideas and suggestions for future
 improvements, please open an Issue. Thanks for the support!
 
 Python GTK+ 3 reference: [here](https://lazka.github.io/pgi-docs/index.html#Gtk-3.0)
-
-## Credits
-Icons by <a target="_blank" href="https://icons8.com">Icons8</a>

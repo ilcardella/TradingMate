@@ -15,22 +15,13 @@ setup(
         (os.path.join(os.sep, "opt", "TradingMate", "config"), ["config/config.json"]),
         (os.path.join(os.sep, "opt", "TradingMate", "data"), ["data/trading_log.json"]),
         (
-            os.path.join(os.sep, "opt", "TradingMate", "data", "assets"),
-            [
-                "src/UI/assets/trading_mate_icon.png",
-                "src/UI/assets/add_icon.png",
-                "src/UI/assets/open_file_icon.png",
-                "src/UI/assets/save_file_icon.png",
-                "src/UI/assets/save_as_file_icon.png",
-            ],
-        ),
-        (
             os.path.join(os.sep, "opt", "TradingMate", "data", "assets", "gtk"),
             [
                 "src/UI/assets/gtk/add_trade_window_layout.glade",
                 "src/UI/assets/gtk/main_window_layout.glade",
                 "src/UI/assets/gtk/notebook_page_layout.glade",
                 "src/UI/assets/gtk/settings_window_layout.glade",
+                "src/UI/assets/gtk/log_window_layout.glade",
             ],
         ),
     ],
