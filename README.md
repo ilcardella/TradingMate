@@ -96,14 +96,14 @@ sudo -H pip3 install -U pipenv
 Create the virtual environment
 ```
 cd /path/to/repository
-pipenv install --dev
+pipenv install
 ```
 
 ### Test
 
 You can run the test from the workspace with:
 ```
-pipenv run pytest
+pipenv run test
 ```
 
 ### Documentation
@@ -115,7 +115,7 @@ https://tradingmate.readthedocs.io
 
 You can build it locally from the repo root folder:
 ```
-pipenv run sphinx-build -nWT -b html doc doc/_build/html
+pipenv run docs
 ```
 
 The generated html files will be under `doc/_build/html`.
