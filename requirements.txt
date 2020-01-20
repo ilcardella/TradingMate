@@ -20,7 +20,7 @@ py==1.8.1
 pygments==2.5.2
 pygtail==0.11.1
 pyparsing==2.4.6
-pytest==5.3.3
+pytest==5.3.4
 pytz==2019.3
 requests-mock==1.7.0
 requests==2.22.0
