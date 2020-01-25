@@ -16,10 +16,10 @@ View `Pipfile` or `setup.py` for the full list of python dependencies.
 
 ## Install
 
-First install python 3 and pipenv
+First install python 3
 ```
 sudo apt-get update
-sudo apt-get install python3 python3-pip
+sudo apt-get install python3
 ```
 
 The UI is based on Python GTK+ 3 so follow the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html) to install the required packages.
@@ -88,8 +88,10 @@ sudo pip3 uninstall TradingMate
 ## Development
 
 The `Pipfile` helps you to setup a development virtual environmnet installing the required dependencies.
-Install `pipenv`
+Install `pip` and `pipenv`
 ```
+sudo apt-get update
+sudo apt-get install python3-pip
 sudo -H pip3 install -U pipenv
 ```
 
