@@ -3,7 +3,7 @@ import os
 
 setup(
     name="TradingMate",
-    version="2.0.0",
+    version="2.1.1",
     python_requires=">=3",
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src"),
