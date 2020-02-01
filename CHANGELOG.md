@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated Pipfile unifying packages and adding custom scripts
 
+### Added
+- Icon in status bar that shows internet connection status
+
 ## [2.1.1] - 2020-01-13
 ### Changed
 - Removed unused resource files
