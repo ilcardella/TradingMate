@@ -85,12 +85,10 @@ class UIHandler:
         gtk.main_quit()
 
     def _on_show_about_event(self, widget):
-        MessageDialog(
-            self._main_window,
-            "About",
-            Messages.ABOUT_MESSAGE.value,
-            gtk.MessageType.INFO,
-        ).show()
+        message = "Version: {}\n{}".format(
+            self._client.get_app_version(), Messages.ABOUT_MESSAGE.value
+        )
+        MessageDialog(self._main_window, "About", message, gtk.MessageType.INFO).show()
 
     def _on_show_log_event(self, widget):
         self._log_window.show()
