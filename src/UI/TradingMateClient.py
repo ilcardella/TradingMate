@@ -75,3 +75,6 @@ class TradingMateClient:
 
     def get_app_log_filepath(self):
         return self._server.get_app_log_filepath()
+
+    def get_app_version(self):
+        return self._server.get_app_version()
