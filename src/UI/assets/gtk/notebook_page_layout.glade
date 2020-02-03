@@ -67,6 +67,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Save the portfolio</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -83,6 +84,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Save the portfolio as a new file</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -99,6 +101,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Add a new trade</property>
                 <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -126,6 +129,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Refresh</property>
                 <property name="image">image1</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -152,6 +156,7 @@
               <object class="GtkSwitch" id="auto_refresh_switch">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Enable/Disable auto refreshing</property>
                 <property name="active">True</property>
               </object>
               <packing>
@@ -185,6 +190,7 @@
           <object class="GtkBox" id="balances_account_vbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">The total value of the account</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="balances_account_label">
@@ -223,6 +229,7 @@
           <object class="GtkBox" id="balances_cash_vbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Available cash in the account</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="balances_cash_label">
@@ -262,6 +269,7 @@
           <object class="GtkBox" id="balances_positions_vbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Value of the open positions in the account</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="balances_positions_label">
@@ -300,6 +308,7 @@
           <object class="GtkBox" id="balances_invested_cash_vbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Total cash deposited into the account</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="balances_invested_cash_label">
@@ -338,6 +347,7 @@
           <object class="GtkBox" id="balances_pl_vbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Account profit/loss</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="balances_pl_label">
@@ -376,6 +386,7 @@
           <object class="GtkBox" id="balances_pl_pc_vbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Account profit/loss percentage</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="balances_pl_pc_label">

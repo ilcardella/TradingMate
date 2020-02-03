@@ -73,6 +73,7 @@ Author: Alberto Cardellini
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Open a portfolio</property>
                 <property name="image">image_open</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -87,6 +88,7 @@ Author: Alberto Cardellini
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Open the settings</property>
                 <property name="image">image_preferences</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -101,6 +103,7 @@ Author: Alberto Cardellini
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">About TradingMate</property>
                 <property name="image">image_button</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -115,6 +118,7 @@ Author: Alberto Cardellini
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Open TradingMate log</property>
                 <property name="image">log_button_image</property>
                 <property name="always_show_image">True</property>
               </object>

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Pipfile unifying packages and adding custom scripts
 
 ### Added
+- Added tooltips to UI widgets
 - Icon in status bar that shows internet connection status
 - Show application version in About dialog
 
