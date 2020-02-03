@@ -3,6 +3,8 @@ import sys
 import inspect
 import logging
 import datetime as dt
+import subprocess
+import re
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -146,6 +148,21 @@ class TradingMate:
     def get_app_log_filepath(self):
         """Return the full filepath of the log file of application current session"""
         return self._app_log_filepath
+
+    def get_app_version(self):
+        # Find the app version with pip
+        output = subprocess.Popen(
+            "pip3 show TradingMate".split(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
+        # Extract the version from the command output
+        match = re.search(
+            r"Version:\s([0-9].[0-9].[0-9])", str(output.communicate()[0])
+        )
+        if match is None:
+            return "Unknown"
+        return match.group(1).strip()
 
 
 def main():
