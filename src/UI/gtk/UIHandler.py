@@ -32,6 +32,7 @@ SETTINGS_BUTTON = "settings_button"
 ABOUT_BUTTON = "about_button"
 PORTFOLIO_PATH_LABEL = "portfolio_path_label"
 SHOW_LOG_BUTTON = "show_log_button"
+CONNECTION_IMAGE = "connection_image"
 
 
 class UIHandler:
@@ -54,6 +55,7 @@ class UIHandler:
         about_button = builder.get_object(ABOUT_BUTTON)
         show_log_button = builder.get_object(SHOW_LOG_BUTTON)
         self._portfolio_path_label = builder.get_object(PORTFOLIO_PATH_LABEL)
+        self._connection_status_image = builder.get_object(CONNECTION_IMAGE)
         # and link their callbacks
         self._main_window.connect("destroy", self._on_close_main_window_event)
         open_button.connect("clicked", self._on_open_portfolio_event)
@@ -93,8 +95,22 @@ class UIHandler:
     def _on_show_log_event(self, widget):
         self._log_window.show()
 
-    def _on_data_worker_timeout(self, portfolio):
-        GLib.idle_add(self._create_update_portfolio_tab, portfolio)
+    def _on_data_worker_timeout(self, portfolios):
+        # Update the connection status image based on portfolio data
+        offline_portfolios = len([p for p in portfolios if p.get_total_value() is None])
+        GLib.idle_add(
+            self._update_connection_status, False if offline_portfolios else True
+        )
+        for pf in portfolios:
+            GLib.idle_add(self._create_update_portfolio_tab, pf)
+
+    def _update_connection_status(self, connected):
+        self._connection_status_image.set_from_icon_name(
+            "gtk-connect" if connected else "gtk-disconnect", gtk.IconSize.BUTTON
+        )
+        self._connection_status_image.set_tooltip_text(
+            "Online" if connected else "Offline"
+        )
 
     def _create_update_portfolio_tab(self, portfolio):
         if portfolio.get_id() not in self._portfolio_tabs.keys():
