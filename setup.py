@@ -9,7 +9,7 @@ setup(
     packages=find_namespace_packages(where="src"),
     scripts=["src/TradingMate.py"],
     entry_points={"console_scripts": ["trading_mate = TradingMate:main"]},
-    install_requires=["alpha-vantage==2.1.3", "pygtail==0.11.1"],
+    install_requires=["alpha-vantage==2.1.3", "pygtail==0.11.1", "yfinance==0.1.54"],
     package_data={"config": ["*.json"], "data": ["*.json"], "src/UI/assets/gtk": ["*.glade"]},
     data_files=[
         (os.path.join(os.sep, "opt", "TradingMate", "config"), ["config/config.json"]),

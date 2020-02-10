@@ -6,8 +6,6 @@ import traceback
 from enum import Enum
 import datetime as dt
 import time
-import functools
-import threading
 from alpha_vantage.timeseries import TimeSeries
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -15,6 +13,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from Utils.Utils import Markets
+from .StocksInterface import StocksInterface
 
 
 class AVInterval(Enum):
@@ -32,37 +31,7 @@ class AVInterval(Enum):
     MONTHLY = "monthly"
 
 
-# Mutex used for thread synchronisation
-lock = threading.Lock()
-
-
-def synchronised(lock):
-    """ Thread synchronization decorator """
-
-    def wrapper(f):
-        @functools.wraps(f)
-        def inner_wrapper(*args, **kw):
-            with lock:
-                return f(*args, **kw)
-
-        return inner_wrapper
-
-    return wrapper
-
-
-class Singleton(type):
-    """Metaclass to implement the Singleton desing pattern"""
-
-    _instances = {}
-
-    @synchronised(lock)
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-
-class AlphaVantageInterface(metaclass=Singleton):
+class AlphaVantageInterface(StocksInterface):
     """class providing interfaces to request data from AlphaVantage"""
 
     def __init__(self, config):
@@ -98,10 +67,8 @@ class AlphaVantageInterface(metaclass=Singleton):
         Convert a standard market id to be compatible with AlphaVantage API.
         Adds the market exchange prefix (i.e. London is LON:)
         """
-        if "LSE:" in market_id:
-            subs = market_id.split(":")
-            assert len(subs) == 2
-            return "{}:{}".format(Markets[subs[0]].value, subs[1])
+        if f"{Markets.LSE.value}:" in market_id:
+            market_id = market_id.replace(f"{Markets.LSE.value}", "LON")
         return market_id
 
     def _wait_before_call(self):
@@ -113,6 +80,11 @@ class AlphaVantageInterface(metaclass=Singleton):
         ):
             time.sleep(0.2)
         self._last_call_ts = dt.datetime.now()
+
+    def get_last_close_price(self, market_id, interval=AVInterval.DAILY):
+        prices = self.get_prices(market_id, interval)
+        last = next(iter(prices.values()))
+        return float(last["4. close"])
 
     def get_prices(self, market_id, interval=AVInterval.DAILY):
         """

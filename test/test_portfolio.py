@@ -32,8 +32,8 @@ def read_json(filepath, symbol):
 @pytest.fixture
 def portfolio(requests_mock):
     # Mock http calls for mock symbols
-    URL_13 = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MOCK13&apikey=MOCK"
-    URL_4 = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MOCK14&apikey=MOCK"
+    URL_13 = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK13.L?range=1d&interval=1h&includePrePost=False&events=div%2Csplits"
+    URL_4 = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK4.L?range=1d&interval=1h&includePrePost=False&events=div%2Csplits"
     data_13 = read_json("test/test_data/mock_av_daily.json", "MOCK13")
     data_4 = read_json("test/test_data/mock_av_daily.json", "MOCK4")
     requests_mock.get(URL_13, status_code=200, json=data_13)

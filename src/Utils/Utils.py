@@ -4,7 +4,6 @@ import sys
 import inspect
 import json
 import logging
-from pathlib import Path
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -35,7 +34,7 @@ class Messages(Enum):
 
 
 class Markets(Enum):
-    LSE = "LON"
+    LSE = "LSE"
 
 
 class Utils:

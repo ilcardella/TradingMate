@@ -72,6 +72,18 @@ class ConfigurationManager:
         """
         return self.config["general"]["credentials_filepath"]
 
+    def get_polling_period(self):
+        """
+        Get the application polling period
+        """
+        return float(self.config["general"]["polling_period_sec"])
+
+    def get_configured_stocks_interface(self):
+        """
+        Get the active configured stock interface
+        """
+        return self.config["general"]["stocks_interface"]["active"]
+
     def get_alpha_vantage_api_key(self):
         """
         Get the alphavantage api key
@@ -88,7 +100,13 @@ class ConfigurationManager:
         """
         Get the alphavantage configured polling period
         """
-        return self.config["alpha_vantage"]["polling_period_sec"]
+        return float(self.config["alpha_vantage"]["polling_period_sec"])
+
+    def get_yfinance_polling_period(self):
+        """
+        Get the yfinance configured polling period
+        """
+        return float(self.config["yfinance"]["polling_period_sec"])
 
     def get_editable_config(self):
         """

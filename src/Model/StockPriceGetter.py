@@ -9,7 +9,7 @@ sys.path.insert(0, parentdir)
 
 from Utils.TaskThread import TaskThread
 from Utils.ConfigurationManager import ConfigurationManager
-from .AlphaVantageInterface import AlphaVantageInterface
+from .broker.StocksInterfaceFactory import StocksInterfaceFactory
 
 
 class StockPriceGetter(TaskThread):
@@ -18,7 +18,8 @@ class StockPriceGetter(TaskThread):
         self._config = config
         self._price_update_callback = update_callback
         self.reset()
-        self._av = AlphaVantageInterface(config)
+        self._stock_ifc = StocksInterfaceFactory(config).make_from_configuration()
+        self._interval = config.get_polling_period()
 
     def task(self):
         priceDict = {}
@@ -33,10 +34,8 @@ class StockPriceGetter(TaskThread):
 
     def _fetch_price_data(self, symbol):
         try:
-            data = self._av.get_prices(symbol)
-            assert data is not None
-            last = next(iter(data.values()))
-            value = float(last["4. close"])
+            value = self._stock_ifc.get_last_close_price(symbol)
+            assert value is not None
         except Exception as e:
             logging.error(
                 "StockPriceGetter - Unable to fetch data for {}: {}".format(symbol, e)

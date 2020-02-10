@@ -12,6 +12,8 @@ m2r = "*"
 Sphinx = "*"
 alpha_vantage = "*"
 pygtail = "*"
+yfinance = "*"
+lxml = "*"
 
 [requires]
 python_version = "3"
@@ -19,4 +21,3 @@ python_version = "3"
 [scripts]
 test = "pytest"
 docs = "sphinx-build -b html doc doc/_build/html"
-
