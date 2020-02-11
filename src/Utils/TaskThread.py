@@ -72,7 +72,9 @@ class TaskThread(threading.Thread):
 
     def task(self):
         """The task done by this thread - override in subclasses"""
-        raise Exception("TaskThread: task function not overridden by children class!")
+        raise NotImplementedError(
+            "TaskThread: task function not overridden by children class!"
+        )
 
     def start_delayed(self, delay_s):
         self._start_delay = delay_s

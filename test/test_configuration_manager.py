@@ -28,6 +28,14 @@ def test_config_values(cm):
     assert isinstance(config, str)
     assert config == "test/test_data/.credentials"
 
+    config = cm.get_polling_period()
+    assert isinstance(config, float)
+    assert config >= 0.0
+
+    config = cm.get_configured_stocks_interface()
+    assert isinstance(config, str)
+    assert config in ["yfinance", "alpha_vantage"]
+
     config = cm.get_alpha_vantage_api_key()
     assert isinstance(config, str)
     assert config == "API_KEY"
@@ -37,12 +45,15 @@ def test_config_values(cm):
     assert config == "https://www.alphavantage.co/query"
 
     config = cm.get_alpha_vantage_polling_period()
-    assert isinstance(config, int)
-    assert config == 1
+    assert isinstance(config, float)
+    assert config >= 0.0
+
+    confgi = cm.get_yfinance_polling_period()
+    assert isinstance(config, float)
+    assert config >= 0.0
 
     config = cm.get_editable_config()
     assert isinstance(config, dict)
     assert len(config) > 0
 
     # Do not test save_settings() to not overwrite the test config.json
-

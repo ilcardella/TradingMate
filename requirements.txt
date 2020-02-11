@@ -10,6 +10,7 @@ idna
 imagesize
 importlib-metadata
 jinja2
+lxml
 m2r
 markupsafe
 mistune
@@ -35,5 +36,6 @@ sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 urllib3
+yfinance
 wcwidth
 zipp

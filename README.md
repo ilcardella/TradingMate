@@ -11,6 +11,7 @@ your assets and the overall profit (or loss!)
 - Pipenv (only for development)
 - PyGObject: https://pygobject.readthedocs.io/en/latest/index.html
 - AlphaVantage: https://www.alphavantage.co/
+- YFinance: https://github.com/ranaroussi/yfinance
 
 View `Pipfile` or `setup.py` for the full list of python dependencies.
 
@@ -31,7 +32,11 @@ sudo python3 setup.py install
 
 ## Setup
 
-TradingMate uses AlphaVantage to fetch markets data online:
+TradingMate support different sources to fetch stocks prices. The desired interface can be configured through a configuration parameter as explained below and based on the chosen interface you can follow the related setup instructions.
+
+### AlphaVantage
+
+AlphaVantage is great collection of API that provide several feature. It requires a key:
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
@@ -53,15 +58,27 @@ TradingMate uses AlphaVantage to fetch markets data online:
     sudo chmod 600 /opt/TradingMate/data/.credentials
     ```
 
+### YFinance
+
+YFinance uses Yahoo Finance REST API and it does not require authentication
+
 ### Configuration file
 
 The `config.json` file is in the `/opt/TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
 - **trading_logs**: The absolute path of the trading logs to automatically load on startup
-- **general/credentials_filepath**: File path of the .credentials file
-- **alpha_vantage/api_base_uri**: Base URI of AlphaVantage API
-- **alpha_vantage/polling_period_sec**: The period of time (in seconds) between each AlphaVantage query for stock prices
+- **general**
+  - **credentials_filepath**: File path of the .credentials file
+  - **polling_period_sec**: Period of time in seconds for stock prices polling
+  - **stocks_interface**
+    - **active**: The active API used to retrieve stock data
+    - **values**: Supported values
+- **alpha_vantage**
+  - **api_base_uri**: Base URI of AlphaVantage API
+  - **polling_period_sec**: The period of time (in seconds) between each AlphaVantage query
+- **yfinance**
+  - **polling_period_sec**: The period of time (in seconds) between each query
 
 ## Start TradingMate
 

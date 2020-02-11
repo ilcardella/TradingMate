@@ -5,10 +5,18 @@
         "test/test_data/trading_log.json"
     ],
     "general": {
-        "credentials_filepath": "test/test_data/.credentials"
+        "credentials_filepath": "test/test_data/.credentials",
+        "polling_period_sec": 30,
+        "stocks_interface": {
+            "active": "yfinance",
+            "values": ["yfinance", "alpha_vantage"]
+        }
     },
     "alpha_vantage": {
         "api_base_uri": "https://www.alphavantage.co/query",
         "polling_period_sec": 1
+    },
+    "yfinance": {
+        "polling_period_sec": 0.1
     }
 }
