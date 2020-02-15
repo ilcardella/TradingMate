@@ -6,7 +6,7 @@
     ],
     "general": {
         "credentials_filepath": "test/test_data/.credentials",
-        "polling_period_sec": 30,
+        "polling_period_sec": 0.1,
         "stocks_interface": {
             "active": "yfinance",
             "values": ["yfinance", "alpha_vantage"]

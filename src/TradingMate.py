@@ -92,9 +92,7 @@ class TradingMate:
         Callback function to handle new trade event
         """
         logging.info(
-            "TradingMate - new trade {} for portfolio {}".format(
-                new_trade, portfolio_id
-            )
+            f"TradingMate - new trade {new_trade.to_string()} for portfolio {portfolio_id}"
         )
         for pf in self.portfolios:
             if pf.get_id() == portfolio_id:

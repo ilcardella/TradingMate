@@ -3,7 +3,9 @@ import os
 import sys
 import inspect
 import logging
+import time
 import datetime
+import hashlib
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -13,7 +15,9 @@ from Utils.Utils import Actions
 
 
 class Trade:
-    def __init__(self, date_string, action, quantity, symbol, price, fee, sdr, notes):
+    def __init__(
+        self, date_string, action, quantity, symbol, price, fee, sdr, notes, id=None
+    ):
         try:
             self.date = datetime.datetime.strptime(date_string, "%d/%m/%Y")
             if not isinstance(action, Actions):
@@ -26,12 +30,14 @@ class Trade:
             self.sdr = sdr
             self.notes = notes
             self.total = self.__compute_total()
+            self.id = self._create_id() if id is None else id
         except Exception as e:
             logging.error(e)
             raise ValueError("Invalid argument")
 
     def to_dict(self):
         return {
+            "id": self.id,
             "date": self.date.strftime("%d/%m/%Y"),
             "action": self.action.name,
             "quantity": self.quantity,
@@ -42,10 +48,16 @@ class Trade:
             "notes": self.notes,
         }
 
+    def to_string(self):
+        return (
+            f"{self.date}_{self.action.name}_{self.quantity}_{self.symbol}_{self.price}"
+        )
+
     @staticmethod
     def from_dict(item):
         if any(
             [
+                "id" not in item,
                 "date" not in item,
                 "action" not in item,
                 "quantity" not in item,
@@ -67,6 +79,7 @@ class Trade:
             float(item["fee"]),
             float(item["stamp_duty"]),
             str(item["notes"]),
+            str(item["id"]),
         )
 
     def __compute_total(self):
@@ -86,3 +99,6 @@ class Trade:
             total = cost + self.fee + ((cost * self.sdr) / 100)
             return total
         return 0
+
+    def _create_id(self):
+        return hashlib.sha1(str(time.time()).encode("utf-8")).hexdigest()

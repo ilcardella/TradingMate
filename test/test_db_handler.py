@@ -72,6 +72,7 @@ def test_add_trade(dbh):
     """
     prev_len = len(dbh.trading_history)
     item = {
+        "id": "0",
         "date": "01/01/0001",
         "action": "BUY",
         "quantity": 1,
@@ -92,6 +93,7 @@ def test_remove_last_trade(dbh):
     """
     prev_len = len(dbh.trading_history)
     item = {
+        "id": "0",
         "date": "01/01/0001",
         "action": "BUY",
         "quantity": 1,

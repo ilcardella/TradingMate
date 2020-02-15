@@ -1,0 +1,141 @@
+{
+    "chart": {
+        "result": [
+            {
+                "meta": {
+                    "currency": "GBp",
+                    "symbol": "SCT.L",
+                    "exchangeName": "LSE",
+                    "instrumentType": "EQUITY",
+                    "firstTradeDate": 1447398900,
+                    "regularMarketTime": 1581698114,
+                    "gmtoffset": 0,
+                    "timezone": "GMT",
+                    "exchangeTimezoneName": "Europe/London",
+                    "regularMarketPrice": 1258.0,
+                    "chartPreviousClose": 1242.0,
+                    "previousClose": 1242.0,
+                    "scale": 3,
+                    "priceHint": 2,
+                    "currentTradingPeriod": {
+                        "pre": {
+                            "timezone": "GMT",
+                            "end": 1581667200,
+                            "start": 1581664500,
+                            "gmtoffset": 0
+                        },
+                        "regular": {
+                            "timezone": "GMT",
+                            "end": 1581697800,
+                            "start": 1581667200,
+                            "gmtoffset": 0
+                        },
+                        "post": {
+                            "timezone": "GMT",
+                            "end": 1581700500,
+                            "start": 1581697800,
+                            "gmtoffset": 0
+                        }
+                    },
+                    "tradingPeriods": [
+                        [
+                            {
+                                "timezone": "GMT",
+                                "end": 1581697800,
+                                "start": 1581667200,
+                                "gmtoffset": 0
+                            }
+                        ]
+                    ],
+                    "dataGranularity": "1h",
+                    "range": "1d",
+                    "validRanges": [
+                        "1d",
+                        "5d",
+                        "1mo",
+                        "3mo",
+                        "6mo",
+                        "1y",
+                        "2y",
+                        "5y",
+                        "ytd",
+                        "max"
+                    ]
+                },
+                "timestamp": [
+                    1581667200,
+                    1581670800,
+                    1581674400,
+                    1581678000,
+                    1581681600,
+                    1581685200,
+                    1581688800,
+                    1581692400,
+                    1581696000
+                ],
+                "indicators": {
+                    "quote": [
+                        {
+                            "volume": [
+                                6582,
+                                11838,
+                                7486,
+                                4427,
+                                7977,
+                                7391,
+                                9050,
+                                17492,
+                                30995
+                            ],
+                            "high": [
+                                1261.0,
+                                1253.1824951171875,
+                                1253.1824951171875,
+                                1253.66796875,
+                                1253.66796875,
+                                1253.657958984375,
+                                1253.3060302734375,
+                                1257.0,
+                                1261.494873046875
+                            ],
+                            "low": [
+                                1242.0,
+                                1240.0,
+                                1249.0,
+                                1249.4847412109375,
+                                1249.0,
+                                1249.0,
+                                1249.0,
+                                1249.0,
+                                1254.0
+                            ],
+                            "close": [
+                                1245.01904296875,
+                                1250.0,
+                                1250.0,
+                                1253.0,
+                                1253.0,
+                                1250.0,
+                                1250.0,
+                                1257.0,
+                                1260.0
+                            ],
+                            "open": [
+                                1261.0,
+                                1245.1949462890625,
+                                1253.1824951171875,
+                                1250.0,
+                                1253.66796875,
+                                1251.0,
+                                1253.3060302734375,
+                                1250.489990234375,
+                                1254.0
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "error": null
+    }
+}

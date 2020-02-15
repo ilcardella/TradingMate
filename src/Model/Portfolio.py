@@ -17,11 +17,11 @@ from .DatabaseHandler import DatabaseHandler
 class Portfolio:
     def __init__(self, config, trading_log_path):
         # Database handler
-        self.db_handler = DatabaseHandler(config, trading_log_path)
+        self._db_handler = DatabaseHandler(config, trading_log_path)
         # Create an unique id for this portfolio
         self._id = self._create_id(trading_log_path)
         # Portfolio name
-        self._name = self.db_handler.get_trading_log_name()
+        self._name = self._db_handler.get_trading_log_name()
         # Amount of free cash available
         self._cash_available = 0
         # Overall amount of cash deposited - withdrawed
@@ -31,18 +31,18 @@ class Portfolio:
         # Track unsaved changes
         self._unsaved_changes = False
         # Work thread that fetches stocks live prices
-        self.price_getter = StockPriceGetter(config, self.on_new_price_data)
-        self.price_getter.start()
+        self._price_getter = StockPriceGetter(config, self._on_new_price_data)
+        self._price_getter.start()
         # Load the portfolio
-        self.reload()
+        self._load(self._db_handler.get_trades_list())
         logging.info("Portfolio {} initialised".format(self._name))
 
-    def stop(self):
-        self.price_getter.shutdown()
-        self.price_getter.join()
-        logging.info("Portfolio {} closed".format(self._name))
+    # PUBLIC API
 
-    # GETTERS
+    def stop(self):
+        self._price_getter.shutdown()
+        self._price_getter.join()
+        logging.info("Portfolio {} closed".format(self._name))
 
     def get_id(self):
         """Return the portfolio unique id [string]"""
@@ -54,7 +54,7 @@ class Portfolio:
 
     def get_portfolio_path(self):
         """Return the complete filepath of the portfolio"""
-        return self.db_handler.get_db_filepath()
+        return self._db_handler.get_db_filepath()
 
     def get_cash_available(self):
         """Return the available cash quantity in the portfolio [int]"""
@@ -134,13 +134,13 @@ class Portfolio:
         Return the sum profit/loss in £ of the current open positions
         """
         try:
-            sum = 0
+            total_pl = 0
             for holding in self._holdings.values():
                 pl = holding.get_profit_loss()
                 if pl is None:
                     return None
-                sum += pl
-            return sum
+                total_pl += pl
+            return total_pl
         except Exception as e:
             logging.error(e)
             raise RuntimeError("Unable to compute holgings profit/loss")
@@ -170,75 +170,110 @@ class Portfolio:
         """Return True if the portfolio has unsaved changes, False othersise"""
         return self._unsaved_changes
 
-    # FUNCTIONS
+    def get_trade_history(self):
+        """Return the trade history as a list"""
+        return self._db_handler.get_trades_list()
 
-    def clear(self):
+    def add_trade(self, new_trade):
+        """Add a new trade into the Portfolio"""
+        self._validate_trade(new_trade, self._db_handler.get_trades_list())
+        self._db_handler.add_trade(new_trade)
+        self._load(self._db_handler.get_trades_list())
+        self._unsaved_changes = True
+
+    def remove_last_trade(self):
+        """Remove the last trade from the Portfolio"""
+        self._db_handler.remove_last_trade()
+        self._load(self._db_handler.get_trades_list())
+        self._unsaved_changes = True
+
+    def save_portfolio(self, filepath):
+        """Save the portfolio at the given filepath"""
+        self._db_handler.write_data(filepath)
+        self._unsaved_changes = False
+
+    # PRIVATE API
+
+    def _clear(self):
         """
         Reset the Portfolio clearing all data
         """
         self._cash_available = 0
         self._cash_deposited = 0
         self._holdings.clear()
-        self.price_getter.reset()
+        self._price_getter.reset()
         logging.info("Portfolio {} cleared".format(self._name))
 
-    def reload(self):
+    def _load_from_trade_list(self, trades):
+        # Scan the trades list and build the portfolio in buffer variables
+        # This allow us to validate each trade without changing the current state
+        cash_available = 0
+        cash_deposited = 0
+        holdings = {}
+        for trade in trades:
+            self._trade_is_allowed(trade, cash_available, holdings)
+            # Trade is valid so update buffers based on action type
+            if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
+                cash_available += trade.quantity
+                if trade.action == Actions.DEPOSIT:
+                    cash_deposited += trade.quantity
+            elif trade.action == Actions.WITHDRAW:
+                cash_available -= trade.quantity
+                cash_deposited -= trade.quantity
+            elif trade.action == Actions.BUY:
+                if trade.symbol not in holdings:
+                    holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)
+                else:
+                    holdings[trade.symbol].add_quantity(trade.quantity)
+                cost = (trade.price / 100) * trade.quantity
+                tax = (trade.sdr * cost) / 100
+                totalCost = cost + tax + trade.fee
+                cash_available -= totalCost
+            elif trade.action == Actions.SELL:
+                holdings[trade.symbol].add_quantity(-trade.quantity)  # negative
+                if holdings[trade.symbol].get_quantity() < 1:
+                    del holdings[trade.symbol]
+                profit = ((trade.price / 100) * trade.quantity) - trade.fee
+                cash_available += profit
+            elif trade.action == Actions.FEE:
+                cash_available -= trade.quantity
+        return cash_deposited, cash_available, holdings
+
+    def _load(self, trades_list):
         """
         Load the portfolio from the database trade list
         """
-        trades_list = self.db_handler.get_trades_list()
         try:
-            # Reset the portfolio
-            self.clear()
-            # Scan the trades list and build the portfolio
-            for trade in trades_list:
-                if trade.action == Actions.DEPOSIT or trade.action == Actions.DIVIDEND:
-                    self._cash_available += trade.quantity
-                    if trade.action == Actions.DEPOSIT:
-                        self._cash_deposited += trade.quantity
-                elif trade.action == Actions.WITHDRAW:
-                    self._cash_available -= trade.quantity
-                    self._cash_deposited -= trade.quantity
-                elif trade.action == Actions.BUY:
-                    if trade.symbol not in self._holdings:
-                        self._holdings[trade.symbol] = Holding(
-                            trade.symbol, trade.quantity
-                        )
-                    else:
-                        self._holdings[trade.symbol].add_quantity(trade.quantity)
-                    cost = (trade.price / 100) * trade.quantity
-                    tax = (trade.sdr * cost) / 100
-                    totalCost = cost + tax + trade.fee
-                    self._cash_available -= totalCost
-                elif trade.action == Actions.SELL:
-                    self._holdings[trade.symbol].add_quantity(
-                        -trade.quantity
-                    )  # negative
-                    if self._holdings[trade.symbol].get_quantity() < 1:
-                        del self._holdings[trade.symbol]
-                    profit = ((trade.price / 100) * trade.quantity) - trade.fee
-                    self._cash_available += profit
-                elif trade.action == Actions.FEE:
-                    self._cash_available -= trade.quantity
-            self.price_getter.set_symbol_list(self.get_holding_symbols())
+            cash_deposited, cash_available, holdings = self._load_from_trade_list(
+                trades_list
+            )
+            # All trades were valid so do the actual load of this portfolio
+            self._clear()
+            self._cash_available = cash_available
+            self._cash_deposited = cash_deposited
+            self._holdings = holdings
+            # Update symbol list of the worker thread that fetches prices
+            self._price_getter.set_symbol_list(self.get_holding_symbols())
+            # Compute the average open price of each holding
             for symbol in self._holdings.keys():
                 self._holdings[symbol].set_open_price(
-                    self.compute_avg_holding_open_price(symbol, trades_list)
+                    self._compute_avg_holding_open_price(symbol, trades_list)
                 )
-            for symbol, price in self.price_getter.get_last_data().items():
+            # If available set the last price of each holding
+            for symbol, price in self._price_getter.get_last_data().items():
                 self._holdings[symbol].set_last_price(price)
             logging.info("Portfolio {} reloaded successfully".format(self._name))
         except Exception as e:
             logging.error(e)
-            raise RuntimeError("Unable to reload the portfolio")
+            raise RuntimeError(f"Unable to load the portfolio: {e}")
 
-    def compute_avg_holding_open_price(self, symbol, trades_list):
+    def _compute_avg_holding_open_price(self, symbol, trades_list):
         """
         Return the average price paid to open the current positon of the requested stock.
         Starting from the end of the history log, find the BUY transaction that led to
         to have the current quantity, compute then the average price of these transactions
         """
-        sum = 0
+        total_cost = 0
         count = 0
         target = self.get_holding_quantity(symbol)
         if target == 0:
@@ -246,91 +281,81 @@ class Portfolio:
         for trade in trades_list[::-1]:  # reverse order
             if trade.symbol == symbol and trade.action == Actions.BUY:
                 target -= trade.quantity
-                sum += trade.price * trade.quantity
+                total_cost += trade.price * trade.quantity
                 count += trade.quantity
                 if target <= 0:
                     break
-        avg = sum / count
+        avg = total_cost / count
         return round(avg, 4)
 
-    def is_trade_valid(self, newTrade):
+    def _validate_trade(self, new_trade, trade_list):
         """
-        Validate the new Trade request against the current Portfolio
+        Validate the new Trade request
         """
-        if newTrade.action == Actions.WITHDRAW or newTrade.action == Actions.FEE:
-            if newTrade.quantity > self.get_cash_available():
+        # Build the list of trades happened before and after the new trade to validate
+        older_trades = [trade for trade in trade_list if trade.date < new_trade.date]
+        newer_trades = [trade for trade in trade_list if trade.date >= new_trade.date]
+        # Build the new trade list inserting the new trade
+        new_trade_list = older_trades + [new_trade] + newer_trades
+        # Verify that the new list is valid
+        deposited, available, holdings = self._load_from_trade_list(new_trade_list)
+
+    def _trade_is_allowed(self, new_trade, cash_available, holdings):
+        """
+        Throws RuntimeError is the trade is allowed basedo one the given quantities
+        """
+        if new_trade.action == Actions.WITHDRAW or new_trade.action == Actions.FEE:
+            if new_trade.quantity > cash_available:
                 logging.warning(
                     "Portfolio {}: {}".format(self._name, Messages.INSUF_FUNDING.value)
                 )
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
-        elif newTrade.action == Actions.BUY:
-            cost = (newTrade.price * newTrade.quantity) / 100  # in £
-            fee = newTrade.fee
-            tax = (newTrade.sdr * cost) / 100
+        elif new_trade.action == Actions.BUY:
+            cost = (new_trade.price * new_trade.quantity) / 100  # in £
+            fee = new_trade.fee
+            tax = (new_trade.sdr * cost) / 100
             totalCost = cost + fee + tax
-            if totalCost > self.get_cash_available():
+            if totalCost > cash_available:
                 logging.warning(
                     "Portfolio {}: {}".format(self._name, Messages.INSUF_FUNDING.value)
                 )
                 raise RuntimeError(Messages.INSUF_FUNDING.value)
-        elif newTrade.action == Actions.SELL:
-            if newTrade.quantity > self.get_holding_quantity(newTrade.symbol):
+        elif new_trade.action == Actions.SELL:
+            quantity = (
+                holdings[new_trade.symbol].get_quantity()
+                if new_trade.symbol in holdings
+                else 0
+            )
+            if new_trade.quantity > quantity:
                 logging.warning(
                     "Portfolio {}: {}".format(self._name, Messages.INSUF_HOLDINGS.value)
                 )
                 raise RuntimeError(Messages.INSUF_HOLDINGS.value)
-        logging.info("Portfolio {}: new trade validated".format(self._name))
-        return True
 
-    def get_trade_history(self):
-        """Return the trade history as a list"""
-        return self.db_handler.get_trades_list()
-
-    def add_trade(self, trade):
-        """Add a trade into the Portfolio"""
-        if not self.is_trade_valid(trade):
-            raise RuntimeError("Trade is invalid")
-        self.db_handler.add_trade(trade)
-        self.reload()
-        self._unsaved_changes = True
-
-    def remove_last_trade(self):
-        """Remove the last trade from the Portfolio"""
-        self.db_handler.remove_last_trade()
-        self.reload()
-        self._unsaved_changes = True
-
-    def save_portfolio(self, filepath):
-        """Save the portfolio at the given filepath"""
-        self.db_handler.write_data(filepath)
-        self._unsaved_changes = False
+    def _create_id(self, seed):
+        """Create and return an unique id from the seed"""
+        return hashlib.sha1(seed.encode("utf-8")).hexdigest()
 
     # PRICE GETTER WORK THREAD
 
-    def on_new_price_data(self):
-        priceDict = self.price_getter.get_last_data()
+    def _on_new_price_data(self):
+        priceDict = self._price_getter.get_last_data()
         for symbol, price in priceDict.items():
             if symbol in self._holdings:
                 self._holdings[symbol].set_last_price(price)
 
     def on_manual_refresh_live_data(self):
         logging.info("Portfolio {}: manual refresh of data".format(self._name))
-        if self.price_getter.is_enabled():
-            self.price_getter.cancel_timeout()
+        if self._price_getter.is_enabled():
+            self._price_getter.cancel_timeout()
         else:
-            self.price_getter.force_single_run()
+            self._price_getter.force_single_run()
 
     def set_auto_refresh(self, enabled):
         logging.info(
             "Portfolio {}: price auto refresh set to {}".format(self._name, enabled)
         )
-        self.price_getter.enable(enabled)
+        self._price_getter.enable(enabled)
 
     def get_auto_refresh_enabled(self):
-        return self.price_getter.is_enabled()
-
-    # INTERNAL
-
-    def _create_id(self, seed):
-        """Create and return an unique id from the seed"""
-        return hashlib.sha1(seed.encode("utf-8")).hexdigest()
+        return self._price_getter.is_enabled()
