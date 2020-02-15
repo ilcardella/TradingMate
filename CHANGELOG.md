@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show application version in About dialog
 - Support for yfinance module to fetch stocks data
 
+### Fixed
+- Fixed bug where main window was hidden when closing app with unsaved changes
+
 ## [2.1.1] - 2020-01-13
 ### Changed
 - Removed unused resource files

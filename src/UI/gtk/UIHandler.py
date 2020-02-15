@@ -57,7 +57,7 @@ class UIHandler:
         self._portfolio_path_label = builder.get_object(PORTFOLIO_PATH_LABEL)
         self._connection_status_image = builder.get_object(CONNECTION_IMAGE)
         # and link their callbacks
-        self._main_window.connect("destroy", self._on_close_main_window_event)
+        self._main_window.connect("delete-event", self._on_main_window_delete_event)
         open_button.connect("clicked", self._on_open_portfolio_event)
         settings_button.connect("clicked", self._on_open_settings_event)
         about_button.connect("clicked", self._on_show_about_event)
@@ -67,7 +67,7 @@ class UIHandler:
         for pf in self._client.get_portfolios():
             self._create_update_portfolio_tab(pf)
 
-    def _on_close_main_window_event(self, widget):
+    def _on_main_window_delete_event(self, widget, event):
         # Check if there are unsaved changes before closing the app
         if self._client.unsaved_changes():
             ConfirmDialog(
@@ -77,6 +77,9 @@ class UIHandler:
             ).show()
         else:
             self._close_application()
+            return False
+        # Return True to block event propagation
+        return True
 
     def _close_application(self):
         if self._log_window:
