@@ -2,6 +2,7 @@
     "name": "mock1",
     "trades": [
         {
+            "id": "mock",
             "date": "04/10/2017",
             "action": "DEPOSIT",
             "quantity": 3000.0,
@@ -12,6 +13,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "13/10/2017",
             "action": "BUY",
             "quantity": 119.0,
@@ -22,6 +24,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "13/10/2017",
             "action": "BUY",
             "quantity": 1101.0,
@@ -32,6 +35,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "17/10/2017",
             "action": "BUY",
             "quantity": 94.0,
@@ -42,6 +46,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "18/10/2017",
             "action": "SELL",
             "quantity": 94.0,
@@ -52,6 +57,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "20/10/2017",
             "action": "BUY",
             "quantity": 100.0,
@@ -62,6 +68,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "24/10/2017",
             "action": "DEPOSIT",
             "quantity": 600.0,
@@ -72,6 +79,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "24/10/2017",
             "action": "BUY",
             "quantity": 105.0,
@@ -82,6 +90,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "26/10/2017",
             "action": "SELL",
             "quantity": 1101.0,
@@ -92,6 +101,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "02/11/2017",
             "action": "DEPOSIT",
             "quantity": 1100.0,
@@ -102,6 +112,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "02/11/2017",
             "action": "BUY",
             "quantity": 656.0,
@@ -112,6 +123,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "02/11/2017",
             "action": "BUY",
             "quantity": 32.0,
@@ -122,6 +134,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "02/11/2017",
             "action": "BUY",
             "quantity": 63.0,
@@ -132,6 +145,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "15/11/2017",
             "action": "SELL",
             "quantity": 119.0,
@@ -142,6 +156,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "15/11/2017",
             "action": "SELL",
             "quantity": 105.0,
@@ -152,6 +167,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "20/11/2017",
             "action": "BUY",
             "quantity": 127.0,
@@ -162,6 +178,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "28/11/2017",
             "action": "SELL",
             "quantity": 32.0,
@@ -172,6 +189,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "15/12/2017",
             "action": "DIVIDEND",
             "quantity": 19.6,
@@ -182,6 +200,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "12/02/2018",
             "action": "BUY",
             "quantity": 40.0,
@@ -192,16 +211,7 @@
             "notes": ""
         },
         {
-            "date": "12/02/2018",
-            "action": "BUY",
-            "quantity": 122.0,
-            "symbol": "MOCK9",
-            "price": 402.1475,
-            "fee": 8.0,
-            "stamp_duty": 0.0,
-            "notes": ""
-        },
-        {
+            "id": "mock",
             "date": "23/02/2018",
             "action": "DEPOSIT",
             "quantity": 1000.0,
@@ -212,6 +222,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "23/02/2018",
             "action": "BUY",
             "quantity": 736.0,
@@ -222,6 +233,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "06/03/2018",
             "action": "SELL",
             "quantity": 63.0,
@@ -232,6 +244,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "06/03/2018",
             "action": "BUY",
             "quantity": 64.0,
@@ -242,16 +255,7 @@
             "notes": ""
         },
         {
-            "date": "07/03/2018",
-            "action": "SELL",
-            "quantity": 122.0,
-            "symbol": "MOCK9",
-            "price": 345.0,
-            "fee": 8.0,
-            "stamp_duty": 0.0,
-            "notes": ""
-        },
-        {
+            "id": "mock",
             "date": "12/03/2018",
             "action": "SELL",
             "quantity": 127.0,
@@ -262,6 +266,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "19/03/2018",
             "action": "SELL",
             "quantity": 64.0,
@@ -272,6 +277,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "21/03/2018",
             "action": "BUY",
             "quantity": 162.0,
@@ -282,6 +288,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "21/03/2018",
             "action": "BUY",
             "quantity": 660.0,
@@ -292,6 +299,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "04/04/2018",
             "action": "SELL",
             "quantity": 736.0,
@@ -302,6 +310,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "13/04/2018",
             "action": "DIVIDEND",
             "quantity": 1.37,
@@ -312,6 +321,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "20/04/2018",
             "action": "SELL",
             "quantity": 660.0,
@@ -322,6 +332,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "27/04/2018",
             "action": "BUY",
             "quantity": 1528.0,
@@ -332,6 +343,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "30/04/2018",
             "action": "BUY",
             "quantity": 8288.0,
@@ -342,6 +354,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "30/04/2018",
             "action": "SELL",
             "quantity": 40.0,
@@ -352,6 +365,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "04/05/2018",
             "action": "BUY",
             "quantity": 595.0,
@@ -362,6 +376,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "14/05/2018",
             "action": "DIVIDEND",
             "quantity": 8.65,
@@ -372,6 +387,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "21/05/2018",
             "action": "SELL",
             "quantity": 8288.0,
@@ -382,6 +398,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "08/06/2018",
             "action": "DIVIDEND",
             "quantity": 18.77,
@@ -392,6 +409,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "18/07/2018",
             "action": "BUY",
             "quantity": 958.0,
@@ -402,6 +420,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "16/08/2018",
             "action": "SELL",
             "quantity": 2209.0,
@@ -412,6 +431,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "16/08/2018",
             "action": "SELL",
             "quantity": 1528.0,
@@ -422,6 +442,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "24/08/2018",
             "action": "DEPOSIT",
             "quantity": 2000.0,
@@ -432,6 +453,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "07/09/2018",
             "action": "BUY",
             "quantity": 2705.0,
@@ -442,6 +464,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "28/09/2018",
             "action": "DIVIDEND",
             "quantity": 16.35,
@@ -452,6 +475,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "09/11/2018",
             "action": "DIVIDEND",
             "quantity": 166.36,
@@ -462,6 +486,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "20/11/2018",
             "action": "SELL",
             "quantity": 2705.0,
@@ -472,6 +497,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "28/11/2018",
             "action": "BUY",
             "quantity": 340.0,
@@ -482,6 +508,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "29/11/2018",
             "action": "SELL",
             "quantity": 340.0,
@@ -492,6 +519,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "29/11/2018",
             "action": "BUY",
             "quantity": 176.0,
@@ -502,6 +530,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "17/12/2018",
             "action": "DIVIDEND",
             "quantity": 62.62,
@@ -512,6 +541,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "17/12/2018",
             "action": "BUY",
             "quantity": 183.0,
@@ -522,6 +552,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "19/12/2018",
             "action": "SELL",
             "quantity": 183.0,
@@ -532,6 +563,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "21/12/2018",
             "action": "BUY",
             "quantity": 1192.0,
@@ -542,6 +574,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "23/01/2019",
             "action": "BUY",
             "quantity": 172.0,
@@ -552,6 +585,7 @@
             "notes": ""
         },
         {
+            "id": "mock",
             "date": "29/01/2019",
             "action": "SELL",
             "quantity": 172.0,

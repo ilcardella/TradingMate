@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Icon in status bar that shows internet connection status
 - Show application version in About dialog
 - Support for yfinance module to fetch stocks data
+- Support adding trades happened in the past
 
 ### Fixed
 - Fixed bug where main window was hidden when closing app with unsaved changes

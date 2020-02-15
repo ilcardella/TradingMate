@@ -43,6 +43,7 @@ class DatabaseHandler:
             for item in json_obj["trades"]:
                 trade = Trade.from_dict(item)
                 self.trading_history.append(trade)
+        self.trading_history = sorted(self.trading_history, key=lambda t: t.date)
 
     def write_data(self, filepath=None):
         """
@@ -81,6 +82,7 @@ class DatabaseHandler:
         """
         try:
             self.trading_history.append(trade)
+            self.trading_history = sorted(self.trading_history, key=lambda t: t.date)
         except Exception as e:
             logging.error(e)
             raise RuntimeError("Unable to add trade to the database")
