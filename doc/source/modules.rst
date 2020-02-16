@@ -78,47 +78,8 @@ GTK
 ^^^
 
 The ``gtk`` module contains the gtk components and widgets of the
-graphical interface
-
-UIHandler
-"""""""""
-
-.. automodule:: UI.gtk.UIHandler
-
-.. autoclass:: UIHandler
-    :members:
-
-ConfirmDialog
-"""""""""""""
-
-.. automodule:: UI.gtk.ConfirmDialog
-
-.. autoclass:: ConfirmDialog
-    :members:
-
-MessageDialog
-"""""""""""""
-
-.. automodule:: UI.gtk.MessageDialog
-
-.. autoclass:: MessageDialog
-    :members:
-
-PortfolioPage
-"""""""""""""
-
-.. automodule:: UI.gtk.PortfolioPage
-
-.. autoclass:: PortfolioPage
-    :members:
-
-SettingsWindow
-""""""""""""""
-
-.. automodule:: UI.gtk.SettingsWindow
-
-.. autoclass:: SettingsWindow
-    :members:
+graphical interface. They are not documented due to a Sphinx issue when
+importing the ``gi`` Python module
 
 Utils
 -----
