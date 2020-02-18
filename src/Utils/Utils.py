@@ -31,6 +31,7 @@ class Messages(Enum):
     UNSAVED_CHANGES = "There are unsaved changes, are you sure?"
     ERROR_SAVE_SETTINGS = "Unable to save the settings"
     WINDOW_UNSUPPORTED_ACTION = "This window does not support the selected action"
+    ARE_YOU_SURE = "Are you sure?"
 
 
 class Markets(Enum):

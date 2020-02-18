@@ -28,10 +28,6 @@ class TradingMateClient:
         """Push new trade notification to the server"""
         self._server.new_trade_event(new_trade, portfolio_id)
 
-    def delete_last_trade_event(self, portfolio_id):
-        """Request last trade deletion to the server"""
-        self._server.delete_last_trade_event(portfolio_id)
-
     def manual_refresh_event(self, portfolio_id):
         """Request server to refresh portfolio data"""
         self._server.manual_refresh_event(portfolio_id)
@@ -78,3 +74,6 @@ class TradingMateClient:
 
     def get_app_version(self):
         return self._server.get_app_version()
+
+    def delete_trade(self, portfolio_id, trade_id):
+        return self._server.delete_trade_event(portfolio_id, trade_id)

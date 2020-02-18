@@ -87,12 +87,13 @@ class DatabaseHandler:
             logging.error(e)
             raise RuntimeError("Unable to add trade to the database")
 
-    def remove_last_trade(self):
+    def delete_trade(self, trade_id):
         """
-        Remove the last trade from the trade history
+        Remove the trade from the trade history
         """
         try:
-            del self.trading_history[-1]
+            item = next((t for t in self.trading_history if t.id == trade_id), None)
+            self.trading_history.remove(item)
         except Exception as e:
             logging.error(e)
-            raise RuntimeError("Unable to delete last trade")
+            raise RuntimeError("Unable to delete trade")

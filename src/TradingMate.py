@@ -96,16 +96,18 @@ class TradingMate:
             if pf.get_id() == portfolio_id:
                 pf.add_trade(new_trade)
 
-    def delete_last_trade_event(self, portfolio_id):
+    def delete_trade_event(self, portfolio_id, trade_id):
         """
-        Callback function to handle delete of last trade request
+        Callback function to handle delete of a trade
         """
         logging.info(
-            "TradingMate - delete last trade for portfolio {}".format(portfolio_id)
+            "TradingMate - delete trade {} for portfolio {}".format(
+                trade_id, portfolio_id
+            )
         )
         for pf in self.portfolios:
             if pf.get_id() == portfolio_id:
-                pf.remove_last_trade()
+                pf.delete_trade(trade_id)
 
     def open_portfolio_event(self, filepath):
         """
@@ -166,6 +168,7 @@ def main():
     tm = TradingMate()
     # Initialise the user interface
     from UI.gtk.UIHandler import UIHandler
+
     UIHandler(tm).start()
 
 

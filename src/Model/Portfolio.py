@@ -176,14 +176,25 @@ class Portfolio:
 
     def add_trade(self, new_trade):
         """Add a new trade into the Portfolio"""
-        self._validate_trade(new_trade, self._db_handler.get_trades_list())
+        current_list = self._db_handler.get_trades_list()
+        # Build the list of trades happened before and after the new trade to validate
+        older_trades = [trade for trade in current_list if trade.date < new_trade.date]
+        newer_trades = [trade for trade in current_list if trade.date >= new_trade.date]
+        # Build the new trade list inserting the new trade
+        new_trade_list = older_trades + [new_trade] + newer_trades
+        self._validate_trade_list(new_trade_list)
         self._db_handler.add_trade(new_trade)
         self._load(self._db_handler.get_trades_list())
         self._unsaved_changes = True
 
-    def remove_last_trade(self):
-        """Remove the last trade from the Portfolio"""
-        self._db_handler.remove_last_trade()
+    def delete_trade(self, trade_id):
+        """Remove a trade from the Portfolio"""
+        # Validate the trade list removing the trade
+        new_trade_list = [
+            t for t in self._db_handler.get_trades_list() if t.id != trade_id
+        ]
+        self._validate_trade_list(new_trade_list)
+        self._db_handler.delete_trade(trade_id)
         self._load(self._db_handler.get_trades_list())
         self._unsaved_changes = True
 
@@ -288,17 +299,12 @@ class Portfolio:
         avg = total_cost / count
         return round(avg, 4)
 
-    def _validate_trade(self, new_trade, trade_list):
+    def _validate_trade_list(self, trade_list):
         """
-        Validate the new Trade request
+        Validate the trade list
         """
-        # Build the list of trades happened before and after the new trade to validate
-        older_trades = [trade for trade in trade_list if trade.date < new_trade.date]
-        newer_trades = [trade for trade in trade_list if trade.date >= new_trade.date]
-        # Build the new trade list inserting the new trade
-        new_trade_list = older_trades + [new_trade] + newer_trades
         # Verify that the new list is valid
-        deposited, available, holdings = self._load_from_trade_list(new_trade_list)
+        deposited, available, holdings = self._load_from_trade_list(trade_list)
 
     def _trade_is_allowed(self, new_trade, cash_available, holdings):
         """

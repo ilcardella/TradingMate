@@ -27,6 +27,26 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkMenu" id="trading_history_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkMenuItem" id="add_trade_menu_item">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Add...</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="delete_trade_menu_item">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Delete...</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+  </object>
   <object class="GtkListStore" id="trading_history_tree_model">
     <columns>
       <!-- column-name Date -->
@@ -44,6 +64,8 @@
       <!-- column-name Stamp -->
       <column type="gchararray"/>
       <!-- column-name Total -->
+      <column type="gchararray"/>
+      <!-- column-name Id -->
       <column type="gchararray"/>
     </columns>
   </object>
