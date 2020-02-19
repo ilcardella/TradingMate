@@ -10,9 +10,10 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from Utils.Utils import Utils
+from Utils.Utils import Utils, Messages
 from .AddTradeWindow import AddTradeWindow
 from .MessageDialog import MessageDialog
+from .ConfirmDialog import ConfirmDialog
 
 INVALID_STRING = "-"
 
@@ -35,6 +36,10 @@ BALANCES_PL_VALUE = "balances_pl_value"
 BALANCES_PL_PC_VALUE = "balances_pl_pc_value"
 TREE_POSITIONS_MODEL = "positions_tree_model"
 TREE_TRADING_HISTORY_MODEL = "trading_history_tree_model"
+TREE_TRADING_HISTORY = "trading_history_tree"
+TREE_TRADING_HISTORY_MENU = "trading_history_menu"
+TREE_TRADING_HISTORY_ADD_MENU_ITEM = "add_trade_menu_item"
+TREE_TRADING_HISTORY_DELETE_MENU_ITEM = "delete_trade_menu_item"
 
 
 class PortfolioPage(gtk.Box):
@@ -70,18 +75,35 @@ class PortfolioPage(gtk.Box):
         # Get the positions tree model reference
         self._positions_tree_model = builder.get_object(TREE_POSITIONS_MODEL)
         self._history_tree_model = builder.get_object(TREE_TRADING_HISTORY_MODEL)
+        self._history_tree = builder.get_object(TREE_TRADING_HISTORY)
+        # Get the popup menu
+        self._history_menu = builder.get_object(TREE_TRADING_HISTORY_MENU)
+        _history_menu_add_item = builder.get_object(TREE_TRADING_HISTORY_ADD_MENU_ITEM)
+        _history_menu_delete_item = builder.get_object(
+            TREE_TRADING_HISTORY_DELETE_MENU_ITEM
+        )
+        self._history_menu.show_all()
         # Link callbacks to widgets
         save_button.connect("clicked", self._on_save_event)
         save_as_button.connect("clicked", self._on_save_as_event)
         add_button.connect("clicked", self._on_add_event)
         self._refresh_button.connect("clicked", self._on_refresh_event)
         self._refresh_switch.connect("state-set", self._auto_refresh_switch_set_event)
+        self._history_tree.connect(
+            "button_press_event", self._on_trading_history_button_press
+        )
+        _history_menu_add_item.connect("activate", self._on_add_event)
+        _history_menu_delete_item.connect("activate", self._on_delete_event)
         # Set initial status of refresh switch and button based on portfolio status
         self._update_refresh_box()
         # Add the top level container to self
         self.set_hexpand(True)
         self.set_homogeneous(True)
         self.add(top_level)
+
+    def _on_trading_history_button_press(self, widget, event):
+        if event.button == 3:  # Right click
+            self._history_menu.popup(None, None, None, None, event.button, event.time)
 
     def _reset_cache(self):
         self._cache = {"trade_history": []}
@@ -124,6 +146,30 @@ class PortfolioPage(gtk.Box):
 
     def _on_add_event(self, widget):
         AddTradeWindow(self._parent_window, self._server, self._id).show()
+
+    def _on_delete_event(self, widget):
+        ConfirmDialog(
+            self._parent_window,
+            Messages.ARE_YOU_SURE.value,
+            self._on_confirmed_delete_trade_event,
+        ).show()
+
+    def _on_confirmed_delete_trade_event(self):
+        try:
+            model, pathlist = self._history_tree.get_selection().get_selected_rows()
+            # Only single selection is supported
+            for path in pathlist:
+                i = model.get_iter(path)
+                trade_id = model.get_value(i, 8)  # hidden column 8
+                self._server.delete_trade(self._id, trade_id)
+                break
+        except Exception as e:
+            MessageDialog(
+                self._parent_window,
+                "Error",
+                Messages.INVALID_OPERATION.value,
+                gtk.MessageType.ERROR,
+            ).show()
 
     def _validate_value(self, value, negative_ok=False):
         if (
@@ -184,6 +230,7 @@ class PortfolioPage(gtk.Box):
                         self._validate_value(t.fee),
                         self._validate_value(t.sdr),
                         self._validate_value(t.total, negative_ok=True),
+                        t.id,
                     ]
                 )
 
