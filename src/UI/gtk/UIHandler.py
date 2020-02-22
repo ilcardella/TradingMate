@@ -27,12 +27,15 @@ GLADE_MAIN_WINDOW_FILE = os.path.join(ASSETS_DIR, "gtk", "main_window_layout.gla
 # GTK Widget IDs
 MAIN_WINDOW = "main_window"
 NOTEBOOK = "notebook"
-OPEN_BUTTON = "open_button"
-SETTINGS_BUTTON = "settings_button"
-ABOUT_BUTTON = "about_button"
+OPEN_BUTTON = "main_header_open_button"
+SETTINGS_BUTTON = "main_header_settings_button"
+ABOUT_BUTTON = "main_header_about_button"
 PORTFOLIO_PATH_LABEL = "portfolio_path_label"
-SHOW_LOG_BUTTON = "show_log_button"
+SHOW_LOG_BUTTON = "main_header_log_button"
 CONNECTION_IMAGE = "connection_image"
+PROPERTIES_BUTTON = "properties_button"
+PROPERTIES_POPOVER = "main_header_properties_popover"
+EXIT_BUTTON = "main_header_exit_button"
 
 
 class UIHandler:
@@ -56,18 +59,25 @@ class UIHandler:
         show_log_button = builder.get_object(SHOW_LOG_BUTTON)
         self._portfolio_path_label = builder.get_object(PORTFOLIO_PATH_LABEL)
         self._connection_status_image = builder.get_object(CONNECTION_IMAGE)
+        properties_button = builder.get_object(PROPERTIES_BUTTON)
+        self._properties_popover = builder.get_object(PROPERTIES_POPOVER)
+        exit_button = builder.get_object(EXIT_BUTTON)
+        # configure widgets
+        self._properties_popover.set_relative_to(properties_button)
         # and link their callbacks
         self._main_window.connect("delete-event", self._on_main_window_delete_event)
+        properties_button.connect("clicked", self._on_properties_button_click_event)
         open_button.connect("clicked", self._on_open_portfolio_event)
         settings_button.connect("clicked", self._on_open_settings_event)
         about_button.connect("clicked", self._on_show_about_event)
         show_log_button.connect("clicked", self._on_show_log_event)
         self._notebook.connect("switch-page", self._on_change_notebook_page)
+        exit_button.connect("clicked", self._on_main_window_delete_event)
         # Manually create required notebook pages
         for pf in self._client.get_portfolios():
             self._create_update_portfolio_tab(pf)
 
-    def _on_main_window_delete_event(self, widget, event):
+    def _on_main_window_delete_event(self, *args):
         # Check if there are unsaved changes before closing the app
         if self._client.unsaved_changes():
             ConfirmDialog(
@@ -89,13 +99,21 @@ class UIHandler:
         self._client.stop()
         gtk.main_quit()
 
+    def _on_properties_button_click_event(self, widget):
+        self._properties_popover.show_all()
+        self._properties_popover.popup()
+
     def _on_show_about_event(self, widget):
+        # Hide the popover menu and shows the about dialog
+        self._properties_popover.hide()
         message = "Version: {}\n{}".format(
             self._client.get_app_version(), Messages.ABOUT_MESSAGE.value
         )
         MessageDialog(self._main_window, "About", message, gtk.MessageType.INFO).show()
 
     def _on_show_log_event(self, widget):
+        # Hide the popover menu and shows the log window
+        self._properties_popover.hide()
         self._log_window.show()
 
     def _on_data_worker_timeout(self, portfolios):
@@ -132,6 +150,8 @@ class UIHandler:
         self._portfolio_tabs[portfolio.get_id()] = page
 
     def _on_open_portfolio_event(self, widget):
+        # Hide the popover menu and shows the file chooser dialog
+        self._properties_popover.hide()
         try:
             dialog = gtk.FileChooserDialog(
                 "Select file",
@@ -161,6 +181,8 @@ class UIHandler:
             ).show()
 
     def _on_open_settings_event(self, widget):
+        # Hide the popover menu and shows the settings window
+        self._properties_popover.hide()
         # FIXME changes are not applied immediately, it would be good to force a UI refresh
         SettingsWindow(self._main_window, self._client).show()
 

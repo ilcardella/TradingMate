@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## []
 ### Changed
 - Updated Pipfile unifying packages and adding custom scripts
+- Grouped icons in the header bar under one single popover menu
 
 ### Added
 - Added tooltips to UI widgets
