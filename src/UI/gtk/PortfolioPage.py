@@ -5,6 +5,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk as gtk
+from gi.repository import Gdk as gdk
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -37,9 +38,9 @@ BALANCES_PL_PC_VALUE = "balances_pl_pc_value"
 TREE_POSITIONS_MODEL = "positions_tree_model"
 TREE_TRADING_HISTORY_MODEL = "trading_history_tree_model"
 TREE_TRADING_HISTORY = "trading_history_tree"
-TREE_TRADING_HISTORY_MENU = "trading_history_menu"
-TREE_TRADING_HISTORY_ADD_MENU_ITEM = "add_trade_menu_item"
-TREE_TRADING_HISTORY_DELETE_MENU_ITEM = "delete_trade_menu_item"
+TREE_TRADING_HISTORY_MENU = "trading_history_popover"
+TREE_TRADING_HISTORY_MENU_ADD = "trading_history_popover_add"
+TREE_TRADING_HISTORY_MENU_DELETE = "trading_history_popover_delete"
 
 
 class PortfolioPage(gtk.Box):
@@ -78,11 +79,10 @@ class PortfolioPage(gtk.Box):
         self._history_tree = builder.get_object(TREE_TRADING_HISTORY)
         # Get the popup menu
         self._history_menu = builder.get_object(TREE_TRADING_HISTORY_MENU)
-        _history_menu_add_item = builder.get_object(TREE_TRADING_HISTORY_ADD_MENU_ITEM)
+        _history_menu_add_item = builder.get_object(TREE_TRADING_HISTORY_MENU_ADD)
         _history_menu_delete_item = builder.get_object(
-            TREE_TRADING_HISTORY_DELETE_MENU_ITEM
+            TREE_TRADING_HISTORY_MENU_DELETE
         )
-        self._history_menu.show_all()
         # Link callbacks to widgets
         save_button.connect("clicked", self._on_save_event)
         save_as_button.connect("clicked", self._on_save_as_event)
@@ -92,8 +92,8 @@ class PortfolioPage(gtk.Box):
         self._history_tree.connect(
             "button_press_event", self._on_trading_history_button_press
         )
-        _history_menu_add_item.connect("activate", self._on_add_event)
-        _history_menu_delete_item.connect("activate", self._on_delete_event)
+        _history_menu_add_item.connect("clicked", self._on_add_event)
+        _history_menu_delete_item.connect("clicked", self._on_delete_event)
         # Set initial status of refresh switch and button based on portfolio status
         self._update_refresh_box()
         # Add the top level container to self
@@ -102,8 +102,18 @@ class PortfolioPage(gtk.Box):
         self.add(top_level)
 
     def _on_trading_history_button_press(self, widget, event):
-        if event.button == 3:  # Right click
-            self._history_menu.popup(None, None, None, None, event.button, event.time)
+        # Shows the contect menu only on right click
+        if event.button != 3:
+            return False
+        rect = gdk.Rectangle()
+        rect.x = event.x
+        rect.y = event.y + 30
+        rect.width = rect.height = 1
+        self._history_menu.set_relative_to(self._history_tree)
+        self._history_menu.set_pointing_to(rect)
+        self._history_menu.show_all()
+        self._history_menu.popup()
+        return True
 
     def _reset_cache(self):
         self._cache = {"trade_history": []}

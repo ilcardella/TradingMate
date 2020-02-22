@@ -109,3 +109,4 @@ pid.txt
 Pipfile.lock
 
 *~
+*.glade#
