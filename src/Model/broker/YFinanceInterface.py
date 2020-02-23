@@ -57,3 +57,16 @@ class YFinanceInterface(StocksInterface):
         ticker = yf.Ticker(self._format_market_id(market_id))
         data = ticker.history(period="1d", interval=interval.value)
         return data["Close"].iloc[0] if data is not None else None
+
+    def get_market_details(self, market_ticker):
+        self._wait_before_call()
+        ticker = yf.Ticker(self._format_market_id(market_ticker))
+        return {
+            "dividends": ticker.dividends,
+            "info": ticker.info,
+            "calendar": ticker.calendar,
+            "earnings": ticker.earnings,
+            "financials": ticker.financials,
+            "balance_sheet": ticker.balance_sheet,
+            "cash_flow": ticker.cashflow,
+        }

@@ -32,6 +32,16 @@ Author: Alberto Cardellini
   <!-- interface-name TradingMate -->
   <!-- interface-description Your best mate for your trading -->
   <!-- interface-authors Alberto Cardellini -->
+  <object class="GtkImage" id="image_explore">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-find</property>
+  </object>
+  <object class="GtkImage" id="image_open">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-open</property>
+  </object>
   <object class="GtkImage" id="image_properties">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -49,15 +59,53 @@ Author: Alberto Cardellini
         <property name="title" translatable="yes">TradingMate</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkBox" id="header_hbox">
+          <object class="GtkBox" id="header_left_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="spacing">10</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkButton" id="header_open_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Open a portfolio</property>
+                <property name="image">image_open</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="header_explore_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Explore markets</property>
+                <property name="image">image_explore</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="header_right_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkButton" id="properties_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">TradingMate properties</property>
                 <property name="image">image_properties</property>
                 <property name="always_show_image">True</property>
               </object>
@@ -68,6 +116,9 @@ Author: Alberto Cardellini
               </packing>
             </child>
           </object>
+          <packing>
+            <property name="pack_type">end</property>
+          </packing>
         </child>
       </object>
     </child>
@@ -153,20 +204,6 @@ Author: Alberto Cardellini
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkButton" id="main_header_open_button">
-            <property name="label" translatable="yes">Open portfolio</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="relief">none</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkButton" id="main_header_settings_button">
             <property name="label" translatable="yes">Settings</property>
             <property name="visible">True</property>
@@ -208,23 +245,10 @@ Author: Alberto Cardellini
             <property name="position">3</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkButton" id="main_header_exit_button">
-            <property name="label" translatable="yes">Exit</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="relief">none</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
       </object>
       <packing>
         <property name="submenu">main</property>
+        <property name="position">1</property>
       </packing>
     </child>
   </object>

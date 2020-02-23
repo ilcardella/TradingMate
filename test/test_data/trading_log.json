@@ -2,7 +2,7 @@
     "name": "mock1",
     "trades": [
         {
-            "id": "mock",
+            "id": "mock_initial_deposit",
             "date": "04/10/2017",
             "action": "DEPOSIT",
             "quantity": 3000.0,
@@ -585,7 +585,7 @@
             "notes": ""
         },
         {
-            "id": "mock",
+            "id": "mock_last_trade",
             "date": "29/01/2019",
             "action": "SELL",
             "quantity": 172.0,

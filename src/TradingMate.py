@@ -13,7 +13,15 @@ sys.path.insert(0, parentdir)
 from Model.DatabaseHandler import DatabaseHandler
 from Model.Portfolio import Portfolio
 from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Utils import Utils
+from Utils.Utils import Utils, Messages
+from Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
+
+DEFAULT_LOG_FILEPATH = os.path.join(
+    Utils.get_install_path(), "log", "trading_mate_{timestamp}.log"
+)
+DEFAULT_CONFIG_FILEPATH = os.path.join(
+    Utils.get_install_path(), "config", "config.json"
+)
 
 
 class TradingMate:
@@ -22,26 +30,23 @@ class TradingMate:
     underlying business logic of the whole application
     """
 
-    LOG_FILEPATH = os.path.join(
-        Utils.get_install_path(), "log", "trading_mate_{timestamp}.log"
-    )
-    CONFIG_FILEPATH = os.path.join(Utils.get_install_path(), "config", "config.json")
-
-    def __init__(self):
-        self._setup_logging()
+    def __init__(
+        self, config_filepath=DEFAULT_CONFIG_FILEPATH, log_filepath=DEFAULT_LOG_FILEPATH
+    ):
+        self._setup_logging(log_filepath)
         # Read TradingMate configuration
-        self.configurationManager = ConfigurationManager(self.CONFIG_FILEPATH)
+        self.configurationManager = ConfigurationManager(config_filepath)
         # Create the portfolios
         self._create_portfolios()
         logging.info("TradingMate initialised")
 
-    def _setup_logging(self):
+    def _setup_logging(self, log_filepath):
         """
         Setup the global logging settings
         """
         time_str = dt.datetime.now().isoformat()
         time_suffix = time_str.replace(":", "_").replace(".", "_")
-        self._app_log_filepath = self.LOG_FILEPATH.replace("{timestamp}", time_suffix)
+        self._app_log_filepath = log_filepath.replace("{timestamp}", time_suffix)
         os.makedirs(os.path.dirname(self._app_log_filepath), exist_ok=True)
         logging.basicConfig(
             filename=self._app_log_filepath,
@@ -161,6 +166,22 @@ class TradingMate:
         if match is None:
             return "Unknown"
         return match.group(1).strip()
+
+    def get_market_details(self, market_ticker):
+        # Currently only yfinance support this feature
+        if (
+            "yfinance"
+            not in self.configurationManager.get_configured_stocks_interface()
+        ):
+            raise RuntimeError(Messages.UNSUPPORTED_BROKER_FEATURE.value)
+        inteface = StocksInterfaceFactory(
+            self.configurationManager
+        ).make_from_configuration()
+        try:
+            return inteface.get_market_details(market_ticker)
+        except Exception as e:
+            logging.error(f"TradingMate get_market_details - {e}")
+            raise RuntimeError(Messages.SOMETHING_WRONG.value)
 
 
 def main():

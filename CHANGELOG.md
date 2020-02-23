@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for yfinance module to fetch stocks data
 - Support adding trades happened in the past
 - Added popup menu in trades history treeview with option to add and remove trades
+- Explore window to show information and details of single markets
 
 ### Fixed
 - Fixed bug where main window was hidden when closing app with unsaved changes
