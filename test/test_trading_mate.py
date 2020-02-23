@@ -14,6 +14,8 @@ from TradingMate import TradingMate
 from Model.Portfolio import Portfolio
 from Utils.Trade import Trade
 
+from unittest import mock
+
 
 def read_json(filepath):
     try:
@@ -150,12 +152,21 @@ def test_get_app_log_filepath(trading_mate):
     assert trading_mate.get_app_log_filepath() == "/tmp/trading_mate_test_log.log"
 
 
+# This is commented out because this function depends on pip being installed
+# Could be done patching subprocess.Popen call returning a mock pip response
+
 # def test_get_app_version(trading_mate):
 #     # TODO
 #     assert True
 
+# This is commented out beacuse I can't find a way to mock the http response
+# Yfinance uses pandas which uses lxml to parse the html returned by urllib.request.urlopen
 
 # def test_get_market_details(trading_mate):
 #     # TODO
-#     details = trading_mate.get_market_details("MOCK")
-#     assert details is not None
+#     with mock.patch("urllib.request.urlopen") as mock_urllib:
+#         with open("test/test_data/mock_yf_quote_holders.html", "r") as f:
+#             mock_urllib.return_value.__enter__.return_value.read.return_value = f.read()
+#             mock_urllib.return_value.__enter__.return_value.getcode.return_value = 200
+#             details = trading_mate.get_market_details("MOCK")
+#             assert details is not None
