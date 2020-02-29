@@ -18,6 +18,7 @@ from .MessageDialog import MessageDialog
 from .ConfirmDialog import ConfirmDialog
 from .SettingsWindow import SettingsWindow
 from .LogWindow import LogWindow
+from .ExploreMarketsWindow import ExploreMarketsWindow
 
 # Application constants
 APP_NAME = "TradingMate"
@@ -188,13 +189,7 @@ class UIHandler:
         self._portfolio_path_label.set_text(page_toplevel.get_portfolio_path())
 
     def _on_explore_button_clicked(self, widget):
-        # TODO spawn the Explore Markets window
-        try:
-            print(self._client.get_market_details("MSFT"))
-        except Exception as e:
-            MessageDialog(
-                self._main_window, "Error", str(e), gtk.MessageType.ERROR
-            ).show()
+        ExploreMarketsWindow(self._main_window, self._client).show()
 
     ### Public API
 

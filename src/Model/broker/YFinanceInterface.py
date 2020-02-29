@@ -68,5 +68,5 @@ class YFinanceInterface(StocksInterface):
             "earnings": ticker.earnings,
             "financials": ticker.financials,
             "balance_sheet": ticker.balance_sheet,
-            "cash_flow": ticker.cashflow,
+            "cashflow": ticker.cashflow,
         }
