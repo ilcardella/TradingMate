@@ -108,11 +108,17 @@ class ExploreMarketsWindow:
         self.market_info_model.append(
             ["Website", self._validate_value(info["website"])]
         )
-        self.market_info_model.append(
-            ["Ex date", self._validate_value(info["exDividendDate"])]
+        date = (
+            dt.fromtimestamp(info["exDividendDate"])
+            if "exDividendDate" in info and info["exDividendDate"] is not None
+            else "-"
+        )
+        self.market_info_model.append(["Ex date", self._validate_date(date)])
+        market_cap = (
+            info["marketCap"] / 1000000 if isinstance(info["marketCap"], int) else "-"
         )
         self.market_info_model.append(
-            ["Market cap", self._validate_value(info["marketCap"])]
+            ["Market cap [M]", self._validate_value(market_cap)]
         )
         self.market_info_model.append(["Ask", self._validate_value(info["ask"])])
         self.market_info_model.append(["Bid", self._validate_value(info["bid"])])
@@ -129,19 +135,19 @@ class ExploreMarketsWindow:
 
     def _update_financials(self, financials):
         # TODO
-        print(financials)
+        pass
 
     def _update_balance_sheet(self, balances):
         # TODO
-        print(balances)
+        pass
 
     def _update_cashflow(self, cashflow):
         # TODO
-        print(cashflow)
+        pass
 
     def _update_earnings(self, earnings):
         # TODO
-        print(earnings)
+        pass
 
     ### Public API
 
