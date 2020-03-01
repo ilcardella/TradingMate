@@ -77,3 +77,6 @@ class TradingMateClient:
 
     def delete_trade(self, portfolio_id, trade_id):
         return self._server.delete_trade_event(portfolio_id, trade_id)
+
+    def get_market_details(self, market_ticker):
+        return self._server.get_market_details(market_ticker)

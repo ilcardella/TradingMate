@@ -3,6 +3,7 @@ import inspect
 import sys
 import logging
 import hashlib
+import time
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -340,6 +341,7 @@ class Portfolio:
 
     def _create_id(self, seed):
         """Create and return an unique id from the seed"""
+        seed += str(time.time())
         return hashlib.sha1(seed.encode("utf-8")).hexdigest()
 
     # PRICE GETTER WORK THREAD

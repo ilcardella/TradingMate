@@ -18,6 +18,7 @@ from .MessageDialog import MessageDialog
 from .ConfirmDialog import ConfirmDialog
 from .SettingsWindow import SettingsWindow
 from .LogWindow import LogWindow
+from .ExploreMarketsWindow import ExploreMarketsWindow
 
 # Application constants
 APP_NAME = "TradingMate"
@@ -27,7 +28,7 @@ GLADE_MAIN_WINDOW_FILE = os.path.join(ASSETS_DIR, "gtk", "main_window_layout.gla
 # GTK Widget IDs
 MAIN_WINDOW = "main_window"
 NOTEBOOK = "notebook"
-OPEN_BUTTON = "main_header_open_button"
+OPEN_BUTTON = "header_open_button"
 SETTINGS_BUTTON = "main_header_settings_button"
 ABOUT_BUTTON = "main_header_about_button"
 PORTFOLIO_PATH_LABEL = "portfolio_path_label"
@@ -35,7 +36,7 @@ SHOW_LOG_BUTTON = "main_header_log_button"
 CONNECTION_IMAGE = "connection_image"
 PROPERTIES_BUTTON = "properties_button"
 PROPERTIES_POPOVER = "main_header_properties_popover"
-EXIT_BUTTON = "main_header_exit_button"
+EXPLORE_BUTTON = "header_explore_button"
 
 
 class UIHandler:
@@ -61,7 +62,7 @@ class UIHandler:
         self._connection_status_image = builder.get_object(CONNECTION_IMAGE)
         properties_button = builder.get_object(PROPERTIES_BUTTON)
         self._properties_popover = builder.get_object(PROPERTIES_POPOVER)
-        exit_button = builder.get_object(EXIT_BUTTON)
+        explore_button = builder.get_object(EXPLORE_BUTTON)
         # configure widgets
         self._properties_popover.set_relative_to(properties_button)
         # and link their callbacks
@@ -72,7 +73,7 @@ class UIHandler:
         about_button.connect("clicked", self._on_show_about_event)
         show_log_button.connect("clicked", self._on_show_log_event)
         self._notebook.connect("switch-page", self._on_change_notebook_page)
-        exit_button.connect("clicked", self._on_main_window_delete_event)
+        explore_button.connect("clicked", self._on_explore_button_clicked)
         # Manually create required notebook pages
         for pf in self._client.get_portfolios():
             self._create_update_portfolio_tab(pf)
@@ -150,8 +151,6 @@ class UIHandler:
         self._portfolio_tabs[portfolio.get_id()] = page
 
     def _on_open_portfolio_event(self, widget):
-        # Hide the popover menu and shows the file chooser dialog
-        self._properties_popover.hide()
         try:
             dialog = gtk.FileChooserDialog(
                 "Select file",
@@ -177,7 +176,7 @@ class UIHandler:
             dialog.destroy()
         except RuntimeError as e:
             MessageDialog(
-                self._parent_window, "Error", str(e), gtk.MessageType.ERROR
+                self._main_window, "Error", str(e), gtk.MessageType.ERROR
             ).show()
 
     def _on_open_settings_event(self, widget):
@@ -188,6 +187,9 @@ class UIHandler:
 
     def _on_change_notebook_page(self, widget, page_toplevel, page_index):
         self._portfolio_path_label.set_text(page_toplevel.get_portfolio_path())
+
+    def _on_explore_button_clicked(self, widget):
+        ExploreMarketsWindow(self._main_window, self._client).show()
 
     ### Public API
 
