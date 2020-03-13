@@ -229,9 +229,9 @@ class AddTradeWindow:
                 not self._price_entry.get_sensitive()
                 or self._is_float_valid(self._price_entry.get_text()),
                 not self._fee_entry.get_sensitive()
-                or self._is_float_valid(self._fee_entry.get_text()),
+                or self._is_float_valid(self._fee_entry.get_text(), zero_ok=True),
                 not self._sdr_entry.get_sensitive()
-                or self._is_float_valid(self._sdr_entry.get_text()),
+                or self._is_float_valid(self._sdr_entry.get_text(), zero_ok=True),
                 not self._notes_entry.get_sensitive()
                 or self._is_string_valid(self._notes_entry.get_text(), empty_ok=True),
             ]
@@ -245,10 +245,12 @@ class AddTradeWindow:
         except:
             return False
 
-    def _is_float_valid(self, string_value):
+    def _is_float_valid(self, string_value, zero_ok=False):
         try:
             f = float(string_value)
-            return True if f > 0.0 else False
+            if f > 0.0 or (f == 0.0 and zero_ok):
+                return True
+            return False
         except:
             return False
 
