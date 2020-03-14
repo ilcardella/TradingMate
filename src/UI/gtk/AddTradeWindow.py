@@ -12,7 +12,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from Utils.Utils import Utils, Actions, Markets, Messages
-from Utils.Trade import Trade
+from Utils.Trade import Trade, DATETIME_FORMAT, TIME_FORMAT
 from .MessageDialog import MessageDialog
 
 # File paths
@@ -24,6 +24,7 @@ GLADE_ADD_TRADE_WINDOW_FILE = os.path.join(
 # GTK Widget IDs
 ADD_TRADE_WINDOW = "add_trade_window"
 DATE_CALENDAR = "date_calendar"
+TIME_ENTRY = "time_entry"
 ACTION_COMBO = "action_combo"
 MARKET_COMBO = "market_combo"
 SYMBOL_ENTRY = "symbol_entry"
@@ -51,6 +52,7 @@ class AddTradeWindow:
         top_level.set_transient_for(self._parent_window)
         top_level.set_modal(True)
         self._calendar = builder.get_object(DATE_CALENDAR)
+        self._time_entry = builder.get_object(TIME_ENTRY)
         self._action_combo = builder.get_object(ACTION_COMBO)
         self._market_combo = builder.get_object(MARKET_COMBO)
         self._symbol_entry = builder.get_object(SYMBOL_ENTRY)
@@ -63,6 +65,7 @@ class AddTradeWindow:
         self._add_button = builder.get_object(ADD_BUTTON)
         # Register callbacks
         self._calendar.connect("day-selected", self._on_date_selected)
+        self._time_entry.connect("changed", self._on_entry_changed)
         self._symbol_entry.connect("changed", self._on_entry_changed)
         self._quantity_entry.connect("changed", self._on_entry_changed)
         self._price_entry.connect("changed", self._on_entry_changed)
@@ -83,6 +86,10 @@ class AddTradeWindow:
         # Normalise widgets content with default values if necessary
         year, month, day = self._calendar.get_date()
         date_string = f"{day}/{month+1}/{year}"
+        time_string = self._time_entry.get_text()
+        date = datetime.datetime.strptime(
+            "{} {}".format(date_string, time_string), DATETIME_FORMAT
+        )
         action = Actions[self._action_combo.get_active_text()]
         quantity = float(
             self._quantity_entry.get_text()
@@ -105,7 +112,7 @@ class AddTradeWindow:
         )
         notes = str(self._notes_entry.get_text())
         # Create a Trade instance from the widgets content
-        t = Trade(date_string, action, quantity, market, price, fee, sdr, notes)
+        t = Trade(date, action, quantity, market, price, fee, sdr, notes)
         # Call server and handle errors
         try:
             self._client.new_trade_event(t, self._portfolio_id)
@@ -196,6 +203,8 @@ class AddTradeWindow:
         now = datetime.datetime.now()
         self._calendar.select_month(now.month - 1, now.year)
         self._calendar.select_day(0)  # Clear day selection
+        # Time
+        self._time_entry.set_text("00:00")
         # Combo action
         self._action_combo.remove_all()
         for a in Actions:
@@ -206,9 +215,10 @@ class AddTradeWindow:
             self._market_combo.append_text(m.name)
 
     def _clear_content(self, clear_calendar=True):
-        # Clear day selection in calendar
+        # Clear day selection in calendar and time
         if clear_calendar:
             self._calendar.select_day(0)
+            self._time_entry.set_text("00:00")
         # Reset entries
         self._symbol_entry.set_text("")
         self._quantity_entry.set_text("")
@@ -222,6 +232,7 @@ class AddTradeWindow:
         valid = all(
             [
                 0 < date < 32,
+                self._is_time_valid(self._time_entry.get_text()),
                 not self._symbol_entry.get_sensitive()
                 or self._is_string_valid(self._symbol_entry.get_text()),
                 not self._quantity_entry.get_sensitive()
@@ -251,6 +262,13 @@ class AddTradeWindow:
             if f > 0.0 or (f == 0.0 and zero_ok):
                 return True
             return False
+        except:
+            return False
+
+    def _is_time_valid(self, string):
+        try:
+            date = datetime.datetime.strptime(string, TIME_FORMAT)
+            return True
         except:
             return False
 

@@ -78,7 +78,7 @@ def test_set_auto_refresh(trading_mate):
 def test_new_trade_event(trading_mate):
     trade_dict = {
         "id": "new_trade",
-        "date": "01/01/2020",
+        "date": "01/01/2020 00:00",
         "action": "DEPOSIT",
         "quantity": 1000,
         "symbol": "MSFT",
@@ -96,7 +96,7 @@ def test_new_trade_event(trading_mate):
     # Verify invalid trade is rejected
     invalid_trade = {
         "id": "mock",
-        "date": "01/01/2020",
+        "date": "01/01/2020 00:00",
         "action": "BUY",
         "quantity": 10000,
         "symbol": "MSFT",

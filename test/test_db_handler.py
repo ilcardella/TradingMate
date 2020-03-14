@@ -73,7 +73,7 @@ def test_add_trade(dbh):
     prev_len = len(dbh.trading_history)
     item = {
         "id": "0",
-        "date": "01/01/0001",
+        "date": "01/01/0001 00:00",
         "action": "BUY",
         "quantity": 1,
         "symbol": "MOCK",
@@ -94,7 +94,7 @@ def test_delete_trade(dbh):
     prev_len = len(dbh.trading_history)
     item = {
         "id": "42",
-        "date": "01/01/0001",
+        "date": "01/01/0001 00:00",
         "action": "BUY",
         "quantity": 1,
         "symbol": "MOCK",
