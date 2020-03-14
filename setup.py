@@ -3,14 +3,23 @@ import os
 
 setup(
     name="TradingMate",
-    version="2.1.1",
+    version="2.2.0",
     python_requires=">=3",
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src"),
     scripts=["src/TradingMate.py"],
     entry_points={"console_scripts": ["trading_mate = TradingMate:main"]},
-    install_requires=["alpha-vantage==2.1.3", "pygtail==0.11.1", "yfinance==0.1.54", "lxml==4.5.0"],
-    package_data={"config": ["*.json"], "data": ["*.json"], "src/UI/assets/gtk": ["*.glade"]},
+    install_requires=[
+        "alpha-vantage==2.1.3",
+        "pygtail==0.11.1",
+        "yfinance==0.1.54",
+        "lxml==4.5.0",
+    ],
+    package_data={
+        "config": ["*.json"],
+        "data": ["*.json"],
+        "src/UI/assets/gtk": ["*.glade"],
+    },
     data_files=[
         (os.path.join(os.sep, "opt", "TradingMate", "config"), ["config/config.json"]),
         (os.path.join(os.sep, "opt", "TradingMate", "data"), ["data/trading_log.json"]),
