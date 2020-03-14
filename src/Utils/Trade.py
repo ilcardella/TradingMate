@@ -13,13 +13,15 @@ sys.path.insert(0, parentdir)
 
 from Utils.Utils import Actions
 
+TIME_FORMAT = "%H:%M"
+DATE_FORMAT = "%d/%m/%Y"
+DATETIME_FORMAT = DATE_FORMAT + " " + TIME_FORMAT
+
 
 class Trade:
-    def __init__(
-        self, date_string, action, quantity, symbol, price, fee, sdr, notes, id=None
-    ):
+    def __init__(self, date, action, quantity, symbol, price, fee, sdr, notes, id=None):
         try:
-            self.date = datetime.datetime.strptime(date_string, "%d/%m/%Y")
+            self.date = date
             if not isinstance(action, Actions):
                 raise ValueError("Invalid action")
             self.action = action
@@ -38,7 +40,7 @@ class Trade:
     def to_dict(self):
         return {
             "id": self.id,
-            "date": self.date.strftime("%d/%m/%Y"),
+            "date": self.date.strftime(DATETIME_FORMAT),
             "action": self.action.name,
             "quantity": self.quantity,
             "symbol": self.symbol,
@@ -71,7 +73,7 @@ class Trade:
             raise ValueError("item not well formatted")
 
         return Trade(
-            item["date"],
+            datetime.datetime.strptime(item["date"], DATETIME_FORMAT),
             Actions[item["action"]],
             item["quantity"],
             item["symbol"],

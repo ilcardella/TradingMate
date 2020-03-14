@@ -151,7 +151,7 @@ def test_has_unsaved_changes(portfolio):
     assert portfolio.has_unsaved_changes() == False
     item = {
         "id": "0",
-        "date": "01/01/0001",
+        "date": "01/01/0001 00:00",
         "action": "DEPOSIT",
         "quantity": 1000,
         "symbol": "",
@@ -187,7 +187,7 @@ def test_add_trade(portfolio):
     # Valid buy
     item = {
         "id": "0",
-        "date": "01/01/2020",
+        "date": "01/01/2020 00:00",
         "action": "BUY",
         "quantity": 1,
         "symbol": "MOCK",
@@ -201,7 +201,7 @@ def test_add_trade(portfolio):
     # Valid sell
     item = {
         "id": "0",
-        "date": "02/01/2020",
+        "date": "02/01/2020 00:00",
         "action": "SELL",
         "quantity": 1,
         "symbol": "MOCK",
@@ -215,7 +215,7 @@ def test_add_trade(portfolio):
     # Valid deposit
     item = {
         "id": "0",
-        "date": "03/01/2020",
+        "date": "03/01/2020 00:00",
         "action": "DEPOSIT",
         "quantity": 1000,
         "symbol": "",
@@ -229,7 +229,7 @@ def test_add_trade(portfolio):
     # Valid withdraw
     item = {
         "id": "0",
-        "date": "04/01/2020",
+        "date": "04/01/2020 00:00",
         "action": "WITHDRAW",
         "quantity": 1000,
         "symbol": "",
@@ -245,7 +245,7 @@ def test_add_trade(portfolio):
     # Valid dividend
     item = {
         "id": "0",
-        "date": "05/01/2020",
+        "date": "05/01/2020 00:00",
         "action": "DIVIDEND",
         "quantity": 1,
         "symbol": "MOCK13",
@@ -261,7 +261,7 @@ def test_add_trade(portfolio):
     # Valid fee
     item = {
         "id": "0",
-        "date": "06/01/2020",
+        "date": "06/01/2020 00:00",
         "action": "FEE",
         "quantity": 1,
         "symbol": "",
@@ -279,7 +279,7 @@ def test_add_trade_past_date(portfolio):
     # Valid buy
     item = {
         "id": "0",
-        "date": "01/09/2018",
+        "date": "01/09/2018 00:00",
         "action": "BUY",
         "quantity": 1,
         "symbol": "MOCK",
@@ -293,7 +293,7 @@ def test_add_trade_past_date(portfolio):
     # Valid sell
     item = {
         "id": "0",
-        "date": "02/09/2018",
+        "date": "02/09/2018 00:00",
         "action": "SELL",
         "quantity": 1,
         "symbol": "MOCK",
@@ -307,7 +307,7 @@ def test_add_trade_past_date(portfolio):
     # Valid deposit
     item = {
         "id": "0",
-        "date": "03/09/2018",
+        "date": "03/09/2018 00:00",
         "action": "DEPOSIT",
         "quantity": 1000,
         "symbol": "",
@@ -321,7 +321,7 @@ def test_add_trade_past_date(portfolio):
     # Valid withdraw
     item = {
         "id": "0",
-        "date": "04/09/2018",
+        "date": "04/09/2018 00:00",
         "action": "WITHDRAW",
         "quantity": 1000,
         "symbol": "",
@@ -337,7 +337,7 @@ def test_add_trade_past_date(portfolio):
     # Valid dividend
     item = {
         "id": "0",
-        "date": "05/09/2018",
+        "date": "05/09/2018 00:00",
         "action": "DIVIDEND",
         "quantity": 1,
         "symbol": "MOCK13",
@@ -353,7 +353,7 @@ def test_add_trade_past_date(portfolio):
     # Valid fee
     item = {
         "id": "0",
-        "date": "06/09/2018",
+        "date": "06/09/2018 00:00",
         "action": "FEE",
         "quantity": 1,
         "symbol": "",
@@ -370,7 +370,7 @@ def test_add_trade_invalid(portfolio):
     # Invalid buy due to too high cost
     item = {
         "id": "0",
-        "date": "01/01/2020",
+        "date": "01/01/2020 00:00",
         "action": "BUY",
         "quantity": 1000,
         "symbol": "MOCK",
@@ -384,7 +384,7 @@ def test_add_trade_invalid(portfolio):
     # Invalid sell
     item = {
         "id": "0",
-        "date": "02/01/2020",
+        "date": "02/01/2020 00:00",
         "action": "SELL",
         "quantity": 1990,
         "symbol": "MOCK13",
@@ -398,7 +398,7 @@ def test_add_trade_invalid(portfolio):
     # Invalid withdraw
     item = {
         "id": "0",
-        "date": "03/01/2020",
+        "date": "03/01/2020 00:00",
         "action": "WITHDRAW",
         "quantity": 20000,
         "symbol": "MOCK13",
@@ -412,7 +412,7 @@ def test_add_trade_invalid(portfolio):
     # Invalid fee
     item = {
         "id": "0",
-        "date": "04/01/2020",
+        "date": "04/01/2020 00:00",
         "action": "FEE",
         "quantity": 20000,
         "symbol": "MOCK13",
@@ -428,7 +428,7 @@ def test_add_trade_invalid_past_date(portfolio):
     # Invalid buy due to too high cost
     item = {
         "id": "0",
-        "date": "01/01/2018",
+        "date": "01/01/2018 00:00",
         "action": "BUY",
         "quantity": 1000,
         "symbol": "MOCK",
@@ -442,7 +442,7 @@ def test_add_trade_invalid_past_date(portfolio):
     # Invalid sell
     item = {
         "id": "0",
-        "date": "02/01/2018",
+        "date": "02/01/2018 00:00",
         "action": "SELL",
         "quantity": 1990,
         "symbol": "MOCK13",
@@ -456,7 +456,7 @@ def test_add_trade_invalid_past_date(portfolio):
     # Invalid withdraw
     item = {
         "id": "0",
-        "date": "03/01/2018",
+        "date": "03/01/2018 00:00",
         "action": "WITHDRAW",
         "quantity": 20000,
         "symbol": "MOCK13",
@@ -470,7 +470,7 @@ def test_add_trade_invalid_past_date(portfolio):
     # Invalid fee
     item = {
         "id": "0",
-        "date": "04/01/2018",
+        "date": "04/01/2018 00:00",
         "action": "FEE",
         "quantity": 20000,
         "symbol": "MOCK13",

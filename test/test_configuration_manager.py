@@ -8,7 +8,6 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, "{}/src".format(parentdir))
 
 from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Trade import Trade
 
 
 @pytest.fixture
