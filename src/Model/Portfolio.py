@@ -179,8 +179,9 @@ class Portfolio:
         """Add a new trade into the Portfolio"""
         current_list = self._db_handler.get_trades_list()
         # Build the list of trades happened before and after the new trade to validate
-        older_trades = [trade for trade in current_list if trade.date < new_trade.date]
-        newer_trades = [trade for trade in current_list if trade.date >= new_trade.date]
+        # If trade date match with existing trade, the new trade is appended after
+        older_trades = [trade for trade in current_list if trade.date <= new_trade.date]
+        newer_trades = [trade for trade in current_list if trade.date > new_trade.date]
         # Build the new trade list inserting the new trade
         new_trade_list = older_trades + [new_trade] + newer_trades
         self._validate_trade_list(new_trade_list)
