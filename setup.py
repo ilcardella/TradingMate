@@ -10,7 +10,7 @@ setup(
     scripts=["src/TradingMate.py"],
     entry_points={"console_scripts": ["trading_mate = TradingMate:main"]},
     install_requires=[
-        "alpha-vantage==2.1.3",
+        "alpha-vantage==2.2.0",
         "pygtail==0.11.1",
         "yfinance==0.1.54",
         "lxml==4.5.0",
