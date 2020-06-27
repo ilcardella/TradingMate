@@ -128,10 +128,10 @@ https://tradingmate.readthedocs.io
 
 You can build it locally from the repo root folder:
 ```
-poetry run sphinx-build -b html doc doc/_build/html
+poetry run sphinx-build -b html docs docs/_build/html
 ```
 
-The generated html files will be under `doc/_build/html`.
+The generated html files will be under `docs/_build/html`.
 
 ## Contributing
 
