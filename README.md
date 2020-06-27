@@ -8,12 +8,12 @@ your assets and the overall profit (or loss!)
 ## Dependencies
 
 - Python 3.6+
-- Pipenv (only for development)
+- Poetry (only for development)
 - PyGObject: https://pygobject.readthedocs.io/en/latest/index.html
 - AlphaVantage: https://www.alphavantage.co/
 - YFinance: https://github.com/ranaroussi/yfinance
 
-View `Pipfile` or `setup.py` for the full list of python dependencies.
+View `pyproject.toml` for the full list of python dependencies.
 
 ## Install
 
@@ -104,25 +104,19 @@ sudo pip3 uninstall TradingMate
 
 ## Development
 
-The `Pipfile` helps you to setup a development virtual environmnet installing the required dependencies.
-Install `pip` and `pipenv`
-```
-sudo apt-get update
-sudo apt-get install python3-pip
-sudo -H pip3 install -U pipenv
-```
+Install `poetry` on your system: https://python-poetry.org/
 
-Create the virtual environment
+Create the virtual environment with poetry
 ```
 cd /path/to/repository
-pipenv install
+poetry install
 ```
 
 ### Test
 
 You can run the test from the workspace with:
 ```
-pipenv run test
+poetry run pytest
 ```
 
 ### Documentation
@@ -134,7 +128,7 @@ https://tradingmate.readthedocs.io
 
 You can build it locally from the repo root folder:
 ```
-pipenv run docs
+poetry run sphinx-build -b html doc doc/_build/html
 ```
 
 The generated html files will be under `doc/_build/html`.

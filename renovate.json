@@ -3,10 +3,11 @@
     "config:base"
   ],
   "baseBranches": ["master"],
-  "pipenv": {
+  "poetry": {
     "enabled": true
   },
   "pip_setup": {
-      "enabled": true
-  }
+    "enabled": true
+  },
+  "rebaseWhen": "behind-base-branch"
 }
