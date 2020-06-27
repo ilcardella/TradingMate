@@ -4,6 +4,10 @@ version = "2.2.0"
 description = "Trading portfolio and real time stock price monitor"
 authors = ["Alberto Cardellini"]
 license = "MIT"
+packages = [
+    { include = "src" }
+]
+include = ["config/config.json", "data/trading_log.json"]
 
 [tool.poetry.dependencies]
 python = ">=3.6"
