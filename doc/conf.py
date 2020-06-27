@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 # -- Project information -----------------------------------------------------
 
 project = 'TradingMate'
-copyright = '2019, Alberto Cardellini'
+copyright = '2020, Alberto Cardellini'
 author = 'Alberto Cardellini'
 
 # The short X.Y version
@@ -42,7 +42,6 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'm2r'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
