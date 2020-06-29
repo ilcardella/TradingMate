@@ -5,10 +5,6 @@ import inspect
 import json
 import logging
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
 
 class Actions(Enum):
     BUY = 1
@@ -32,7 +28,9 @@ class Messages(Enum):
     ERROR_SAVE_SETTINGS = "Unable to save the settings"
     WINDOW_UNSUPPORTED_ACTION = "This window does not support the selected action"
     ARE_YOU_SURE = "Are you sure?"
-    UNSUPPORTED_BROKER_FEATURE = "Configured stock interface does not support this feature"
+    UNSUPPORTED_BROKER_FEATURE = (
+        "Configured stock interface does not support this feature"
+    )
     SOMETHING_WRONG = "Something went wrong"
 
 

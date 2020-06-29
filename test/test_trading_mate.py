@@ -8,7 +8,7 @@ import re
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, "{}/src".format(parentdir))
+sys.path.insert(0, "{}/tradingmate".format(parentdir))
 
 from TradingMate import TradingMate
 from Model.Portfolio import Portfolio

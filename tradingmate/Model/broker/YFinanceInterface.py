@@ -7,10 +7,6 @@ import datetime as dt
 import time
 import yfinance as yf
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
 from Utils.Utils import Markets
 from .StocksInterface import StocksInterface
 
