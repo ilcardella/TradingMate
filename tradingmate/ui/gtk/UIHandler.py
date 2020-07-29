@@ -6,15 +6,15 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import GLib
 from gi.repository import Gtk as gtk
 
-from tradingmate.UI.DataInterface import DataInterface
-from tradingmate.UI.gtk.ConfirmDialog import ConfirmDialog
-from tradingmate.UI.gtk.ExploreMarketsWindow import ExploreMarketsWindow
-from tradingmate.UI.gtk.LogWindow import LogWindow
-from tradingmate.UI.gtk.MessageDialog import MessageDialog
-from tradingmate.UI.gtk.PortfolioPage import PortfolioPage
-from tradingmate.UI.gtk.SettingsWindow import SettingsWindow
-from tradingmate.UI.TradingMateClient import TradingMateClient
-from tradingmate.Utils.Utils import Messages, Utils
+from tradingmate.ui.DataInterface import DataInterface
+from tradingmate.ui.gtk.ConfirmDialog import ConfirmDialog
+from tradingmate.ui.gtk.ExploreMarketsWindow import ExploreMarketsWindow
+from tradingmate.ui.gtk.LogWindow import LogWindow
+from tradingmate.ui.gtk.MessageDialog import MessageDialog
+from tradingmate.ui.gtk.PortfolioPage import PortfolioPage
+from tradingmate.ui.gtk.SettingsWindow import SettingsWindow
+from tradingmate.ui.TradingMateClient import TradingMateClient
+from tradingmate.utils.Utils import Messages, Utils
 
 # Application constants
 APP_NAME = "TradingMate"

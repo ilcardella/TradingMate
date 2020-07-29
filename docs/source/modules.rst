@@ -16,14 +16,14 @@ TradingMate
 Model
 -----
 
-The ``Model`` module contains the business logic and the data management of
+The ``model`` module contains the business logic and the data management of
 TradingMate.
 
 
 Holding
 ^^^^^^^
 
-.. automodule:: Model.Holding
+.. automodule:: model.Holding
 
 .. autoclass:: Holding
     :members:
@@ -31,7 +31,7 @@ Holding
 Portfolio
 ^^^^^^^^^
 
-.. automodule:: Model.Portfolio
+.. automodule:: model.Portfolio
 
 .. autoclass:: Portfolio
     :members:
@@ -39,7 +39,7 @@ Portfolio
 DatabaseHandler
 ^^^^^^^^^^^^^^^
 
-.. automodule:: Model.DatabaseHandler
+.. automodule:: model.DatabaseHandler
 
 .. autoclass:: DatabaseHandler
     :members:
@@ -47,7 +47,7 @@ DatabaseHandler
 StockPriceGetter
 ^^^^^^^^^^^^^^^^
 
-.. automodule:: Model.StockPriceGetter
+.. automodule:: model.StockPriceGetter
 
 .. autoclass:: StockPriceGetter
     :members:
@@ -55,13 +55,13 @@ StockPriceGetter
 UI
 ---
 
-The ``UI`` module contains the components that compose the User Interface
+The ``ui`` module contains the components that compose the User Interface
 of TradingMate.
 
 DataInterface
 ^^^^^^^^^^^^^
 
-.. automodule:: UI.DataInterface
+.. automodule:: ui.DataInterface
 
 .. autoclass:: DataInterface
     :members:
@@ -69,7 +69,7 @@ DataInterface
 TradingMateClient
 ^^^^^^^^^^^^^^^^^
 
-.. automodule:: UI.TradingMateClient
+.. automodule:: ui.TradingMateClient
 
 .. autoclass:: TradingMateClient
     :members:
@@ -84,13 +84,13 @@ importing the ``gi`` Python module
 Utils
 -----
 
-The ``Utils`` module contains all the utlity components.
+The ``utils`` module contains all the utlity components.
 
 
 ConfigurationManager
 ^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: Utils.ConfigurationManager
+.. automodule:: utils.ConfigurationManager
 
 .. autoclass:: ConfigurationManager
     :members:
@@ -98,7 +98,7 @@ ConfigurationManager
 TaskThread
 ^^^^^^^^^^
 
-.. automodule:: Utils.TaskThread
+.. automodule:: utils.TaskThread
 
 .. autoclass:: TaskThread
     :members:
@@ -106,7 +106,7 @@ TaskThread
 Trade
 ^^^^^
 
-.. automodule:: Utils.Trade
+.. automodule:: utils.Trade
 
 .. autoclass:: Trade
     :members:
@@ -114,7 +114,7 @@ Trade
 Utils
 ^^^^^
 
-.. automodule:: Utils.Utils
+.. automodule:: utils.Utils
 
 .. autoclass:: Actions
     :members:

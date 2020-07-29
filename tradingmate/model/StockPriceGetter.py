@@ -1,8 +1,8 @@
 import logging
 
-from tradingmate.Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
-from tradingmate.Utils.ConfigurationManager import ConfigurationManager
-from tradingmate.Utils.TaskThread import TaskThread
+from tradingmate.model.broker.StocksInterfaceFactory import StocksInterfaceFactory
+from tradingmate.utils.ConfigurationManager import ConfigurationManager
+from tradingmate.utils.TaskThread import TaskThread
 
 
 class StockPriceGetter(TaskThread):

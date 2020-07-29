@@ -8,8 +8,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk as gtk
 
-from tradingmate.UI.gtk.MessageDialog import MessageDialog
-from tradingmate.Utils.Utils import Utils
+from tradingmate.ui.gtk.MessageDialog import MessageDialog
+from tradingmate.utils.Utils import Utils
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")

@@ -6,10 +6,10 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk as gdk
 from gi.repository import Gtk as gtk
 
-from tradingmate.UI.gtk.AddTradeWindow import AddTradeWindow
-from tradingmate.UI.gtk.ConfirmDialog import ConfirmDialog
-from tradingmate.UI.gtk.MessageDialog import MessageDialog
-from tradingmate.Utils.Utils import Messages, Utils
+from tradingmate.ui.gtk.AddTradeWindow import AddTradeWindow
+from tradingmate.ui.gtk.ConfirmDialog import ConfirmDialog
+from tradingmate.ui.gtk.MessageDialog import MessageDialog
+from tradingmate.utils.Utils import Messages, Utils
 
 INVALID_STRING = "-"
 

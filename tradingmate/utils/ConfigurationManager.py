@@ -1,7 +1,7 @@
 import logging
 import os
 
-from tradingmate.Utils.Utils import Utils
+from tradingmate.utils.Utils import Utils
 
 
 class ConfigurationManager:

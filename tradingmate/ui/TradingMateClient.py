@@ -1,4 +1,4 @@
-from tradingmate.UI.DataInterface import DataInterface
+from tradingmate.ui.DataInterface import DataInterface
 
 
 class TradingMateClient:

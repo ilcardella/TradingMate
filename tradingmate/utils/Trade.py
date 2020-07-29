@@ -3,7 +3,7 @@ import hashlib
 import logging
 import time
 
-from tradingmate.Utils.Utils import Actions
+from tradingmate.utils.Utils import Actions
 
 TIME_FORMAT = "%H:%M"
 DATE_FORMAT = "%d/%m/%Y"

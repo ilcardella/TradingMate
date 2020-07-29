@@ -4,9 +4,9 @@ import re
 
 import pytest
 
-from tradingmate.Model.Portfolio import Portfolio
+from tradingmate.model.Portfolio import Portfolio
 from tradingmate.TradingMate import TradingMate
-from tradingmate.Utils.Trade import Trade
+from tradingmate.utils.Trade import Trade
 
 
 def read_json(filepath):
