@@ -25,9 +25,9 @@ sudo apt-get install python3
 
 The UI is based on Python GTK+ 3 so follow the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html) to install the required packages.
 
-Clone this repo in your workspace and install `TradingMate` by running the following command in the repository root folder
+Install `TradingMate` by running the following command in the repository root folder
 ```
-sudo python3 setup.py install
+make install-system
 ```
 
 ## Setup
@@ -40,9 +40,9 @@ AlphaVantage is great collection of API that provide several feature. It require
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
-- Insert these info in a file called `.credentials` in `/opt/TradingMate/data`
+- Insert these info in a file called `.credentials` in `${HOME}/.TradingMate/data`
     ```
-    touch /opt/TradingMate/data/.credentials
+    touch ${HOME}/.TradingMate/data/.credentials
     ```
 
     This must be in json format and contain:
@@ -55,7 +55,7 @@ AlphaVantage is great collection of API that provide several feature. It require
 - Revoke permissions to read the file by others
 
     ```
-    sudo chmod 600 /opt/TradingMate/data/.credentials
+    sudo chmod 600 ${HOME}/.TradingMate/data/.credentials
     ```
 
 ### YFinance
@@ -64,7 +64,7 @@ YFinance uses Yahoo Finance REST API and it does not require authentication
 
 ### Configuration file
 
-The `config.json` file is in the `/opt/TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
+The `config.json` file is in the `${HOME}/.TradingMate/config` folder and it contains several parameters to personalise how TradingMate works.
 These are the descriptions of each parameter:
 
 - **trading_logs**: The absolute path of the trading logs to automatically load on startup
@@ -84,15 +84,6 @@ These are the descriptions of each parameter:
 
 You can start TradingMate with
 ```
-sudo trading_mate
-```
-
-Otherwise you can change ownership of the `/opt/TradingMate` folder:
-```
-sudo chown -R $USER: /opt/TradingMate
-```
-and then run `TradingMate` without sudo
-```
 trading_mate
 ```
 
@@ -109,14 +100,14 @@ Install `poetry` on your system: https://python-poetry.org/
 Create the virtual environment with poetry
 ```
 cd /path/to/repository
-poetry install
+make install
 ```
 
 ### Test
 
 You can run the test from the workspace with:
 ```
-poetry run pytest
+make test
 ```
 
 ### Documentation
@@ -128,7 +119,7 @@ https://tradingmate.readthedocs.io
 
 You can build it locally from the repo root folder:
 ```
-poetry run sphinx-build -b html docs docs/_build/html
+make docs
 ```
 
 The generated html files will be under `docs/_build/html`.

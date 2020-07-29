@@ -4,6 +4,9 @@ version = "2.2.0"
 description = "Trading portfolio and real time stock price monitor"
 authors = ["Alberto Cardellini"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ilcardella/TradingMate"
+documentation = "https://tradingmate.readthedocs.io/en/latest"
 packages = [
     { include = "tradingmate" }
 ]

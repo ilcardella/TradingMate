@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Replaced Pipenv with Poetry
 
+## Added
+- Added Makefile to perform development and deployment actions
+
+## Removed
+- Removed `setup.py` with full usage of `pyproject.toml`
+
 ## [2.2.0] - 2020-03-14
 ### Fixed
 - Bug preventing to add a trade with fee equal to zero
