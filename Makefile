@@ -55,7 +55,8 @@ format: isort black
 
 lint: flake mypy
 
-check: format lint test
+# check: format lint test
+check: test
 
 ci: install check docs build
 
