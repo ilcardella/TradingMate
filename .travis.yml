@@ -9,9 +9,9 @@ python:
 install:
   - pip install --upgrade pip
   - pip install poetry
-  - poetry install -v
+  - make install
 
 script:
-  - poetry run pytest
-  - poetry run sphinx-build -b html docs docs/_build/html
-  - python setup.py install # Ideally replace with poetry install
+  - make test
+  - make docs
+  - make install-system
