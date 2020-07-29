@@ -1,10 +1,10 @@
-import os
-import sys
 import inspect
 import logging
+import os
+import sys
 
-from Utils.Utils import Utils
 from Utils.Trade import Trade
+from Utils.Utils import Utils
 
 
 class DatabaseHandler:

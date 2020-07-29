@@ -1,9 +1,9 @@
+import inspect
 import os
 import sys
-import inspect
 
-from .YFinanceInterface import YFinanceInterface
 from .AlphaVantageInterface import AlphaVantageInterface
+from .YFinanceInterface import YFinanceInterface
 
 
 class StocksInterfaceFactory:

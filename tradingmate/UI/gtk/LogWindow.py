@@ -1,13 +1,15 @@
+import inspect
 import os
 import sys
-import inspect
 import threading
-from pygtail import Pygtail
 import time
+
 import gi
+from pygtail import Pygtail
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk as gtk, GLib
+from gi.repository import GLib
+from gi.repository import Gtk as gtk
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)

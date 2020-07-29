@@ -1,6 +1,7 @@
+import inspect
 import os
 import sys
-import inspect
+
 import gi
 
 gi.require_version("Gtk", "3.0")

@@ -1,7 +1,8 @@
+import datetime
+import inspect
 import os
 import sys
-import inspect
-import datetime
+
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -11,8 +12,9 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from Utils.Utils import Utils, Actions, Markets, Messages
-from Utils.Trade import Trade, DATETIME_FORMAT, TIME_FORMAT
+from Utils.Trade import DATETIME_FORMAT, TIME_FORMAT, Trade
+from Utils.Utils import Actions, Markets, Messages, Utils
+
 from .MessageDialog import MessageDialog
 
 # File paths

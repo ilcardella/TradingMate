@@ -1,9 +1,8 @@
+import functools
+import inspect
 import os
 import sys
-import inspect
-import functools
 import threading
-
 
 # Mutex used for thread synchronisation
 lock = threading.Lock()

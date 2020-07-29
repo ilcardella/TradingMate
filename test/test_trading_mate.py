@@ -1,20 +1,22 @@
-import os
-import sys
 import inspect
+import json
+import os
+import re
+import sys
+
 import pytest
 import requests_mock
-import json
-import re
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, "{}/tradingmate".format(parentdir))
 
-from TradingMate import TradingMate
+from unittest import mock
+
 from Model.Portfolio import Portfolio
 from Utils.Trade import Trade
 
-from unittest import mock
+from TradingMate import TradingMate
 
 
 def read_json(filepath):

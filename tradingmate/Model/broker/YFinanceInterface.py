@@ -1,13 +1,14 @@
-import os
-import sys
+import datetime as dt
 import inspect
 import logging
-from enum import Enum
-import datetime as dt
+import os
+import sys
 import time
-import yfinance as yf
+from enum import Enum
 
+import yfinance as yf
 from Utils.Utils import Markets
+
 from .StocksInterface import StocksInterface
 
 

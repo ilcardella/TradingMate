@@ -1,8 +1,9 @@
+import inspect
 import os
 import sys
-import inspect
-import gi
 from datetime import datetime as dt
+
+import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk as gtk
@@ -11,9 +12,9 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from .MessageDialog import MessageDialog
 from Utils.Utils import Utils
 
+from .MessageDialog import MessageDialog
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")

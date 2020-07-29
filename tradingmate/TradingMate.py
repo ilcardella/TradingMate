@@ -1,16 +1,16 @@
-import os
-import sys
+import datetime as dt
 import inspect
 import logging
-import datetime as dt
-import subprocess
+import os
 import re
+import subprocess
+import sys
 
+from Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
 from Model.DatabaseHandler import DatabaseHandler
 from Model.Portfolio import Portfolio
 from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Utils import Utils, Messages
-from Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
+from Utils.Utils import Messages, Utils
 
 DEFAULT_LOG_FILEPATH = os.path.join(
     Utils.get_install_path(), "log", "trading_mate_{timestamp}.log"

@@ -1,9 +1,9 @@
-from enum import Enum
-import os
-import sys
 import inspect
 import json
 import logging
+import os
+import sys
+from enum import Enum
 
 
 class Actions(Enum):

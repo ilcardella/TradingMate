@@ -1,6 +1,7 @@
+import inspect
 import os
 import sys
-import inspect
+
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -10,7 +11,8 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from Utils.Utils import Utils, Messages
+from Utils.Utils import Messages, Utils
+
 from .MessageDialog import MessageDialog
 
 # File paths

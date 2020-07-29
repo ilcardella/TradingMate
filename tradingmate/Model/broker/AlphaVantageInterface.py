@@ -1,14 +1,15 @@
-import os
-import sys
+import datetime as dt
 import inspect
 import logging
+import os
+import sys
+import time
 import traceback
 from enum import Enum
-import datetime as dt
-import time
-from alpha_vantage.timeseries import TimeSeries
 
+from alpha_vantage.timeseries import TimeSeries
 from Utils.Utils import Markets
+
 from .StocksInterface import StocksInterface
 
 

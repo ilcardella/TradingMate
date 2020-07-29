@@ -1,15 +1,15 @@
-import os
-import inspect
-import sys
-import logging
 import hashlib
+import inspect
+import logging
+import os
+import sys
 import time
 
-
-from .Holding import Holding
 from Utils.Utils import Actions, Messages
-from .StockPriceGetter import StockPriceGetter
+
 from .DatabaseHandler import DatabaseHandler
+from .Holding import Holding
+from .StockPriceGetter import StockPriceGetter
 
 
 class Portfolio:

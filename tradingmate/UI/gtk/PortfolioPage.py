@@ -1,20 +1,22 @@
+import inspect
 import os
 import sys
-import inspect
+
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk as gtk
 from gi.repository import Gdk as gdk
+from gi.repository import Gtk as gtk
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from Utils.Utils import Utils, Messages
+from Utils.Utils import Messages, Utils
+
 from .AddTradeWindow import AddTradeWindow
-from .MessageDialog import MessageDialog
 from .ConfirmDialog import ConfirmDialog
+from .MessageDialog import MessageDialog
 
 INVALID_STRING = "-"
 
@@ -80,9 +82,7 @@ class PortfolioPage(gtk.Box):
         # Get the popup menu
         self._history_menu = builder.get_object(TREE_TRADING_HISTORY_MENU)
         _history_menu_add_item = builder.get_object(TREE_TRADING_HISTORY_MENU_ADD)
-        _history_menu_delete_item = builder.get_object(
-            TREE_TRADING_HISTORY_MENU_DELETE
-        )
+        _history_menu_delete_item = builder.get_object(TREE_TRADING_HISTORY_MENU_DELETE)
         # Link callbacks to widgets
         save_button.connect("clicked", self._on_save_event)
         save_as_button.connect("clicked", self._on_save_as_event)

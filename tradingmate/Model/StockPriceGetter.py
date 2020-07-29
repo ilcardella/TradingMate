@@ -1,11 +1,11 @@
-import os
-import sys
 import inspect
 import logging
+import os
+import sys
 
-
-from Utils.TaskThread import TaskThread
 from Utils.ConfigurationManager import ConfigurationManager
+from Utils.TaskThread import TaskThread
+
 from .broker.StocksInterfaceFactory import StocksInterfaceFactory
 
 

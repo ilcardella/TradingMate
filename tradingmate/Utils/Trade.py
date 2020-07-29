@@ -1,11 +1,11 @@
-from enum import Enum
-import os
-import sys
-import inspect
-import logging
-import time
 import datetime
 import hashlib
+import inspect
+import logging
+import os
+import sys
+import time
+from enum import Enum
 
 from Utils.Utils import Actions
 

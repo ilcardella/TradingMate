@@ -1,10 +1,11 @@
+import inspect
+import json
 import os
 import sys
-import inspect
+import time
+
 import pytest
 import requests_mock
-import json
-import time
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -423,6 +424,7 @@ def test_add_trade_invalid(portfolio):
     }
     with pytest.raises(RuntimeError):
         assert not portfolio.add_trade(Trade.from_dict(item))
+
 
 def test_add_trade_invalid_past_date(portfolio):
     # Invalid buy due to too high cost
