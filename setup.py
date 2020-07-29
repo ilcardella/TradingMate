@@ -13,7 +13,7 @@ setup(
         "alpha-vantage==2.2.0",
         "pygtail==0.11.1",
         "yfinance==0.1.54",
-        "lxml==4.5.1",
+        "lxml==4.5.2",
     ],
     package_data={
         "config": ["*.json"],
