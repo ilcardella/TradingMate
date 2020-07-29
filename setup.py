@@ -5,9 +5,9 @@ setup(
     name="TradingMate",
     version="2.2.0",
     python_requires=">=3",
-    package_dir={"": "src"},
-    packages=find_namespace_packages(where="src"),
-    scripts=["src/TradingMate.py"],
+    package_dir={"": "tradingmate"},
+    packages=find_namespace_packages(where="tradingmate"),
+    scripts=["tradingmate/TradingMate.py"],
     entry_points={"console_scripts": ["trading_mate = TradingMate:main"]},
     install_requires=[
         "alpha-vantage==2.2.0",
@@ -18,7 +18,7 @@ setup(
     package_data={
         "config": ["*.json"],
         "data": ["*.json"],
-        "src/UI/assets/gtk": ["*.glade"],
+        "tradingmate/UI/assets/gtk": ["*.glade"],
     },
     data_files=[
         (os.path.join(os.sep, "opt", "TradingMate", "config"), ["config/config.json"]),
@@ -26,11 +26,11 @@ setup(
         (
             os.path.join(os.sep, "opt", "TradingMate", "data", "assets", "gtk"),
             [
-                "src/UI/assets/gtk/add_trade_window_layout.glade",
-                "src/UI/assets/gtk/main_window_layout.glade",
-                "src/UI/assets/gtk/notebook_page_layout.glade",
-                "src/UI/assets/gtk/settings_window_layout.glade",
-                "src/UI/assets/gtk/log_window_layout.glade",
+                "tradingmate/UI/assets/gtk/add_trade_window_layout.glade",
+                "tradingmate/UI/assets/gtk/main_window_layout.glade",
+                "tradingmate/UI/assets/gtk/notebook_page_layout.glade",
+                "tradingmate/UI/assets/gtk/settings_window_layout.glade",
+                "tradingmate/UI/assets/gtk/log_window_layout.glade",
             ],
         ),
     ],
