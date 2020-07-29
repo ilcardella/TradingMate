@@ -1,16 +1,13 @@
 import datetime as dt
-import inspect
 import logging
 import os
 import re
 import subprocess
-import sys
 
-from Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
-from Model.DatabaseHandler import DatabaseHandler
-from Model.Portfolio import Portfolio
-from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Utils import Messages, Utils
+from tradingmate.Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
+from tradingmate.Model.Portfolio import Portfolio
+from tradingmate.Utils.ConfigurationManager import ConfigurationManager
+from tradingmate.Utils.Utils import Messages, Utils
 
 DEFAULT_LOG_FILEPATH = os.path.join(
     Utils.get_install_path(), "log", "trading_mate_{timestamp}.log"
@@ -178,16 +175,3 @@ class TradingMate:
         except Exception as e:
             logging.error(f"TradingMate get_market_details - {e}")
             raise RuntimeError(Messages.SOMETHING_WRONG.value)
-
-
-def main():
-    # Initialise the business logic
-    tm = TradingMate()
-    # Initialise the user interface
-    from UI.gtk.UIHandler import UIHandler
-
-    UIHandler(tm).start()
-
-
-if __name__ == "__main__":
-    main()

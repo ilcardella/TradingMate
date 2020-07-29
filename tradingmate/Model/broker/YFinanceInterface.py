@@ -1,15 +1,12 @@
 import datetime as dt
-import inspect
 import logging
-import os
-import sys
 import time
 from enum import Enum
 
 import yfinance as yf
-from Utils.Utils import Markets
 
-from .StocksInterface import StocksInterface
+from tradingmate.Model.broker.StocksInterface import StocksInterface
+from tradingmate.Utils.Utils import Markets
 
 
 class YFInterval(Enum):

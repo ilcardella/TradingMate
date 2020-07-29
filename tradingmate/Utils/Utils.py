@@ -1,9 +1,7 @@
-import inspect
 import json
 import logging
-import os
-import sys
 from enum import Enum
+from pathlib import Path
 
 
 class Actions(Enum):
@@ -75,7 +73,7 @@ class Utils:
                 json.dump(data, file, indent=4, separators=(",", ": "))
                 return True
         except Exception as e:
-            logging.error("Unable to write JSON file: ".format(e))
+            logging.error("Unable to write JSON file: {}".format(e))
         return False
 
     @staticmethod
@@ -83,4 +81,4 @@ class Utils:
         """
         Returns the installation path of TradingMate
         """
-        return os.path.join(os.sep, "opt", "TradingMate")
+        return str(Path.home() / ".TradingMate")

@@ -1,6 +1,4 @@
-import inspect
 import os
-import sys
 
 import gi
 
@@ -8,15 +6,10 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk as gdk
 from gi.repository import Gtk as gtk
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
-from Utils.Utils import Messages, Utils
-
-from .AddTradeWindow import AddTradeWindow
-from .ConfirmDialog import ConfirmDialog
-from .MessageDialog import MessageDialog
+from tradingmate.UI.gtk.AddTradeWindow import AddTradeWindow
+from tradingmate.UI.gtk.ConfirmDialog import ConfirmDialog
+from tradingmate.UI.gtk.MessageDialog import MessageDialog
+from tradingmate.Utils.Utils import Messages, Utils
 
 INVALID_STRING = "-"
 

@@ -1,12 +1,8 @@
-import inspect
 import logging
-import os
-import sys
 
-from Utils.ConfigurationManager import ConfigurationManager
-from Utils.TaskThread import TaskThread
-
-from .broker.StocksInterfaceFactory import StocksInterfaceFactory
+from tradingmate.Model.broker.StocksInterfaceFactory import StocksInterfaceFactory
+from tradingmate.Utils.ConfigurationManager import ConfigurationManager
+from tradingmate.Utils.TaskThread import TaskThread
 
 
 class StockPriceGetter(TaskThread):

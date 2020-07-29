@@ -1,6 +1,4 @@
-import inspect
 import os
-import sys
 
 import gi
 
@@ -8,20 +6,15 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import GLib
 from gi.repository import Gtk as gtk
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
-from UI.DataInterface import DataInterface
-from UI.TradingMateClient import TradingMateClient
-from Utils.Utils import Messages, Utils
-
-from .ConfirmDialog import ConfirmDialog
-from .ExploreMarketsWindow import ExploreMarketsWindow
-from .LogWindow import LogWindow
-from .MessageDialog import MessageDialog
-from .PortfolioPage import PortfolioPage
-from .SettingsWindow import SettingsWindow
+from tradingmate.UI.DataInterface import DataInterface
+from tradingmate.UI.gtk.ConfirmDialog import ConfirmDialog
+from tradingmate.UI.gtk.ExploreMarketsWindow import ExploreMarketsWindow
+from tradingmate.UI.gtk.LogWindow import LogWindow
+from tradingmate.UI.gtk.MessageDialog import MessageDialog
+from tradingmate.UI.gtk.PortfolioPage import PortfolioPage
+from tradingmate.UI.gtk.SettingsWindow import SettingsWindow
+from tradingmate.UI.TradingMateClient import TradingMateClient
+from tradingmate.Utils.Utils import Messages, Utils
 
 # Application constants
 APP_NAME = "TradingMate"

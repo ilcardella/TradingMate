@@ -1,15 +1,11 @@
 import hashlib
-import inspect
 import logging
-import os
-import sys
 import time
 
-from Utils.Utils import Actions, Messages
-
-from .DatabaseHandler import DatabaseHandler
-from .Holding import Holding
-from .StockPriceGetter import StockPriceGetter
+from tradingmate.Model.DatabaseHandler import DatabaseHandler
+from tradingmate.Model.Holding import Holding
+from tradingmate.Model.StockPriceGetter import StockPriceGetter
+from tradingmate.Utils.Utils import Actions, Messages
 
 
 class Portfolio:

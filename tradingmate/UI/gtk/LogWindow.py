@@ -1,6 +1,4 @@
-import inspect
 import os
-import sys
 import threading
 import time
 
@@ -11,11 +9,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import GLib
 from gi.repository import Gtk as gtk
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
-from Utils.Utils import Utils
+from tradingmate.Utils.Utils import Utils
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")

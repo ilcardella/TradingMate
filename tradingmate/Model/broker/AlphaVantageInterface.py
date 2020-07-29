@@ -1,16 +1,14 @@
 import datetime as dt
-import inspect
 import logging
-import os
 import sys
 import time
 import traceback
 from enum import Enum
 
 from alpha_vantage.timeseries import TimeSeries
-from Utils.Utils import Markets
 
-from .StocksInterface import StocksInterface
+from tradingmate.Model.broker.StocksInterface import StocksInterface
+from tradingmate.Utils.Utils import Markets
 
 
 class AVInterval(Enum):

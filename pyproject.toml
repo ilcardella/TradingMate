@@ -28,6 +28,9 @@ pytest = "^6.0.0"
 black = {version = "^19.10b0", allow-prereleases = true}
 isort = {version = "^5.2.1", allow-prereleases = true}
 
+[tool.poetry.scripts]
+trading_bot = 'tradingmate:main'
+
 [tool.black]
 line-length = 88
 include = '\.pyi?$'

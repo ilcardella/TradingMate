@@ -1,7 +1,4 @@
 import functools
-import inspect
-import os
-import sys
 import threading
 
 # Mutex used for thread synchronisation

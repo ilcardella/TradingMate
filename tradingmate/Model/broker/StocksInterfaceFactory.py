@@ -1,9 +1,5 @@
-import inspect
-import os
-import sys
-
-from .AlphaVantageInterface import AlphaVantageInterface
-from .YFinanceInterface import YFinanceInterface
+from tradingmate.Model.broker.AlphaVantageInterface import AlphaVantageInterface
+from tradingmate.Model.broker.YFinanceInterface import YFinanceInterface
 
 
 class StocksInterfaceFactory:

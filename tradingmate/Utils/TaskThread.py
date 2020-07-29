@@ -1,8 +1,5 @@
 # Source: http://code.activestate.com/recipes/65222-run-a-task-every-few-seconds/
 
-import inspect
-import os
-import sys
 import threading
 import time
 

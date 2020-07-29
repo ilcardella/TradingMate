@@ -1,19 +1,12 @@
-import inspect
 import json
 import os
-import sys
 import time
 
 import pytest
-import requests_mock
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, "{}/tradingmate".format(parentdir))
-
-from Model.Portfolio import Portfolio
-from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Trade import Trade
+from tradingmate.Model.Portfolio import Portfolio
+from tradingmate.Utils.ConfigurationManager import ConfigurationManager
+from tradingmate.Utils.Trade import Trade
 
 # These variables are based on the content of the test trading log
 PF_CASH_AVAILABLE = 2465.0343736000013
