@@ -1,15 +1,8 @@
 import os
-import sys
-import inspect
+
 import pytest
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, "{}/tradingmate".format(parentdir))
-
-from Model.DatabaseHandler import DatabaseHandler
-from Utils.Trade import Trade
-from Utils.ConfigurationManager import ConfigurationManager
+from tradingmate.model import ConfigurationManager, DatabaseHandler, Trade
 
 
 @pytest.fixture

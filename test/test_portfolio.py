@@ -1,18 +1,10 @@
-import os
-import sys
-import inspect
-import pytest
-import requests_mock
 import json
+import os
 import time
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, "{}/tradingmate".format(parentdir))
+import pytest
 
-from Model.Portfolio import Portfolio
-from Utils.ConfigurationManager import ConfigurationManager
-from Utils.Trade import Trade
+from tradingmate.model import ConfigurationManager, Portfolio, Trade
 
 # These variables are based on the content of the test trading log
 PF_CASH_AVAILABLE = 2465.0343736000013
@@ -423,6 +415,7 @@ def test_add_trade_invalid(portfolio):
     }
     with pytest.raises(RuntimeError):
         assert not portfolio.add_trade(Trade.from_dict(item))
+
 
 def test_add_trade_invalid_past_date(portfolio):
     # Invalid buy due to too high cost
