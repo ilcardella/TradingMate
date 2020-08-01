@@ -8,7 +8,7 @@ component of TradingMate.
 TradingMate
 ===========
 
-.. automodule:: TradingMate
+.. automodule:: tradingmate
 
 .. autoclass:: TradingMate
     :members:
@@ -19,11 +19,10 @@ Model
 The ``model`` module contains the business logic and the data management of
 TradingMate.
 
+.. automodule:: tradingmate.model
 
 Holding
 -------
-
-.. automodule:: model.Holding
 
 .. autoclass:: Holding
     :members:
@@ -31,15 +30,11 @@ Holding
 Portfolio
 ---------
 
-.. automodule:: model.Portfolio
-
 .. autoclass:: Portfolio
     :members:
 
 DatabaseHandler
 ---------------
-
-.. automodule:: model.DatabaseHandler
 
 .. autoclass:: DatabaseHandler
     :members:
@@ -47,15 +42,11 @@ DatabaseHandler
 StockPriceGetter
 ----------------
 
-.. automodule:: model.StockPriceGetter
-
 .. autoclass:: StockPriceGetter
     :members:
 
 ConfigurationManager
 --------------------
-
-.. automodule:: model.ConfigurationManager
 
 .. autoclass:: ConfigurationManager
     :members:
@@ -63,9 +54,38 @@ ConfigurationManager
 Trade
 -----
 
-.. automodule:: model.Trade
-
 .. autoclass:: Trade
+    :members:
+
+Broker
+======
+
+The ``broker`` module contains the interfaces to connect to the online market brokers
+
+.. automodule:: tradingmate.model.broker
+
+AlphaVantageInterface
+---------------------
+
+.. autoclass:: AlphaVantageInterface
+    :members:
+
+YFinanceInterface
+-----------------
+
+.. autoclass:: YFinanceInterface
+    :members:
+
+StocksInterface
+---------------
+
+.. autoclass:: StocksInterface
+    :members:
+
+StocksInterfaceFactory
+----------------------
+
+.. autoclass:: StocksInterfaceFactory
     :members:
 
 UI
@@ -74,18 +94,16 @@ UI
 The ``ui`` module contains the components that compose the User Interface
 of TradingMate.
 
+.. automodule:: tradingmate.ui
+
 DataInterface
 -------------
-
-.. automodule:: ui.DataInterface
 
 .. autoclass:: DataInterface
     :members:
 
 TradingMateClient
 -----------------
-
-.. automodule:: ui.TradingMateClient
 
 .. autoclass:: TradingMateClient
     :members:
@@ -102,10 +120,22 @@ Utils
 
 The ``utils`` module contains all the utlity components.
 
+.. automodule:: tradingmate.utils
+
+Enums
+-----
+
+.. autoclass:: Actions
+    :members:
+
+.. autoclass:: Markets
+    :members:
+
+.. autoclass:: Messages
+    :members:
+
 TaskThread
 ----------
-
-.. automodule:: utils.TaskThread
 
 .. autoclass:: TaskThread
     :members:
@@ -113,13 +143,5 @@ TaskThread
 Utils
 -----
 
-.. automodule:: utils
-
-.. autoclass:: Actions
-    :members:
-
-.. autoclass:: Messages
-    :members:
-
-.. autoclass:: Markets
+.. autoclass:: Utils
     :members:
