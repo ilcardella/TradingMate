@@ -1,12 +1,12 @@
 Modules
-=======
+#######
 
 Each section of this document provides the source code documentation of each
 component of TradingMate.
 
 
 TradingMate
------------
+===========
 
 .. automodule:: TradingMate
 
@@ -14,14 +14,14 @@ TradingMate
     :members:
 
 Model
------
+=====
 
 The ``model`` module contains the business logic and the data management of
 TradingMate.
 
 
 Holding
-^^^^^^^
+-------
 
 .. automodule:: model.Holding
 
@@ -29,7 +29,7 @@ Holding
     :members:
 
 Portfolio
-^^^^^^^^^
+---------
 
 .. automodule:: model.Portfolio
 
@@ -37,7 +37,7 @@ Portfolio
     :members:
 
 DatabaseHandler
-^^^^^^^^^^^^^^^
+---------------
 
 .. automodule:: model.DatabaseHandler
 
@@ -45,21 +45,37 @@ DatabaseHandler
     :members:
 
 StockPriceGetter
-^^^^^^^^^^^^^^^^
+----------------
 
 .. automodule:: model.StockPriceGetter
 
 .. autoclass:: StockPriceGetter
     :members:
 
+ConfigurationManager
+--------------------
+
+.. automodule:: model.ConfigurationManager
+
+.. autoclass:: ConfigurationManager
+    :members:
+
+Trade
+-----
+
+.. automodule:: model.Trade
+
+.. autoclass:: Trade
+    :members:
+
 UI
----
+===
 
 The ``ui`` module contains the components that compose the User Interface
 of TradingMate.
 
 DataInterface
-^^^^^^^^^^^^^
+-------------
 
 .. automodule:: ui.DataInterface
 
@@ -67,7 +83,7 @@ DataInterface
     :members:
 
 TradingMateClient
-^^^^^^^^^^^^^^^^^
+-----------------
 
 .. automodule:: ui.TradingMateClient
 
@@ -75,46 +91,29 @@ TradingMateClient
     :members:
 
 GTK
-^^^
+---
 
 The ``gtk`` module contains the gtk components and widgets of the
 graphical interface. They are not documented due to a Sphinx issue when
 importing the ``gi`` Python module
 
 Utils
------
+=====
 
 The ``utils`` module contains all the utlity components.
 
-
-ConfigurationManager
-^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: utils.ConfigurationManager
-
-.. autoclass:: ConfigurationManager
-    :members:
-
 TaskThread
-^^^^^^^^^^
+----------
 
 .. automodule:: utils.TaskThread
 
 .. autoclass:: TaskThread
     :members:
 
-Trade
-^^^^^
-
-.. automodule:: utils.Trade
-
-.. autoclass:: Trade
-    :members:
-
 Utils
-^^^^^
+-----
 
-.. automodule:: utils.Utils
+.. automodule:: utils
 
 .. autoclass:: Actions
     :members:
