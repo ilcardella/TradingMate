@@ -42,7 +42,7 @@ build: clean
 mypy:
 > poetry run mypy tradingmate/
 
-flake:
+flake8:
 > poetry run flake8 tradingmate/ test/
 
 isort:
@@ -53,10 +53,9 @@ black:
 
 format: isort black
 
-lint: flake mypy
+lint: flake8 #mypy
 
-# check: format lint test
-check: format test
+check: format lint test
 
 ci: install check docs build
 
@@ -72,4 +71,4 @@ clean:
 > find . -name '.mypy_cache' -exec rm -rf  {} +
 > find . -name '.pytest_cache' -exec rm -rf  {} +
 
-.PHONY: test lint format install docs build install-system ci check mypy flake isort black remove update
+.PHONY: test lint format install docs build install-system ci check mypy flake8 isort black remove update

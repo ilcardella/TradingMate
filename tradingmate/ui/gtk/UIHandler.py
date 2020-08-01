@@ -1,3 +1,5 @@
+# flake8: noqa: E402 # Required to allow use of gi.require_version
+
 import os
 
 import gi

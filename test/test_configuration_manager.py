@@ -40,7 +40,7 @@ def test_config_values(cm):
     assert isinstance(config, float)
     assert config >= 0.0
 
-    confgi = cm.get_yfinance_polling_period()
+    config = cm.get_yfinance_polling_period()
     assert isinstance(config, float)
     assert config >= 0.0
 

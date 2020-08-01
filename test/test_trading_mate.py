@@ -98,7 +98,7 @@ def test_new_trade_event(trading_mate):
     }
     for pf in trading_mate.get_portfolios():
         trade = Trade.from_dict(invalid_trade)
-        with pytest.raises(RuntimeError) as e:
+        with pytest.raises(RuntimeError):
             trading_mate.new_trade_event(trade, pf.get_id())
 
 
@@ -106,7 +106,7 @@ def test_delete_trade_event(trading_mate):
     for pf in trading_mate.get_portfolios():
         # Disable auto refresh so we do not need to mock requests for MOCK1
         trading_mate.set_auto_refresh(False, pf.get_id())
-        with pytest.raises(RuntimeError) as e:
+        with pytest.raises(RuntimeError):
             trading_mate.delete_trade_event(pf.get_id(), "mock_initial_deposit")
         trading_mate.delete_trade_event(pf.get_id(), "mock_last_trade")
     # Verify the last trade has been deleted
@@ -116,7 +116,7 @@ def test_delete_trade_event(trading_mate):
 
 def test_open_portfolio_event(trading_mate):
     assert len(trading_mate.get_portfolios()) == 3
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception):
         trading_mate.open_portfolio_event("/tmp/non_existing_file.json")
     trading_mate.open_portfolio_event("test/test_data/trading_log.json")
     assert len(trading_mate.get_portfolios()) == 4
@@ -125,7 +125,7 @@ def test_open_portfolio_event(trading_mate):
 def test_save_portfolio_event(trading_mate):
     for pf in trading_mate.get_portfolios():
         temp_file = f"/tmp/new_trading_log{pf.get_id()}.json"
-        assert os.path.exists(temp_file) == False
+        assert os.path.exists(temp_file) is False
         trading_mate.save_portfolio_event(pf.get_id(), temp_file)
         assert os.path.exists(temp_file)
 

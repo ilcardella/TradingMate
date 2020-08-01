@@ -27,6 +27,7 @@ docutils = "^0.16"
 pytest = "^6.0.0"
 black = {version = "^19.10b0", allow-prereleases = true}
 isort = {version = "^5.2.1", allow-prereleases = true}
+flake8 = "^3.8.3"
 
 [tool.poetry.scripts]
 trading_bot = 'tradingmate:main'
