@@ -1,7 +1,7 @@
 import logging
 
-from tradingmate.utils.Trade import Trade
-from tradingmate.utils.Utils import Utils
+from tradingmate.model import Trade
+from tradingmate.utils import Utils
 
 
 class DatabaseHandler:

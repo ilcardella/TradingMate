@@ -1,6 +1,6 @@
 import pytest
 
-from tradingmate.model.Holding import Holding
+from tradingmate.model import Holding
 
 
 def test_init():

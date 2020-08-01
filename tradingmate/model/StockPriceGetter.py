@@ -1,12 +1,12 @@
 import logging
 
-from tradingmate.model.broker.StocksInterfaceFactory import StocksInterfaceFactory
-from tradingmate.utils.ConfigurationManager import ConfigurationManager
-from tradingmate.utils.TaskThread import TaskThread
+from tradingmate.model import ConfigurationManager
+from tradingmate.model.broker import StocksInterfaceFactory
+from tradingmate.utils import TaskThread
 
 
 class StockPriceGetter(TaskThread):
-    def __init__(self, config, update_callback):
+    def __init__(self, config: ConfigurationManager, update_callback):
         super(StockPriceGetter, self).__init__()
         self._config = config
         self._price_update_callback = update_callback

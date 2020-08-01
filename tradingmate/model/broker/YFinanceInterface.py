@@ -5,8 +5,8 @@ from enum import Enum
 
 import yfinance as yf
 
-from tradingmate.model.broker.StocksInterface import StocksInterface
-from tradingmate.utils.Utils import Markets
+from tradingmate.model.broker import StocksInterface
+from tradingmate.utils import Markets
 
 
 class YFInterval(Enum):

@@ -7,13 +7,14 @@ from enum import Enum
 
 from alpha_vantage.timeseries import TimeSeries
 
-from tradingmate.model.broker.StocksInterface import StocksInterface
-from tradingmate.utils.Utils import Markets
+from tradingmate.model.broker import StocksInterface
+from tradingmate.utils import Markets
 
 
 class AVInterval(Enum):
     """
-    AlphaVantage interval types: '1min', '5min', '15min', '30min', '60min', 'daily', 'weekly and 'monthly'
+    AlphaVantage interval types: '1min', '5min', '15min', '30min', '60min',
+    'daily', 'weekly' and 'monthly'
     """
 
     MIN_1 = "1min"

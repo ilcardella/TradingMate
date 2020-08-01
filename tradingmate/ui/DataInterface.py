@@ -1,4 +1,4 @@
-from tradingmate.utils.TaskThread import TaskThread
+from tradingmate.utils import TaskThread
 
 
 class DataInterface(TaskThread):

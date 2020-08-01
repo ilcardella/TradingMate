@@ -2,9 +2,7 @@ import os
 
 import pytest
 
-from tradingmate.model.DatabaseHandler import DatabaseHandler
-from tradingmate.utils.ConfigurationManager import ConfigurationManager
-from tradingmate.utils.Trade import Trade
+from tradingmate.model import ConfigurationManager, DatabaseHandler, Trade
 
 
 @pytest.fixture

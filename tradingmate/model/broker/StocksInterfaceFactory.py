@@ -1,5 +1,4 @@
-from tradingmate.model.broker.AlphaVantageInterface import AlphaVantageInterface
-from tradingmate.model.broker.YFinanceInterface import YFinanceInterface
+from tradingmate.model.broker import AlphaVantageInterface, YFinanceInterface
 
 
 class StocksInterfaceFactory:

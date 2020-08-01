@@ -4,9 +4,7 @@ import time
 
 import pytest
 
-from tradingmate.model.Portfolio import Portfolio
-from tradingmate.utils.ConfigurationManager import ConfigurationManager
-from tradingmate.utils.Trade import Trade
+from tradingmate.model import ConfigurationManager, Portfolio, Trade
 
 # These variables are based on the content of the test trading log
 PF_CASH_AVAILABLE = 2465.0343736000013

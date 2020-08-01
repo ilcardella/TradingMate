@@ -1,6 +1,6 @@
 import pytest
 
-from tradingmate.utils.ConfigurationManager import ConfigurationManager
+from tradingmate.model import ConfigurationManager
 
 
 @pytest.fixture

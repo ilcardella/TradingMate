@@ -4,10 +4,9 @@ import os
 import re
 import subprocess
 
-from tradingmate.model.broker.StocksInterfaceFactory import StocksInterfaceFactory
-from tradingmate.model.Portfolio import Portfolio
-from tradingmate.utils.ConfigurationManager import ConfigurationManager
-from tradingmate.utils.Utils import Messages, Utils
+from tradingmate.model import ConfigurationManager, Portfolio
+from tradingmate.model.broker import StocksInterfaceFactory
+from tradingmate.utils import Messages, Utils
 
 DEFAULT_LOG_FILEPATH = os.path.join(
     Utils.get_install_path(), "log", "trading_mate_{timestamp}.log"

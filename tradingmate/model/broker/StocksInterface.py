@@ -19,7 +19,7 @@ def synchronised(lock):
     return wrapper
 
 
-class Singleton(type):
+class SyncSingleton(type):
     """Metaclass to implement the Singleton desing pattern"""
 
     _instances = {}
@@ -27,10 +27,10 @@ class Singleton(type):
     @synchronised(lock)
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super(SyncSingleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
 
-class StocksInterface(metaclass=Singleton):
+class StocksInterface(metaclass=SyncSingleton):
     def get_last_close_price(self, market_id):
         raise NotImplementedError("Must implement get_last_close_price")

@@ -2,10 +2,8 @@ import hashlib
 import logging
 import time
 
-from tradingmate.model.DatabaseHandler import DatabaseHandler
-from tradingmate.model.Holding import Holding
-from tradingmate.model.StockPriceGetter import StockPriceGetter
-from tradingmate.utils.Utils import Actions, Messages
+from tradingmate.model import DatabaseHandler, Holding, StockPriceGetter
+from tradingmate.utils import Actions, Messages
 
 
 class Portfolio:
