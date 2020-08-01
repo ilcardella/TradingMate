@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Makefile to perform development and deployment actions
 - Added formatting with black and isort
 - Linting with flake8
+- Static types checking with mypy
 
 ## Removed
 - Removed `setup.py` with full usage of `pyproject.toml`

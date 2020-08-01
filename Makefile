@@ -53,7 +53,7 @@ black:
 
 format: isort black
 
-lint: flake8 #mypy
+lint: flake8 mypy
 
 check: format lint test
 
