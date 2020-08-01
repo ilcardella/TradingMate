@@ -90,14 +90,14 @@ def test_get_holding_quantity(portfolio):
 
 def test_get_holding_last_price(portfolio):
     wait_for_prices(portfolio)
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         assert portfolio.get_holding_last_price("MOCK") is None
     assert portfolio.get_holding_last_price("MOCK13") == PF_MOCK13_LAST_PRICE
     assert portfolio.get_holding_last_price("MOCK4") == PF_MOCK4_LAST_PRICE
 
 
 def test_get_holding_open_price(portfolio):
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         assert portfolio.get_holding_open_price("MOCK") is None
     assert portfolio.get_holding_open_price("MOCK13") == PF_MOCK13_OPEN_PRICE
     assert portfolio.get_holding_open_price("MOCK4") == PF_MOCK4_OPEN_PRICE
@@ -140,7 +140,7 @@ def test_get_open_positions_pl_perc(portfolio):
 
 
 def test_has_unsaved_changes(portfolio):
-    assert portfolio.has_unsaved_changes() == False
+    assert portfolio.has_unsaved_changes() is False
     item = {
         "id": "0",
         "date": "01/01/0001 00:00",
@@ -153,9 +153,9 @@ def test_has_unsaved_changes(portfolio):
         "notes": "mock",
     }
     portfolio.add_trade(Trade.from_dict(item))
-    assert portfolio.has_unsaved_changes() == True
+    assert portfolio.has_unsaved_changes() is True
     portfolio.save_portfolio("/tmp/TradingMate_test_portfolio.json")
-    assert portfolio.has_unsaved_changes() == False
+    assert portfolio.has_unsaved_changes() is False
 
 
 def test_get_trade_history(portfolio):

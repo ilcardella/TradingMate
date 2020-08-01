@@ -32,8 +32,8 @@ class ConfigurationManager:
         Load the credentials file
         """
         try:
-            credentials_filepath = self.config["general"]["credentials_filepath"]
-        except:
+            credentials_filepath = self.get_credentials_path()
+        except Exception:
             credentials_filepath = "{}/config/.credentials".format(
                 Utils.get_install_path()
             )

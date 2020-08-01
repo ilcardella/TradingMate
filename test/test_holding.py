@@ -7,25 +7,25 @@ def test_init():
     holding = Holding("mock", 10)
     assert holding.get_symbol() == "mock"
     assert holding.get_quantity() == 10
-    assert holding.get_open_price() == None
-    assert holding.get_last_price() == None
-    assert holding.get_last_price_valid() == False
+    assert holding.get_open_price() is None
+    assert holding.get_last_price() is None
+    assert holding.get_last_price_valid() is False
 
     holding = Holding("mock", 10, 100)
     assert holding.get_symbol() == "mock"
     assert holding.get_quantity() == 10
     assert holding.get_open_price() == 100
-    assert holding.get_last_price() == None
-    assert holding.get_last_price_valid() == False
+    assert holding.get_last_price() is None
+    assert holding.get_last_price_valid() is False
 
 
 def test_init_fail():
-    with pytest.raises(ValueError) as e:
-        h = Holding("mock", -1)
-    with pytest.raises(ValueError) as e:
-        h = Holding("mock", 0)
-    with pytest.raises(ValueError) as e:
-        h = Holding("mock", 1, -1)
+    with pytest.raises(ValueError):
+        _ = Holding("mock", -1)
+    with pytest.raises(ValueError):
+        _ = Holding("mock", 0)
+    with pytest.raises(ValueError):
+        _ = Holding("mock", 1, -1)
 
 
 def test_get_cost():
@@ -81,21 +81,21 @@ def test_get_profit_loss_perc():
 
 def test_set_last_price():
     h = Holding("mock", 1, 100)
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         h.set_last_price(-1)
 
 
 def test_set_open_price():
     h = Holding("mock", 1, 100)
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         h.set_open_price(-1)
 
 
 def test_set_quantity():
     h = Holding("mock", 1, 100)
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         h.set_quantity(-1)
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         h.set_quantity(0)
 
 
@@ -104,4 +104,4 @@ def test_set_last_price_invalid():
     h.set_last_price(1000)
     assert h.get_last_price_valid()
     h.set_last_price_invalid()
-    assert h.get_last_price_valid() == False
+    assert h.get_last_price_valid() is False

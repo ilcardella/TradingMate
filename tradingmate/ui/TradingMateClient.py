@@ -4,7 +4,7 @@ from tradingmate.ui import DataInterface
 class TradingMateClient:
     """Client interface to the TradingMate business logic"""
 
-    def __init__(self, server):
+    def __init__(self, server: DataInterface):
         self._server = server
 
     def stop(self):

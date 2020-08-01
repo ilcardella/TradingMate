@@ -1,6 +1,6 @@
-import inspect
+# flake8: noqa: E402 # Required to allow use of gi.require_version
+
 import os
-import sys
 from datetime import datetime as dt
 
 import gi
@@ -61,7 +61,7 @@ class ExploreMarketsWindow:
     def _validate_date(self, date):
         try:
             return dt.strftime(date, "%d/%m/%Y")
-        except:
+        except Exception:
             return "-"
 
     def _clear_content(self):
@@ -145,7 +145,7 @@ class ExploreMarketsWindow:
         # TODO
         pass
 
-    ### Public API
+    # Public API
 
     def show(self):
         self._clear_content()

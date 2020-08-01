@@ -1,10 +1,12 @@
+# flake8: noqa: E402 # Required to allow use of gi.require_version
+
 import datetime
 import os
 
 import gi
 
-gi.require_version("Gtk", "3.0")  # noqa
-from gi.repository import Gtk as gtk  # noqa
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk as gtk
 
 from tradingmate.model import Trade
 from tradingmate.ui.gtk import MessageDialog
