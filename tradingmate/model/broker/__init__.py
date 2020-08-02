@@ -1,15 +1,17 @@
-from tradingmate.model.broker.StocksInterface import (  # NOQA # isort:skip
+from .stocks_interface import (  # NOQA # isort:skip
     StocksInterface,
     SyncSingleton,
 )
-from tradingmate.model.broker.AlphaVantageInterface import (  # NOQA # isort:skip
+from .alpha_vantage_interface import (  # NOQA # isort:skip
     AlphaVantageInterface,
     AVInterval,
+    AVJSONData,
 )
-from tradingmate.model.broker.YFinanceInterface import (  # NOQA # isort:skip
+from .yfinance_interface import (  # NOQA # isort:skip
     YFinanceInterface,
     YFInterval,
 )
-from tradingmate.model.broker.StocksInterfaceFactory import (  # NOQA # isort:skip
+from .stocks_interface_factory import (  # NOQA # isort:skip
     StocksInterfaceFactory,
+    StocksInterfaceImpl,
 )

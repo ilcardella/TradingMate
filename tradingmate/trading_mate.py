@@ -1,99 +1,101 @@
-import datetime as dt
 import logging
-import os
 import re
 import subprocess
+from pathlib import Path
+from typing import List
 
-from tradingmate.model import ConfigurationManager, Portfolio
-from tradingmate.model.broker import StocksInterfaceFactory
-from tradingmate.utils import Messages, Utils
+from .model import ConfigurationManager, Portfolio, Trade
+from .model.broker import StocksInterfaceFactory
+from .utils import Messages, Utils
 
-DEFAULT_LOG_FILEPATH = os.path.join(
-    Utils.get_install_path(), "log", "trading_mate_{timestamp}.log"
-)
-DEFAULT_CONFIG_FILEPATH = os.path.join(
-    Utils.get_install_path(), "config", "config.json"
-)
+DEFAULT_CONFIG_FILEPATH: Path = Path(Utils.get_install_path(), "config", "config.json")
 
 
 class TradingMate:
     """
     Main class that handles the interaction between the User Interface and the
-    underlying business logic of the whole application
+    underlying business logic of the application
     """
 
+    _config: ConfigurationManager
+    _app_log_filepath: Path
+    _portfolios: List[Portfolio]
+
     def __init__(
-        self, config_filepath=DEFAULT_CONFIG_FILEPATH, log_filepath=DEFAULT_LOG_FILEPATH
+        self, config_filepath: Path = DEFAULT_CONFIG_FILEPATH,
     ):
-        self._setup_logging(log_filepath)
         # Read TradingMate configuration
-        self.configurationManager = ConfigurationManager(config_filepath)
+        self._config = ConfigurationManager(config_filepath)
+        self._setup_logging()
         # Create the portfolios
-        self._create_portfolios()
+        self._portfolios = self._create_portfolios()
         logging.info("TradingMate initialised")
 
-    def _setup_logging(self, log_filepath):
+    def _setup_logging(self):
         """
         Setup the global logging settings
         """
-        time_str = dt.datetime.now().isoformat()
-        time_suffix = time_str.replace(":", "_").replace(".", "_")
-        self._app_log_filepath = log_filepath.replace("{timestamp}", time_suffix)
-        os.makedirs(os.path.dirname(self._app_log_filepath), exist_ok=True)
+        # Clean logging handlers
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)
+
+        self._app_log_filepath = Path(self._config.get_log_filepath())
+        self._app_log_filepath.parent.mkdir(parents=True, exist_ok=True)
         logging.basicConfig(
-            filename=self._app_log_filepath,
+            filename=str(self._app_log_filepath),
             level=logging.INFO,
             format="[%(asctime)s] %(levelname)s: %(message)s",
         )
 
-    def _create_portfolios(self):
+    def _create_portfolios(self) -> List[Portfolio]:
         """Create the portfolios from the configured trading logs"""
-        self.portfolios = []
-        for log_path in self.configurationManager.get_trading_database_path():
-            self.portfolios.append(Portfolio(self.configurationManager, log_path))
+        return [
+            Portfolio(self._config, Path(path))
+            for path in self._config.get_trading_database_path()
+        ]
 
     # Public API
 
-    def get_portfolios(self):
+    def get_portfolios(self) -> List[Portfolio]:
         """Return the list of active portfolios"""
-        return self.portfolios
+        return self._portfolios
 
-    def close_view_event(self):
+    def close_view_event(self) -> None:
         """
         Callback function to handle close event of the user interface
         """
-        for pf in self.portfolios:
+        for pf in self._portfolios:
             pf.stop()
         logging.info("TradingMate stop")
 
-    def manual_refresh_event(self, portfolio_id):
+    def manual_refresh_event(self, portfolio_id: str) -> None:
         """
         Callback function to handle refresh data request
         """
-        for pf in self.portfolios:
+        for pf in self._portfolios:
             if pf.get_id() == portfolio_id:
                 pf.on_manual_refresh_live_data()
 
-    def set_auto_refresh(self, enabled, portfolio_id):
+    def set_auto_refresh(self, enabled: bool, portfolio_id: str) -> None:
         """
         Callback function to handle set/unset of auto refresh data
         """
-        for pf in self.portfolios:
+        for pf in self._portfolios:
             if pf.get_id() == portfolio_id:
                 pf.set_auto_refresh(enabled)
 
-    def new_trade_event(self, new_trade, portfolio_id):
+    def new_trade_event(self, new_trade: Trade, portfolio_id: str) -> None:
         """
         Callback function to handle new trade event
         """
         logging.info(
             f"TradingMate - new trade {new_trade.to_string()} for portfolio {portfolio_id}"
         )
-        for pf in self.portfolios:
+        for pf in self._portfolios:
             if pf.get_id() == portfolio_id:
                 pf.add_trade(new_trade)
 
-    def delete_trade_event(self, portfolio_id, trade_id):
+    def delete_trade_event(self, portfolio_id: str, trade_id: str) -> None:
         """
         Callback function to handle delete of a trade
         """
@@ -102,27 +104,27 @@ class TradingMate:
                 trade_id, portfolio_id
             )
         )
-        for pf in self.portfolios:
+        for pf in self._portfolios:
             if pf.get_id() == portfolio_id:
                 pf.delete_trade(trade_id)
 
-    def open_portfolio_event(self, filepath):
+    def open_portfolio_event(self, filepath: Path) -> None:
         """
         Callback function to handle request to open a new portfolio file
         """
         logging.info("TradingMate - open portfolio: {}".format(filepath))
         # Create a new Portfolio from the filepath
-        pf = Portfolio(self.configurationManager, filepath)
-        self.portfolios.append(pf)
+        pf = Portfolio(self._config, filepath)
+        self._portfolios.append(pf)
 
-    def save_portfolio_event(self, portfolio_id, filepath):
+    def save_portfolio_event(self, portfolio_id: str, filepath: Path) -> None:
         """
         Callback function to handle request to save/export the portfolio
         """
         logging.info(
             "TradingMate - save portfolio {} to {}".format(portfolio_id, filepath)
         )
-        for pf in self.portfolios:
+        for pf in self._portfolios:
             if pf.get_id() == portfolio_id:
                 pf.save_portfolio(filepath)
 
@@ -130,13 +132,13 @@ class TradingMate:
         """
         Callback to handle request to show the settings panel
         """
-        return self.configurationManager.get_editable_config()
+        return self._config.get_editable_config()
 
     def save_settings_event(self, config):
         """
         Callback to save edited settings
         """
-        self.configurationManager.save_settings(config)
+        self._config.save_settings(config)
         self._create_portfolios()
         logging.info("TradingMate - portfolios reloaded after settings update")
 
@@ -161,14 +163,9 @@ class TradingMate:
 
     def get_market_details(self, market_ticker):
         # Currently only yfinance support this feature
-        if (
-            "yfinance"
-            not in self.configurationManager.get_configured_stocks_interface()
-        ):
+        if "yfinance" not in self._config.get_configured_stocks_interface():
             raise RuntimeError(Messages.UNSUPPORTED_BROKER_FEATURE.value)
-        inteface = StocksInterfaceFactory(
-            self.configurationManager
-        ).make_from_configuration()
+        inteface = StocksInterfaceFactory(self._config).make_from_configuration()
         try:
             return inteface.get_market_details(market_ticker)
         except Exception as e:

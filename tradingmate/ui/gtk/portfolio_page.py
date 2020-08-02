@@ -8,8 +8,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk as gdk
 from gi.repository import Gtk as gtk
 
-from tradingmate.ui.gtk import AddTradeWindow, ConfirmDialog, MessageDialog
-from tradingmate.utils import Messages, Utils
+from ...utils import Messages, Utils
+from . import AddTradeWindow, ConfirmDialog, MessageDialog
 
 INVALID_STRING = "-"
 

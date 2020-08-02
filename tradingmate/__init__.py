@@ -1,9 +1,9 @@
-from tradingmate.TradingMate import TradingMate
+from .trading_mate import TradingMate
 
 
-def main():
+def main() -> None:
     # Initialise the business logic
     tm = TradingMate()
-    from tradingmate.ui.gtk.UIHandler import UIHandler
+    from .ui.gtk import UIHandler
 
     UIHandler(tm).start()

@@ -1,12 +1,14 @@
-import datetime as dt
 import logging
 import time
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, Optional
 
 import yfinance as yf
 
-from tradingmate.model.broker import StocksInterface
-from tradingmate.utils import Markets
+from ...utils import Markets
+from .. import ConfigurationManager
+from . import StocksInterface
 
 
 class YFInterval(Enum):
@@ -26,33 +28,38 @@ class YFInterval(Enum):
 
 
 class YFinanceInterface(StocksInterface):
-    def __init__(self, config):
+
+    config: ConfigurationManager
+    _last_call_ts: datetime
+
+    def __init__(self, config: ConfigurationManager):
         self._config = config
-        self._last_call_ts = dt.datetime(1, 1, 1)
+        self._last_call_ts = datetime(1, 1, 1)
         logging.info("YFinanceInterface created")
 
-    def _format_market_id(self, market_id):
+    def _format_market_id(self, market_id: str) -> str:
         if f"{Markets.LSE.value}:" in market_id:
             market_id = market_id.replace(f"{Markets.LSE.value}:", "") + ".L"
         return market_id
 
-    def _wait_before_call(self):
+    def _wait_before_call(self) -> None:
         """
         Wait between API calls to not overload the server
         """
-        while (dt.datetime.now() - self._last_call_ts) <= dt.timedelta(
+        while (datetime.now() - self._last_call_ts) <= timedelta(
             seconds=self._config.get_yfinance_polling_period()
         ):
             time.sleep(0.1)
-        self._last_call_ts = dt.datetime.now()
+        self._last_call_ts = datetime.now()
 
-    def get_last_close_price(self, market_id, interval=YFInterval.HOUR):
+    def get_last_close_price(self, market_id: str) -> Optional[float]:
+        interval: YFInterval = YFInterval.HOUR
         self._wait_before_call()
         ticker = yf.Ticker(self._format_market_id(market_id))
         data = ticker.history(period="1d", interval=interval.value)
         return data["Close"].iloc[0] if data is not None else None
 
-    def get_market_details(self, market_ticker):
+    def get_market_details(self, market_ticker: str) -> Dict[str, Any]:
         self._wait_before_call()
         ticker = yf.Ticker(self._format_market_id(market_ticker))
         return {

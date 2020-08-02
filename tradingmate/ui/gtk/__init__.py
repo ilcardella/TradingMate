@@ -1,10 +1,8 @@
-from tradingmate.ui.gtk.AddTradeWindow import AddTradeWindow  # NOQA # isort:skip
-from tradingmate.ui.gtk.ConfirmDialog import ConfirmDialog  # NOQA # isort:skip
-from tradingmate.ui.gtk.ExploreMarketsWindow import (  # NOQA # isort:skip
-    ExploreMarketsWindow,
-)
-from tradingmate.ui.gtk.LogWindow import LogWindow  # NOQA # isort:skip
-from tradingmate.ui.gtk.MessageDialog import MessageDialog  # NOQA # isort:skip
-from tradingmate.ui.gtk.PortfolioPage import PortfolioPage  # NOQA # isort:skip
-from tradingmate.ui.gtk.SettingsWindow import SettingsWindow  # NOQA # isort:skip
-from tradingmate.ui.gtk.UIHandler import UIHandler  # NOQA # isort:skip
+from .message_dialog import MessageDialog  # NOQA # isort:skip
+from .add_trade_window import AddTradeWindow  # NOQA # isort:skip
+from .confirm_dialog import ConfirmDialog  # NOQA # isort:skip
+from .explore_markets_window import ExploreMarketsWindow  # NOQA # isort:skip
+from .log_window import LogWindow  # NOQA # isort:skip
+from .portfolio_page import PortfolioPage  # NOQA # isort:skip
+from .settings_window import SettingsWindow  # NOQA # isort:skip
+from .ui_handler import UIHandler  # NOQA # isort:skip

@@ -1,7 +1,9 @@
 import logging
+from pathlib import Path
+from typing import Any, List
 
-from tradingmate.model import Trade
-from tradingmate.utils import Utils
+from ..utils import Utils
+from . import ConfigurationManager, Trade
 
 
 class DatabaseHandler:
@@ -9,7 +11,11 @@ class DatabaseHandler:
     Handles the IO operation with the database to handle persistent data
     """
 
-    def __init__(self, config, trading_log_path):
+    db_filepath: Path
+    db_name: str = "unknown"
+    trading_history: List[Trade]
+
+    def __init__(self, config: ConfigurationManager, trading_log_path: Path) -> None:
         """
         Initialise
         """
@@ -18,7 +24,7 @@ class DatabaseHandler:
         self.trading_history = []
         self.read_data(self.db_filepath)
 
-    def read_data(self, filepath=None):
+    def read_data(self, filepath: Path = None):
         """
         Read the trade history from the json database and return the list of trades
 
@@ -38,38 +44,41 @@ class DatabaseHandler:
                 self.trading_history.append(trade)
         self.trading_history = sorted(self.trading_history, key=lambda t: t.date)
 
-    def write_data(self, filepath=None):
+    def write_data(self, filepath: Path = None) -> bool:
         """
         Write the trade history to the database
         """
         path = filepath if filepath is not None else self.db_filepath
         logging.info("DatabaseHandler - writing data to {}".format(path))
         # Create a json object and store the trade history into it
-        json_obj = {"name": self.db_name, "trades": []}
+        json_obj: Any = {
+            "name": self.db_name,
+            "trades": [],
+        }
         for t in self.trading_history:
             json_obj["trades"].append(t.to_dict())
         # Write to file
         return Utils.write_json_file(path, json_obj)
 
-    def get_db_filepath(self):
+    def get_db_filepath(self) -> Path:
         """
         Return the database filepath
         """
         return self.db_filepath
 
-    def get_trading_log_name(self):
+    def get_trading_log_name(self) -> str:
         """
         Return the trading log database name
         """
         return self.db_name
 
-    def get_trades_list(self):
+    def get_trades_list(self) -> List[Trade]:
         """
         Return the list of trades stored in the db
         """
         return self.trading_history
 
-    def add_trade(self, trade):
+    def add_trade(self, trade: Trade) -> None:
         """
         Add a trade to the database
         """
@@ -80,12 +89,12 @@ class DatabaseHandler:
             logging.error(e)
             raise RuntimeError("Unable to add trade to the database")
 
-    def delete_trade(self, trade_id):
+    def delete_trade(self, trade_id: str) -> None:
         """
         Remove the trade from the trade history
         """
         try:
-            item = next((t for t in self.trading_history if t.id == trade_id), None)
+            item = next((t for t in self.trading_history if t.id == trade_id))
             self.trading_history.remove(item)
         except Exception as e:
             logging.error(e)

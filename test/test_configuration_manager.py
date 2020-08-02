@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from tradingmate.model import ConfigurationManager
@@ -5,20 +7,20 @@ from tradingmate.model import ConfigurationManager
 
 @pytest.fixture
 def cm():
-    return ConfigurationManager("test/test_data/config.json")
+    return ConfigurationManager(Path("test/test_data/config.json"))
 
 
 def test_config_values(cm):
     config = cm.get_trading_database_path()
     assert isinstance(config, list)
     assert len(config) == 3
-    assert config[0] == "test/test_data/trading_log.json"
-    assert config[1] == "test/test_data/trading_log.json"
-    assert config[2] == "test/test_data/trading_log.json"
+    assert config[0] == Path("test/test_data/trading_log.json")
+    assert config[1] == Path("test/test_data/trading_log.json")
+    assert config[2] == Path("test/test_data/trading_log.json")
 
     config = cm.get_credentials_path()
-    assert isinstance(config, str)
-    assert config == "test/test_data/.credentials"
+    assert isinstance(config, Path)
+    assert config == Path("test/test_data/.credentials")
 
     config = cm.get_polling_period()
     assert isinstance(config, float)

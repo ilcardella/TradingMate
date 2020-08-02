@@ -8,16 +8,9 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk as gtk
 
-from tradingmate.model import Trade
-from tradingmate.ui.gtk import MessageDialog
-from tradingmate.utils import (
-    DATETIME_FORMAT,
-    TIME_FORMAT,
-    Actions,
-    Markets,
-    Messages,
-    Utils,
-)
+from ...model import DATETIME_FORMAT, TIME_FORMAT, Trade
+from ...utils import Actions, Markets, Messages, Utils
+from . import MessageDialog
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")
