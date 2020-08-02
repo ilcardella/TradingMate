@@ -40,9 +40,9 @@ AlphaVantage is great collection of API that provide several feature. It require
 
 - Visit AlphaVantage website: `https://www.alphavantage.co`
 - Request a free api key
-- Insert these info in a file called `.credentials` in `${HOME}/.TradingMate/data`
+- Insert these info in a file called `.credentials` in `${HOME}/.TradingMate/config`
     ```
-    touch ${HOME}/.TradingMate/data/.credentials
+    touch ${HOME}/.TradingMate/config/.credentials
     ```
 
     This must be in json format and contain:
@@ -55,7 +55,7 @@ AlphaVantage is great collection of API that provide several feature. It require
 - Revoke permissions to read the file by others
 
     ```
-    sudo chmod 600 ${HOME}/.TradingMate/data/.credentials
+    sudo chmod 600 ${HOME}/.TradingMate/config/.credentials
     ```
 
 ### YFinance

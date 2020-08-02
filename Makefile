@@ -5,7 +5,7 @@ endif
 
 INSTALL_DIR = ${HOME}/.TradingMate
 DATA_DIR = $(INSTALL_DIR)/data
-GTK_ASSETS_DIR = $(DATA_DIR)/assets/gtk
+GTK_ASSETS_DIR = $(DATA_DIR)/assets
 CONFIG_DIR = $(INSTALL_DIR)/config
 LOG_DIR = $(INSTALL_DIR)/log
 
@@ -34,7 +34,7 @@ install-system: clean
 > mkdir -p $(LOG_DIR)
 > cp config/config.json $(CONFIG_DIR)
 > cp data/trading_log.json $(DATA_DIR)
-> cp dtradingmate/UI/assets/gtk/*.glade $(GTK_ASSETS_DIR)
+> cp -r tradingmate/ui/assets/gtk $(GTK_ASSETS_DIR)
 
 build: clean
 > poetry build

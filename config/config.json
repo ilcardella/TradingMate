@@ -1,9 +1,9 @@
 {
     "trading_logs": [
-        "/opt/TradingMate/data/trading_log.json"
+        "{home}/.TradingMate/data/trading_log.json"
     ],
     "general": {
-        "credentials_filepath": "/opt/TradingMate/data/.credentials",
+        "credentials_filepath": "{home}/.TradingMate/config/.credentials",
         "polling_period_sec": 30,
         "stocks_interface": {
             "active": "yfinance",
