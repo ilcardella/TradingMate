@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+from typing import Any
 
 
 class Utils:
@@ -8,11 +9,11 @@ class Utils:
     Class that provides utility functions
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     @staticmethod
-    def load_json_file(filepath):
+    def load_json_file(filepath: Path) -> Any:
         """
         Load a JSON formatted file from the given filepath
 
@@ -20,14 +21,14 @@ class Utils:
             - Return a dictionary of the loaded json
         """
         try:
-            with open(filepath, "r") as file:
+            with filepath.open(mode="r") as file:
                 return json.load(file)
         except Exception as e:
             logging.error("Unable to load JSON file {}".format(e))
         return None
 
     @staticmethod
-    def write_json_file(filepath, data):
+    def write_json_file(filepath: Path, data: Any) -> bool:
         """
         Write a python dict object into a file with json formatting
 
@@ -36,7 +37,7 @@ class Utils:
             - Return True if succed, False otherwise
         """
         try:
-            with open(filepath, "w") as file:
+            with filepath.open(mode="w") as file:
                 json.dump(data, file, indent=4, separators=(",", ": "))
                 return True
         except Exception as e:
@@ -44,7 +45,7 @@ class Utils:
         return False
 
     @staticmethod
-    def get_install_path():
+    def get_install_path() -> str:
         """
         Returns the installation path of TradingMate
         """

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pytest
 
@@ -7,12 +8,12 @@ from tradingmate.model import ConfigurationManager, DatabaseHandler, Trade
 
 @pytest.fixture
 def configuration():
-    return ConfigurationManager("test/test_data/config.json")
+    return ConfigurationManager(Path("test/test_data/config.json"))
 
 
 @pytest.fixture
 def dbh(configuration):
-    return DatabaseHandler(configuration, "test/test_data/trading_log.json")
+    return DatabaseHandler(configuration, Path("test/test_data/trading_log.json"))
 
 
 def test_read_data(dbh):
@@ -22,7 +23,7 @@ def test_read_data(dbh):
     assert len(dbh.trading_history) > 0
     dbh.trading_history = []
     assert len(dbh.trading_history) == 0
-    dbh.read_data("test/test_data/trading_log.json")
+    dbh.read_data(Path("test/test_data/trading_log.json"))
     assert len(dbh.trading_history) > 0
 
 
@@ -30,23 +31,23 @@ def test_write_data(dbh):
     """
     Test write data into json file
     """
-    mock_path = "/tmp/test.json"
-    if os.path.exists(mock_path):
+    mock_path = Path("/tmp/test.json")
+    if mock_path.exists():
         os.remove(mock_path)
-    assert not os.path.isfile(mock_path)
+    assert not mock_path.exists()
     assert dbh.write_data(mock_path)
-    assert os.path.isfile(mock_path)
+    assert mock_path.is_file()
 
 
 def test_get_db_filepath(dbh):
     """
     Test it returns the correct filepath
     """
-    assert dbh.get_db_filepath() == "test/test_data/trading_log.json"
+    assert str(dbh.get_db_filepath()) == "test/test_data/trading_log.json"
 
-    mock_path = "/tmp/test.json"
+    mock_path = Path("/tmp/test.json")
     assert dbh.write_data(mock_path)
-    assert os.path.isfile(mock_path)
+    assert mock_path.is_file()
     dbh.read_data(mock_path)
     assert dbh.get_db_filepath() == mock_path
 

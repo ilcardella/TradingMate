@@ -1,13 +1,14 @@
 import json
 import os
 import time
+from pathlib import Path
 
 import pytest
 
 from tradingmate.model import ConfigurationManager, Portfolio, Trade
 
 # These variables are based on the content of the test trading log
-PF_CASH_AVAILABLE = 2465.0343736000013
+PF_CASH_AVAILABLE = 2461.314373600001
 PF_CASH_DEPOSITED = 7700
 PF_MOCK13_QUANTITY = 1192
 PF_MOCK4_QUANTITY = 438
@@ -15,10 +16,10 @@ PF_MOCK13_LAST_PRICE = 1245.02
 PF_MOCK4_LAST_PRICE = 1245.02
 PF_MOCK13_OPEN_PRICE = 166.984
 PF_MOCK4_OPEN_PRICE = 582.9117
-PF_TOTAL_VALUE = 22758.8603736
+PF_TOTAL_VALUE = 22755.140373600003
 PF_HOLDINGS_VALUE = 20293.826
-PF_PL = 15058.8603736
-PF_PL_PERC = 195.56961524155844
+PF_PL = 15055.140373600003
+PF_PL_PERC = 195.52130355324678
 PF_POSITIONS_PL = 15750.223473999999
 PF_POSITIONS_PL_PERC = 346.64615542121044
 
@@ -50,7 +51,7 @@ def portfolio(requests_mock):
     requests_mock.get(URL_13, status_code=200, json=data_13)
     requests_mock.get(URL_4, status_code=200, json=data_4)
     # Use test configuration file
-    config = ConfigurationManager("test/test_data/config.json")
+    config = ConfigurationManager(Path("test/test_data/config.json"))
     return Portfolio(config, config.get_trading_database_path()[0])
 
 
@@ -164,12 +165,13 @@ def test_get_trade_history(portfolio):
 
 
 def test_save_portfolio(portfolio):
-    filepath = "/tmp/TradingMate_test_save_portfolio.json"
-    if os.path.exists(filepath):
+    filepath = Path("/tmp/TradingMate_test_save_portfolio.json")
+    if filepath.exists():
         os.remove(filepath)
+    assert not filepath.exists()
     portfolio.save_portfolio(filepath)
-    assert os.path.exists(filepath)
-    config = ConfigurationManager("test/test_data/config.json")
+    assert filepath.exists()
+    config = ConfigurationManager(Path("test/test_data/config.json"))
     new_pf = Portfolio(config, filepath)
     test_get_total_value(new_pf)
 

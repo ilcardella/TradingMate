@@ -11,7 +11,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import GLib
 from gi.repository import Gtk as gtk
 
-from tradingmate.utils import Utils
+from ...utils import Utils
 
 # File paths
 ASSETS_DIR = os.path.join(Utils.get_install_path(), "data", "assets")

@@ -1,14 +1,18 @@
-import datetime as dt
 import logging
 import sys
 import time
 import traceback
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Dict, Optional
 
 from alpha_vantage.timeseries import TimeSeries
 
-from tradingmate.model.broker import StocksInterface
-from tradingmate.utils import Markets
+from ...utils import Markets
+from .. import ConfigurationManager
+from . import StocksInterface
+
+AVJSONData = Dict[str, Dict[str, str]]
 
 
 class AVInterval(Enum):
@@ -30,9 +34,13 @@ class AVInterval(Enum):
 class AlphaVantageInterface(StocksInterface):
     """class providing interfaces to request data from AlphaVantage"""
 
-    def __init__(self, config):
+    _config: ConfigurationManager
+    _last_call_ts: datetime
+    _TS: TimeSeries
+
+    def __init__(self, config: ConfigurationManager) -> None:
         self._config = config
-        self._last_call_ts = dt.datetime.now()
+        self._last_call_ts = datetime.now()
         self._TS = TimeSeries(
             key=config.get_alpha_vantage_api_key(),
             output_format="json",
@@ -40,7 +48,7 @@ class AlphaVantageInterface(StocksInterface):
         )
         logging.info("AlphaVantageInterface initialised")
 
-    def _daily(self, market_id):
+    def _daily(self, market_id: str) -> Optional[AVJSONData]:
         """
         Calls AlphaVantage API and return the Daily time series for the given market
 
@@ -58,7 +66,7 @@ class AlphaVantageInterface(StocksInterface):
             logging.debug(sys.exc_info()[0])
         return None
 
-    def _format_market_id(self, market_id):
+    def _format_market_id(self, market_id: str) -> str:
         """
         Convert a standard market id to be compatible with AlphaVantage API.
         Adds the market exchange prefix (i.e. London is LON:)
@@ -67,22 +75,27 @@ class AlphaVantageInterface(StocksInterface):
             market_id = market_id.replace(f"{Markets.LSE.value}", "LON")
         return market_id
 
-    def _wait_before_call(self):
+    def _wait_before_call(self) -> None:
         """
         Wait between API calls to not overload the server
         """
-        while (dt.datetime.now() - self._last_call_ts) <= dt.timedelta(
+        while (datetime.now() - self._last_call_ts) <= timedelta(
             seconds=self._config.get_alpha_vantage_polling_period()
         ):
             time.sleep(0.2)
-        self._last_call_ts = dt.datetime.now()
+        self._last_call_ts = datetime.now()
 
-    def get_last_close_price(self, market_id, interval=AVInterval.DAILY):
+    def get_last_close_price(self, market_id: str) -> Optional[float]:
+        interval: AVInterval = AVInterval.DAILY
         prices = self.get_prices(market_id, interval)
+        if prices is None:
+            return None
         last = next(iter(prices.values()))
         return float(last["4. close"])
 
-    def get_prices(self, market_id, interval=AVInterval.DAILY):
+    def get_prices(
+        self, market_id: str, interval: AVInterval = AVInterval.DAILY
+    ) -> Optional[AVJSONData]:
         """
         Return the price time series of the requested market with the interval
         granularity. Return None if the interval is invalid
@@ -96,4 +109,4 @@ class AlphaVantageInterface(StocksInterface):
                     interval.value
                 )
             )
-            return None
+            raise ValueError(f"Invalid AVInterval value: {interval.name}")

@@ -1,2 +1,2 @@
-from tradingmate.ui.DataInterface import DataInterface  # NOQA # isort:skip
-from tradingmate.ui.TradingMateClient import TradingMateClient  # NOQA # isort:skip
+from .data_interface import DataInterface  # NOQA # isort:skip
+from .trading_mate_client import TradingMateClient  # NOQA # isort:skip

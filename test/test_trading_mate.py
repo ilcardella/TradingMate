@@ -1,6 +1,6 @@
 import json
-import os
 import re
+from pathlib import Path
 
 import pytest
 
@@ -34,7 +34,7 @@ def trading_mate(requests_mock):
     with open("test/test_data/mock_yf_quote.html", "r") as f:
         requests_mock.get(URL_YF_HTML_MOCK, status_code=200, body=f)
     # Create the TradingMate instance using the test config file
-    return TradingMate("test/test_data/config.json", "/tmp/trading_mate_test_log.log")
+    return TradingMate(Path("test/test_data/config.json"))
 
 
 def test_get_portfolios(trading_mate):
@@ -117,17 +117,17 @@ def test_delete_trade_event(trading_mate):
 def test_open_portfolio_event(trading_mate):
     assert len(trading_mate.get_portfolios()) == 3
     with pytest.raises(Exception):
-        trading_mate.open_portfolio_event("/tmp/non_existing_file.json")
-    trading_mate.open_portfolio_event("test/test_data/trading_log.json")
+        trading_mate.open_portfolio_event(Path("/tmp/non_existing_file.json"))
+    trading_mate.open_portfolio_event(Path("test/test_data/trading_log.json"))
     assert len(trading_mate.get_portfolios()) == 4
 
 
 def test_save_portfolio_event(trading_mate):
     for pf in trading_mate.get_portfolios():
-        temp_file = f"/tmp/new_trading_log{pf.get_id()}.json"
-        assert os.path.exists(temp_file) is False
+        temp_file = Path(f"/tmp/new_trading_log{pf.get_id()}.json")
+        assert not temp_file.exists()
         trading_mate.save_portfolio_event(pf.get_id(), temp_file)
-        assert os.path.exists(temp_file)
+        assert temp_file.exists()
 
 
 # def test_get_settings_event(trading_mate):
@@ -140,7 +140,8 @@ def test_save_portfolio_event(trading_mate):
 
 
 def test_get_app_log_filepath(trading_mate):
-    assert trading_mate.get_app_log_filepath() == "/tmp/trading_mate_test_log.log"
+    # The log path is generated based on a timestamp and the install directory
+    assert "/.TradingMate/log/trading_mate_" in str(trading_mate.get_app_log_filepath())
 
 
 # This is commented out because this function depends on pip being installed
