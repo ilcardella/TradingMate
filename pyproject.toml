@@ -31,7 +31,7 @@ flake8 = "^3.8.3"
 mypy = "^0.782"
 
 [tool.poetry.scripts]
-trading_bot = 'tradingmate:main'
+trading_mate = 'tradingmate:main'
 
 [tool.black]
 line-length = 88
