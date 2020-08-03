@@ -62,7 +62,7 @@ class LogWindow:
         self._window.resize(h_adj.get_upper(), self._window.get_size()[1])
 
     def _tail_lines(self, filepath):
-        tail = Pygtail(filepath)
+        tail = Pygtail(str(filepath))
         while True:
             try:
                 self._tail_worker_enabled.wait()
