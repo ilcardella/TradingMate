@@ -17,15 +17,18 @@ View `pyproject.toml` for the full list of python dependencies.
 
 ## Install
 
-First install python 3
+- Install python 3
 ```
 sudo apt-get update
 sudo apt-get install python3
 ```
 
-The UI is based on Python GTK+ 3 so follow the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html) to install the required packages.
+- The UI is based on Python GTK+ 3 so follow the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html) to install the required packages.
+```
+sudo apt-get install -y --no-install-recommends libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0
+```
 
-Install `TradingMate` by running the following command in the repository root folder
+- Install `TradingMate` by running the following command in the repository root folder
 ```
 make install-system
 ```
