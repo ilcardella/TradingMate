@@ -1,5 +1,5 @@
 # TradingMate
-![TradingMate CI](https://github.com/ilcardella/TradingMate/workflows/TradingMate%20CI/badge.svg) ![Documentation Status](https://readthedocs.org/projects/tradingmate/badge/?version=latest)
+![TradingMate CI](https://github.com/ilcardella/TradingMate/workflows/TradingMate%20CI/badge.svg) [![Documentation Status](https://readthedocs.org/projects/tradingmate/badge/?version=stable)](https://tradingmate.readthedocs.io/en/stable/?badge=stable)
 
 TradingMate is a portfolio manager for stocks traders. It lets you record all
 your trades with a simple and basic interface, showing the current status of
@@ -8,7 +8,7 @@ your assets and the overall profit (or loss!)
 ## Dependencies
 
 - Python 3.6+
-- Poetry (only for development)
+- Poetry
 - PyGObject: https://pygobject.readthedocs.io/en/latest/index.html
 - AlphaVantage: https://www.alphavantage.co/
 - YFinance: https://github.com/ranaroussi/yfinance
@@ -17,22 +17,22 @@ View `pyproject.toml` for the full list of python dependencies.
 
 ## Install
 
-First install python 3
+- Install Python3
 ```
 sudo apt-get update
 sudo apt-get install python3
 ```
 
-The UI is based on Python GTK+ 3 so follow the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html) to install the required packages.
+- Install Python GTK+ 3 following the instructions provided [here](https://pygobject.readthedocs.io/en/latest/getting_started.html)
 
-Install `TradingMate` by running the following command in the repository root folder
+- Install `TradingMate`
 ```
 make install-system
 ```
 
 ## Setup
 
-TradingMate support different sources to fetch stocks prices. The desired interface can be configured through a configuration parameter as explained below and based on the chosen interface you can follow the related setup instructions.
+TradingMate supports different sources to fetch stocks prices. The desired interface can be configured through a configuration parameter as explained below and based on the chosen interface you can follow the related setup instructions.
 
 ### AlphaVantage
 
@@ -90,7 +90,7 @@ trading_mate
 ## Uninstall
 You can use `pip` to uninstall `TradingMate`:
 ```
-sudo pip3 uninstall TradingMate
+pip3 uninstall TradingMate
 ```
 
 ## Development
@@ -105,12 +105,19 @@ make install
 
 ### Test
 
-You can run the test from the workspace with:
+You can run the tests with:
 ```
 make test
 ```
 
-### Documentation
+### Check
+
+The `check` make target will run the formatter, the linters and the tests
+```
+make check
+```
+
+## Documentation
 
 The Sphinx documentation contains further details about each TradingMate module.
 Read the documentation at:
