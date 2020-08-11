@@ -55,9 +55,9 @@ format: isort black
 
 lint: flake8 mypy
 
-check: format lint test
+check: install format lint test
 
-ci: install check docs build
+ci: check docs build
 
 clean:
 > rm -rf *egg-info
