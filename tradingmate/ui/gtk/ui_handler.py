@@ -1,6 +1,7 @@
 # flake8: noqa: E402 # Required to allow use of gi.require_version
 
 import os
+from pathlib import Path
 
 import gi
 
@@ -171,7 +172,7 @@ class UIHandler:
             if response == gtk.ResponseType.OK:
                 filename = dialog.get_filename()
                 if filename is not None and len(filename) > 0:
-                    self._client.open_portfolio_event(filename)
+                    self._client.open_portfolio_event(Path(filename))
             dialog.destroy()
         except RuntimeError as e:
             MessageDialog(
