@@ -19,19 +19,20 @@ class Trade:
 
     date: datetime
     action: Actions
-    quantity: int
+    quantity: float
     symbol: str
     price: float
     fee: float
     sdr: float
     notes: str
+    total: float
     id: str
 
     def __init__(
         self,
         date: datetime,
         action: Actions,
-        quantity: int,
+        quantity: float,
         symbol: str,
         price: float,
         fee: float,
@@ -94,7 +95,7 @@ class Trade:
         return Trade(
             datetime.strptime(str(item["date"]), DATETIME_FORMAT),
             Actions[str(item["action"])],
-            int(item["quantity"]),
+            float(item["quantity"]),
             str(item["symbol"]),
             float(item["price"]),
             float(item["fee"]),

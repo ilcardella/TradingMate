@@ -244,15 +244,15 @@ class Portfolio:
                 cash_deposited -= trade.quantity
             elif trade.action == Actions.BUY:
                 if trade.symbol not in holdings:
-                    holdings[trade.symbol] = Holding(trade.symbol, trade.quantity)
+                    holdings[trade.symbol] = Holding(trade.symbol, int(trade.quantity))
                 else:
-                    holdings[trade.symbol].add_quantity(trade.quantity)
+                    holdings[trade.symbol].add_quantity(int(trade.quantity))
                 cost = (trade.price / 100) * trade.quantity
                 tax = (trade.sdr * cost) / 100
                 totalCost = cost + tax + trade.fee
                 cash_available -= totalCost
             elif trade.action == Actions.SELL:
-                holdings[trade.symbol].add_quantity(-trade.quantity)  # negative
+                holdings[trade.symbol].add_quantity(int(-trade.quantity))  # negative
                 if holdings[trade.symbol].get_quantity() < 1:
                     del holdings[trade.symbol]
                 profit = ((trade.price / 100) * trade.quantity) - trade.fee
@@ -304,9 +304,9 @@ class Portfolio:
             raise ValueError("Market {} not in current holdings".format(symbol))
         for trade in trades_list[::-1]:  # reverse order
             if trade.symbol == symbol and trade.action == Actions.BUY:
-                target -= trade.quantity
-                total_cost += trade.price * trade.quantity
-                count += trade.quantity
+                target -= int(trade.quantity)
+                total_cost += trade.price * int(trade.quantity)
+                count += int(trade.quantity)
                 if target <= 0:
                     break
         avg = total_cost / count
