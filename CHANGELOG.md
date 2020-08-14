@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## []
 ## Fixed
 - Open and Save portfolio actions do not throw exception
+- Bug that was rounding up the `quantity` field of trades considering it an `int`
 
 ## Changed
 - Replaced Pipenv with Poetry
