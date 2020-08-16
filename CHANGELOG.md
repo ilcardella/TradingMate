@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - Replaced Pipenv with Poetry
+- Replaced dependency managed with Dependabot
 
 ## Added
 - Added Makefile to perform development and deployment actions
