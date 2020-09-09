@@ -7,8 +7,7 @@ from .broker import StocksInterface, StocksInterfaceFactory
 
 
 class StockPriceGetter(TaskThread):
-    """Worker thread that fetches market live prices from an online source
-    """
+    """Worker thread that fetches market live prices from an online source"""
 
     _config: ConfigurationManager
     _price_update_callback: Callable[[], None]

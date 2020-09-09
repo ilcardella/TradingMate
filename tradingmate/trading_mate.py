@@ -22,7 +22,8 @@ class TradingMate:
     _portfolios: List[Portfolio]
 
     def __init__(
-        self, config_filepath: Path = DEFAULT_CONFIG_FILEPATH,
+        self,
+        config_filepath: Path = DEFAULT_CONFIG_FILEPATH,
     ):
         # Read TradingMate configuration
         self._config = ConfigurationManager(config_filepath)

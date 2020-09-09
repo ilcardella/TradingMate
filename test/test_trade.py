@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from tradingmate.model import Trade, DATETIME_FORMAT
+from tradingmate.model import DATETIME_FORMAT, Trade
 from tradingmate.utils import Actions
 
 

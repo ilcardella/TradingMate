@@ -3,8 +3,7 @@ from typing import Optional
 
 
 class Holding:
-    """Represent a current open position for a Market
-    """
+    """Represent a current open position for a Market"""
 
     _symbol: str
     _quantity: int

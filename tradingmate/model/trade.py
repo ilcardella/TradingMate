@@ -14,8 +14,7 @@ TradeDict = Dict[str, Union[str, float, int]]
 
 
 class Trade:
-    """Represent a trade action
-    """
+    """Represent a trade action"""
 
     date: datetime
     action: Actions
