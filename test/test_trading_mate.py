@@ -29,10 +29,6 @@ def trading_mate(requests_mock):
     requests_mock.get(re.compile(URL_YF_MOCK13), status_code=200, json=data_MOCK13)
     requests_mock.get(re.compile(URL_YF_MOCK4), status_code=200, json=data_MOCK4)
     requests_mock.get(re.compile(URL_YF_MOCK), status_code=200, json=data_MOCK)
-    # Mock HTML data for MOCK used in the tests below
-    URL_YF_HTML_MOCK = "https://finance.yahoo.com/quote/MOCK"
-    with open("test/test_data/mock_yf_quote.html", "r") as f:
-        requests_mock.get(URL_YF_HTML_MOCK, status_code=200, body=f)
     # Create the TradingMate instance using the test config file
     return TradingMate(Path("test/test_data/config.json"))
 
