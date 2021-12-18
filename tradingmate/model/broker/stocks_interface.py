@@ -7,7 +7,7 @@ lock = threading.Lock()
 
 
 def synchronised(lock):
-    """ Thread synchronization decorator """
+    """Thread synchronization decorator"""
 
     def wrapper(f):
         @functools.wraps(f)
