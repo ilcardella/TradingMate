@@ -44,8 +44,8 @@ def wait_for_prices(portfolio):
 @pytest.fixture
 def portfolio(requests_mock):
     # Mock http calls for mock symbols
-    URL_13 = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK13?range=1d&interval=1h&includePrePost=False&events=div%2Csplits"
-    URL_4 = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK4?range=1d&interval=1h&includePrePost=False&events=div%2Csplits"
+    URL_13 = "https://query2.finance.yahoo.com/v8/finance/chart/MOCK13?range=1d&interval=1h&includePrePost=False&events=div%2Csplits"
+    URL_4 = "https://query2.finance.yahoo.com/v8/finance/chart/MOCK4?range=1d&interval=1h&includePrePost=False&events=div%2Csplits"
     data_13 = read_json("test/test_data/mock_yf_1d_1h.json", "MOCK13")
     data_4 = read_json("test/test_data/mock_yf_1d_1h.json", "MOCK4")
     requests_mock.get(URL_13, status_code=200, json=data_13)

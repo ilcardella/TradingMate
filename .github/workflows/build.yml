@@ -9,14 +9,14 @@ on:
     - cron: '0 0 * * 0' # weekly
 
 env:
-  poetry-version: 1.1.4
+  poetry-version: '1.1.12'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     name: Python ${{ matrix.python-version }}
 
     steps:
@@ -30,7 +30,7 @@ jobs:
           architecture: x64
 
       - name: Pip cache
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -43,10 +43,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install 'poetry==${{ env.poetry-version }}'
+          python -m pip install 'poetry==${{ env.poetry-version }}'
 
       - name: Poetry cache
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}

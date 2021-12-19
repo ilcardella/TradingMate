@@ -20,9 +20,9 @@ def read_json(filepath):
 @pytest.fixture
 def trading_mate(requests_mock):
     # Mock http calls for mock symbols in the test portfolio
-    URL_YF_MOCK13 = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK13"
-    URL_YF_MOCK4 = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK4"
-    URL_YF_MOCK = "https://query1.finance.yahoo.com/v8/finance/chart/MOCK"
+    URL_YF_MOCK13 = "https://query2.finance.yahoo.com/v8/finance/chart/MOCK13"
+    URL_YF_MOCK4 = "https://query2.finance.yahoo.com/v8/finance/chart/MOCK4"
+    URL_YF_MOCK = "https://query2.finance.yahoo.com/v8/finance/chart/MOCK"
     data_MOCK13 = read_json("test/test_data/mock_yf_1d_1h.json")
     data_MOCK4 = data_MOCK13
     data_MOCK = data_MOCK4
