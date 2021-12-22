@@ -27,7 +27,7 @@ docutils = "^0.17.1"
 pytest = "^6.2.5"
 black = {version = "^21.12b0", allow-prereleases = true}
 isort = "^5.10.1"
-mypy = "^0.920"
+mypy = "^0.921"
 flake8 = "^4.0.1"
 
 [tool.poetry.scripts]
