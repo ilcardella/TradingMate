@@ -15,7 +15,7 @@ include = ["config/config.json", "data/trading_log.json"]
 [tool.poetry.dependencies]
 python = "^3.7.1"
 alpha_vantage = "^2.3.1"
-yfinance = "^0.1.68"
+yfinance = "^0.1.69"
 lxml = "^4.7.1"
 pygtail = "^0.11.1"
 
