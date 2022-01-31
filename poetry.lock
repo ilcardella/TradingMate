@@ -733,7 +733,7 @@ typing-extensions = {version = ">=3.7.4", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "yfinance"
-version = "0.1.69"
+version = "0.1.70"
 description = "Download market data from Yahoo! Finance API"
 category = "main"
 optional = false
@@ -743,7 +743,7 @@ python-versions = "*"
 lxml = ">=4.5.1"
 multitasking = ">=0.0.7"
 numpy = ">=1.15"
-pandas = ">=0.24"
+pandas = ">=0.24.0"
 requests = ">=2.26"
 
 [[package]]
@@ -761,7 +761,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "ee629502a4b42a7da01d07a70c781a518db6a5362d9a8e4f6ad15733916257af"
+content-hash = "3a861c05c427e014bf158b163ad30a01b2584e0b5d65e5ab254182caef0c7b31"
 
 [metadata.files]
 aiohttp = [
@@ -1505,8 +1505,8 @@ yarl = [
     {file = "yarl-1.7.2.tar.gz", hash = "sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd"},
 ]
 yfinance = [
-    {file = "yfinance-0.1.69-py2.py3-none-any.whl", hash = "sha256:0a4ae8e897125de3692b33c4fe19a86c23081cbe74b45143e960b31a3254683c"},
-    {file = "yfinance-0.1.69.tar.gz", hash = "sha256:f8448c473188b0de5f16fe11125842545a6649a4caf43bfa24a931d57eac28e5"},
+    {file = "yfinance-0.1.70-py2.py3-none-any.whl", hash = "sha256:949d527544a88c09602753050d2e1fb08f7896f79198cd71b891af5e3cc49249"},
+    {file = "yfinance-0.1.70.tar.gz", hash = "sha256:a42190dd3b3fce1b00aec273db36392b8f100cc8c73dc7881bb558117cbf7c69"},
 ]
 zipp = [
     {file = "zipp-3.6.0-py3-none-any.whl", hash = "sha256:9fe5ea21568a0a70e50f273397638d39b03353731e6cbbb3fd8502a33fec40bc"},
