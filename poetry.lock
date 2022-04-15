@@ -444,7 +444,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pygtail"
-version = "0.11.1"
+version = "0.12.0"
 description = "Reads log file lines that have not been read."
 category = "main"
 optional = false
@@ -749,7 +749,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "df514397fe7648323eaf45900d2b99035966edad3f62cebc9d4a60e8908ed237"
+content-hash = "2c63ee22999bedbae978c9114fa40a41f2899b063a2c11d4b3e374539b21329f"
 
 [metadata.files]
 aiohttp = [
@@ -1336,8 +1336,8 @@ pygments = [
     {file = "Pygments-2.10.0.tar.gz", hash = "sha256:f398865f7eb6874156579fdf36bc840a03cab64d1cde9e93d68f46a425ec52c6"},
 ]
 pygtail = [
-    {file = "pygtail-0.11.1-py3-none-any.whl", hash = "sha256:a942109f717cad2ca4524b6c8cb6fc67f29d33e2a268112e9fbb14dc963b75f4"},
-    {file = "pygtail-0.11.1.tar.gz", hash = "sha256:3af0825e7a5bb30af1798ed0a3d14f9a1cd7aa21b0e3f4430780f3ee3a09f3d7"},
+    {file = "pygtail-0.12.0-py3-none-any.whl", hash = "sha256:436b5090feaebf5ea9d1929e3d0a4fa2154c91085e157429899366495481c5f5"},
+    {file = "pygtail-0.12.0.tar.gz", hash = "sha256:2acf2089f808cd0c3a23ad1b50059d46ee957f773a05080559a6451495437f2e"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.6-py3-none-any.whl", hash = "sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4"},
