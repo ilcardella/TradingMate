@@ -28,7 +28,7 @@ pytest = "^7.1.2"
 black = {version = "^22.8", allow-prereleases = true}
 isort = "^5.10.1"
 mypy = "^0.931"
-flake8 = "^4.0.1"
+flake8 = "^5.0.4"
 
 [tool.poetry.scripts]
 trading_mate = 'tradingmate:main'
