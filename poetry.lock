@@ -18,7 +18,7 @@ typing-extensions = {version = ">=3.7.4", markers = "python_version < \"3.8\""}
 yarl = ">=1.0,<2.0"
 
 [package.extras]
-speedups = ["aiodns", "brotli", "cchardet"]
+speedups = ["Brotli", "aiodns", "cchardet"]
 
 [[package]]
 name = "aiosignal"
@@ -50,6 +50,14 @@ python-versions = "*"
 [package.dependencies]
 aiohttp = "*"
 requests = "*"
+
+[[package]]
+name = "appdirs"
+version = "1.4.4"
+description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "async-timeout"
@@ -274,7 +282,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
 [package.extras]
 cssselect = ["cssselect (>=0.7)"]
 html5 = ["html5lib"]
-htmlsoup = ["beautifulsoup4"]
+htmlsoup = ["BeautifulSoup4"]
 source = ["Cython (>=0.29.7)"]
 
 [[package]]
@@ -537,6 +545,19 @@ fixture = ["fixtures"]
 test = ["fixtures", "mock", "purl", "pytest", "requests-futures", "sphinx", "testrepository (>=0.0.18)", "testtools"]
 
 [[package]]
+name = "setuptools"
+version = "65.4.1"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-hoverxref (<2)", "sphinx-inline-tabs", "sphinx-notfound-page (==0.8.3)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8 (<5)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mock", "pip (>=19.1)", "pip-run (>=8.8)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
+testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -570,6 +591,7 @@ Jinja2 = ">=2.3"
 packaging = "*"
 Pygments = ">=2.0"
 requests = ">=2.5.0"
+setuptools = "*"
 snowballstemmer = ">=1.1"
 sphinxcontrib-applehelp = "*"
 sphinxcontrib-devhelp = "*"
@@ -721,13 +743,14 @@ typing-extensions = {version = ">=3.7.4", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "yfinance"
-version = "0.1.74"
+version = "0.1.77"
 description = "Download market data from Yahoo! Finance API"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
+appdirs = ">=1.4.4"
 lxml = ">=4.5.1"
 multitasking = ">=0.0.7"
 numpy = ">=1.15"
@@ -749,7 +772,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=4.6)", "pytest-black (
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "66b60354c46255354bde2cdba6c5b7ae36158e2d4834785ac689186327650340"
+content-hash = "a890a43d6eecb86cde9e7a4ae94c5ce539fa2bdbf2a853151a47020c94853456"
 
 [metadata.files]
 aiohttp = [
@@ -837,6 +860,10 @@ alabaster = [
 alpha-vantage = [
     {file = "alpha_vantage-2.3.1-py3-none-any.whl", hash = "sha256:5d05355febe6f0fafc4bd11dc6ce3504a02d9d3c105d60202539855c0f608661"},
     {file = "alpha_vantage-2.3.1.tar.gz", hash = "sha256:0ce76908c3e2a22f9bbdacead90195ec3a4fa41ef8ae7c69a4a2fc99459bfbec"},
+]
+appdirs = [
+    {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
+    {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
 ]
 async-timeout = [
     {file = "async-timeout-4.0.1.tar.gz", hash = "sha256:b930cb161a39042f9222f6efb7301399c87eeab394727ec5437924a36d6eef51"},
@@ -1372,6 +1399,10 @@ requests-mock = [
     {file = "requests-mock-1.10.0.tar.gz", hash = "sha256:59c9c32419a9fb1ae83ec242d98e889c45bd7d7a65d48375cc243ec08441658b"},
     {file = "requests_mock-1.10.0-py2.py3-none-any.whl", hash = "sha256:2fdbb637ad17ee15c06f33d31169e71bf9fe2bdb7bc9da26185be0dd8d842699"},
 ]
+setuptools = [
+    {file = "setuptools-65.4.1-py3-none-any.whl", hash = "sha256:1b6bdc6161661409c5f21508763dc63ab20a9ac2f8ba20029aaaa7fdb9118012"},
+    {file = "setuptools-65.4.1.tar.gz", hash = "sha256:3050e338e5871e70c72983072fe34f6032ae1cdeeeb67338199c2f74e083a80e"},
+]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
@@ -1520,8 +1551,8 @@ yarl = [
     {file = "yarl-1.7.2.tar.gz", hash = "sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd"},
 ]
 yfinance = [
-    {file = "yfinance-0.1.74-py2.py3-none-any.whl", hash = "sha256:56312ed20ba282db8bd5e6a01b6fc1bb894017eaa1b2dc7dc46db5a7917e6a67"},
-    {file = "yfinance-0.1.74.tar.gz", hash = "sha256:a0c29f9c9ed3595749d0cd19acf65f96f20e4376084795497f53cd8b263b54c7"},
+    {file = "yfinance-0.1.77-py2.py3-none-any.whl", hash = "sha256:b3633c926f2361d9f8a3d9bed7d53269142ea1ca7cf446930b088d947083c895"},
+    {file = "yfinance-0.1.77.tar.gz", hash = "sha256:f3f202314feb568e06c4cdbe06efd4282288b5044a408c9c62dbfdbd81acc3ec"},
 ]
 zipp = [
     {file = "zipp-3.6.0-py3-none-any.whl", hash = "sha256:9fe5ea21568a0a70e50f273397638d39b03353731e6cbbb3fd8502a33fec40bc"},
