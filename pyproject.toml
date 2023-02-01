@@ -25,7 +25,7 @@ sphinx-rtd-theme = "^1.0.0"
 requests-mock = "^1.10.0"
 docutils = "^0.17.1"
 pytest = "^7.1.2"
-black = {version = "^22.8", allow-prereleases = true}
+black = {version = "^23.1", allow-prereleases = true}
 isort = "^5.10.1"
 mypy = "^0.931"
 flake8 = "^4.0.1"
